@@ -176,10 +176,20 @@ tasks.named('test') {
 
 task updateAppProperties(dependsOn: processResources) {
 	doLast {
-		def cmd = "git rev-parse HEAD"
-		def proc = cmd.execute()
+		def gitSha = "unknown"
+		try {
+			def cmd = "git rev-parse HEAD"
+			def proc = cmd.execute()
+			proc.waitFor()
+			if (proc.exitValue() == 0) {
+				gitSha = proc.text.trim()
+			}
+		} catch (Exception e) {
+			// Git non disponible ou pas un dépôt Git - utiliser valeur par défaut
+			logger.warn("Impossible d'obtenir le SHA Git: ${e.message}")
+		}
 		ant.replace(file: "build/resources/main/application.properties", token: "[app.version]", value: version)
-		ant.replace(file: "build/resources/main/application.properties", token: "[app.git.sha1]", value: proc.text.trim())
+		ant.replace(file: "build/resources/main/application.properties", token: "[app.git.sha1]", value: gitSha)
 	}
 }
 classes.dependsOn updateAppProperties

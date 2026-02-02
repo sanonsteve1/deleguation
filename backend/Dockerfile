@@ -1,6 +1,9 @@
 # Utiliser une image Java 17
 FROM eclipse-temurin:17-jdk-alpine AS build
 
+# Installer Git (nécessaire pour la tâche updateAppProperties)
+RUN apk add --no-cache git
+
 WORKDIR /app
 
 # Copier les fichiers de configuration Gradle
