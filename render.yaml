@@ -2,7 +2,6 @@ services:
   # Service Web (Backend Spring Boot)
   - type: web
     name: fieldtrack-backend
-    runtime: nix
     region: frankfurt
     plan: free
     buildCommand: chmod +x backend/render-build.sh && backend/render-build.sh
