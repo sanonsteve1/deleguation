@@ -8,19 +8,6 @@ services:
     buildCommand: chmod +x backend/render-build.sh && backend/render-build.sh
     startCommand: chmod +x backend/render-start.sh && backend/render-start.sh
     envVars:
-      # Base de données PostgreSQL (sera remplacé par les variables de la base de données)
-      - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: fieldtrack-db
-          property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
-        fromDatabase:
-          name: fieldtrack-db
-          property: user
-      - key: SPRING_DATASOURCE_PASSWORD
-        fromDatabase:
-          name: fieldtrack-db
-          property: password
       # Configuration de l'application
       - key: SPRING_PROFILES_ACTIVE
         value: prod
@@ -34,11 +21,6 @@ services:
         value: http://localhost:4200
       - key: CLIENT_BASE_URL_FLUTTER
         value: http://localhost:4300
-
-  # Base de données PostgreSQL
-  - type: pg
-    name: fieldtrack-db
-    databaseName: fieldtrack
-    user: fieldtrack_user
-    plan: free
-    region: frankfurt
+      # Base de données PostgreSQL (sera configuré manuellement après création)
+      # Note: Créez d'abord la base de données PostgreSQL dans Render Dashboard
+      # puis liez-la au service web pour obtenir automatiquement DATABASE_URL

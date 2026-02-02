@@ -7,9 +7,13 @@ cd backend
 
 # Convertir DATABASE_URL en format JDBC si nécessaire
 if [ -n "$DATABASE_URL" ] && [ -z "$SPRING_DATASOURCE_URL" ]; then
-    # Convertir postgresql:// en jdbc:postgresql://
+    # Render fournit DATABASE_URL au format: postgresql://user:password@host:port/database
+    # Spring Boot a besoin de: jdbc:postgresql://host:port/database?user=user&password=password
     if [[ $DATABASE_URL == postgresql://* ]]; then
-        export SPRING_DATASOURCE_URL=$(echo $DATABASE_URL | sed 's|postgresql://|jdbc:postgresql://|')
+        # Extraire les composants de l'URL
+        DB_URL=$(echo $DATABASE_URL | sed 's|postgresql://||')
+        # Convertir en format JDBC
+        export SPRING_DATASOURCE_URL="jdbc:postgresql://${DB_URL}"
         echo "✅ URL de base de données convertie en format JDBC"
     fi
 fi

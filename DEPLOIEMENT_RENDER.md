@@ -11,18 +11,29 @@ Ce guide vous explique comment déployer le backend FieldTrack Pro sur Render.
 
 ### Option 1 : Déploiement Automatique avec render.yaml (Recommandé)
 
-1. **Connecter votre dépôt GitHub à Render :**
+1. **Créer d'abord la Base de Données PostgreSQL :**
    - Allez sur https://dashboard.render.com
+   - Cliquez sur "New +" → "PostgreSQL"
+   - Configurez :
+     - **Name**: `fieldtrack-db`
+     - **Database**: `fieldtrack`
+     - **User**: `fieldtrack_user`
+     - **Region**: `Frankfurt` (ou votre région préférée)
+     - **Plan**: `Free` (pour commencer)
+   - Notez les informations de connexion
+
+2. **Connecter votre dépôt GitHub à Render :**
    - Cliquez sur "New +" → "Blueprint"
    - Connectez votre dépôt GitHub `sanonsteve1/deleguation`
    - Render détectera automatiquement le fichier `render.yaml` à la racine
 
-2. **Render créera automatiquement :**
-   - Un service web pour le backend
-   - Une base de données PostgreSQL
-   - Toutes les variables d'environnement nécessaires
+3. **Lier la Base de Données au Service Web :**
+   - Après la création du service web, allez dans ses paramètres
+   - Allez dans "Environment" → "Link Database"
+   - Sélectionnez votre base de données `fieldtrack-db`
+   - Render ajoutera automatiquement la variable `DATABASE_URL`
 
-3. **Attendre le déploiement :**
+4. **Attendre le déploiement :**
    - Le build prendra environ 5-10 minutes
    - Vous recevrez une URL pour votre API (ex: `https://fieldtrack-backend.onrender.com`)
 
