@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Configuration pour permettre HTTPS vers Render -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">fieldtrack-backend.onrender.com</domain>
+        <domain includeSubdomains="true">onrender.com</domain>
+    </domain-config>
+    
+    <!-- Pour le développement local (optionnel) -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">localhost</domain>
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">192.168.11.111</domain>
+    </domain-config>
+    
+    <!-- Configuration par défaut : HTTPS uniquement -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

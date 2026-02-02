@@ -7,8 +7,10 @@ plugins {
 
 android {
     namespace = "com.example.social_media"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // Versions SDK fixées : compileSdk 35 requis par les plugins (geolocator, workmanager, etc.)
+    compileSdk = 35
+    // NDK version fixée à 27.0.12077973 (requis par les plugins)
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -24,8 +26,10 @@ android {
         applicationId = "com.example.social_media"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        // Versions SDK fixées : minSdk 21 (Android 5.0), targetSdk 34 (Android 14)
+        // Note: compileSdk 35 requis par les plugins, mais targetSdk reste à 34 pour compatibilité
+        minSdk = 21
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -35,6 +39,10 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
+            // Désactiver la minification pour éviter les problèmes
+            minifyEnabled = false
+            shrinkResources = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
