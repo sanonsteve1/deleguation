@@ -9,6 +9,13 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
+      # Configuration base de données Neon
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://ep-frosty-voice-ahhm5bdk-pooler.c-3.us-east-1.aws.neon.tech/fieldtrack-db?sslmode=require
+      - key: SPRING_DATASOURCE_USERNAME
+        value: neondb_owner
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: npg_z0KiJNgn7Vco
       - key: JWT_SECRET_KEY
         generateValue: true
       - key: CLIENT_BASE_URL_ONLINE

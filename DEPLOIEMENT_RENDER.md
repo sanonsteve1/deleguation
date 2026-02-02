@@ -6,23 +6,28 @@ Ce guide vous explique comment déployer le backend FieldTrack Pro sur Render.
 
 1. Un compte Render (gratuit) : https://render.com
 2. Votre projet connecté à GitHub (déjà fait ✅)
+3. Une base de données PostgreSQL (Neon recommandé) : https://neon.tech
 
 ## 🚀 Étapes de Déploiement
 
 ### Option 1 : Déploiement Automatique avec render.yaml (Recommandé)
 
-1. **Créer d'abord la Base de Données PostgreSQL :**
-   - Allez sur https://dashboard.render.com
-   - Cliquez sur "New +" → "PostgreSQL"
-   - Configurez :
-     - **Name**: `fieldtrack-db`
-     - **Database**: `fieldtrack`
-     - **User**: `fieldtrack_user`
-     - **Region**: `Frankfurt` (ou votre région préférée)
-     - **Plan**: `Free` (pour commencer)
-   - Notez les informations de connexion
+1. **Créer la Base de Données PostgreSQL (Neon) :**
+   - Allez sur https://neon.tech et créez un compte
+   - Créez un nouveau projet
+   - Utilisez `npx neonctl@latest init` pour initialiser votre base de données
+   - Notez l'URL de connexion (format: `postgresql://user:password@host/database?sslmode=require`)
+   - **OU** utilisez une base de données Render :
+     - Allez sur https://dashboard.render.com
+     - Cliquez sur "New +" → "PostgreSQL"
+     - Configurez votre base de données
 
-2. **Connecter votre dépôt GitHub à Render :**
+2. **Configurer les variables d'environnement dans render.yaml :**
+   - Ouvrez `render.yaml`
+   - Mettez à jour les variables `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, et `SPRING_DATASOURCE_PASSWORD` avec vos identifiants Neon
+   - L'URL doit être au format JDBC : `jdbc:postgresql://host/database?sslmode=require`
+
+3. **Connecter votre dépôt GitHub à Render :**
    - Cliquez sur "New +" → "Blueprint"
    - Connectez votre dépôt GitHub `sanonsteve1/deleguation`
    - Render détectera automatiquement le fichier `render.yaml` à la racine
