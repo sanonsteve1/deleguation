@@ -1,170 +1,246 @@
-==> Clonage depuis https://github.com/sanonsteve1/deleguation 
-==> Extraction du commit 8e93a724ca6e6306a1982998f6093a2c5e05f0cd dans la branche master 
-#1 [interne] Charger la définition de build depuis le Dockerfile
-#1 Transfert du fichier Dockerfile : 909 octets terminé
-#1 TERMINÉ 0,0s
+#17 31.51 > Tâche : supprimer le métamodèle généré
+#17 31.51 > Tâche :nettoyer
+#17 31.51 > Tâche :initJpaModelgenSourcesDir
+#17 60.11
+#17 60.11 > Tâche :compileJpaModelgen
 Menu
-#2 [interne] Charger les métadonnées pour docker.io/library/eclipse-temurin:17-jdk-alpine
-#2 ...
-#3 [auth] library/eclipse-temurin:pull render-prod/docker-mirror-repository/library/eclipse-temurin:pull token for us-west1-docker.pkg.dev
-#3 TERMINÉ 0,0s
-#4 [interne] Charger les métadonnées pour docker.io/library/eclipse-temurin:17-jre-alpine
-#4 ...
-#2 [interne] Charger les métadonnées pour docker.io/library/eclipse-temurin:17-jdk-alpine
-#2 TERMINÉ 4,9s
-#4 [interne] Charger les métadonnées pour docker.io/library/eclipse-temurin:17-jre-alpine
-#4 TERMINÉ 4,9s
-#5 [interne] charger .dockerignore
-#5 Transfert du contexte : 2B terminé
-#5 TERMINÉ 0,1s
-#6 [interne] charger le contexte de construction
-#6 TERMINÉ 0,0s
-#7 [étape 1 1/3] DE docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551
-#7 résolution de docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551
-#7 Résolution de docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551 0,0s terminé
-#7 ...
-#6 [interne] charger le contexte de construction
-#6 Transfert du contexte : 292,35 ko, 0,0 s terminé
-#6 TERMINÉ 0,1s
-#8 [build 1/9] FROM docker.io/library/eclipse-temurin:17-jdk-alpine@sha256:e2219a46b9e20e3fe8bb303dd851978bb8f9bfb3c54da19e1ea245e326f3b1f6
-#8 Résolution de docker.io/library/eclipse-temurin:17-jdk-alpine@sha256:e2219a46b9e20e3fe8bb303dd851978bb8f9bfb3c54da19e1ea245e326f3b1f6 0,1 s terminée
-#8 TERMINÉ 0,3s
-#7 [étape 1 1/3] DE docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551
-#7 sha256:6d8189bd200c048407210efb45fd23b31a6a50959b4337697e85a6200477c05b 0B / 2,28 Ko 0,2 s
-#7 sha256:6d8189bd200c048407210efb45fd23b31a6a50959b4337697e85a6200477c05b 2,28 ko / 2,28 ko 0,7 s terminé
-#7 sha256:a9247b2da494fffed9d04179a8f1dab65aa3413f202ac970e4af2c4429403c50 0B / 126B 0,2 s
-#7 sha256:a9247b2da494fffed9d04179a8f1dab65aa3413f202ac970e4af2c4429403c50 126B/126B 1.1s
-#7 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 0B / 46,72MB 0,2s
-#7 sha256:a9247b2da494fffed9d04179a8f1dab65aa3413f202ac970e4af2c4429403c50 126 octets / 126 octets 1,4 s terminé
-#7 sha256:712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391 0B / 16,29 Mo 0,2 s
-#7 sha256:712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391 16,29 Mo / 16,29 Mo 1,2 s
-#7 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 5,24 Mo / 46,72 Mo 2,0 s
-#7 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 34,60 Mo / 46,72 Mo 2,3 s
-#7 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 46,72 Mo / 46,72 Mo 2,4 s
-#7 sha256:712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391 16,29 Mo / 16,29 Mo 1,6 s terminé
-#7 extraction de sha256 : 712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391
-#7 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 46,72 Mo / 46,72 Mo 2,9 s terminé
-#7 ...
-#8 [build 1/9] FROM docker.io/library/eclipse-temurin:17-jdk-alpine@sha256:e2219a46b9e20e3fe8bb303dd851978bb8f9bfb3c54da19e1ea245e326f3b1f6
-#8 sha256:357173fc29013c94bdde74c736de14f4dfaf05e42614f5d5346add87083f20f3 2,28 ko / 2,28 ko 0,2 s terminé
-#8 sha256:ee4cba3796c63f930fa19b62040f34d6b16b4f7dd6a95896d3e6da8c177eabd7 129 octets / 129 octets 0,2 s terminé
-#8 sha256:db795874e1acc8dcd7dfaa11e545c47a36bd9db774d51cecf4ab0273da86053a 143,99 Mo / 143,99 Mo 4,7 s terminé
-#8 sha256:cc77cdbd7bc1e2f452d8429402632b993034ee6bfccffc10cc8a951d8f9bf6b4 21,12 Mo / 21,12 Mo 2,7 s terminé
-#8 sha256:d49a2dee86fb12766dd648402d010ca105846a41bd58738454e53780d4bb8e97 3,80 Mo / 3,80 Mo 1,7 s terminé
-#8 Extraction du sha256 : d49a2dee86fb12766dd648402d010ca105846a41bd58738454e53780d4bb8e97 (1,4 s) Terminé
-#8 extraction de sha256 : cc77cdbd7bc1e2f452d8429402632b993034ee6bfccffc10cc8a951d8f9bf6b4
-#8 ...
-#7 [étape 1 1/3] DE docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551
-#7 Extraction du sha256 : 712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391 (7,8 s) Terminé
-#7 TERMINÉ 12,8s
-#8 [build 1/9] FROM docker.io/library/eclipse-temurin:17-jdk-alpine@sha256:e2219a46b9e20e3fe8bb303dd851978bb8f9bfb3c54da19e1ea245e326f3b1f6
-#8 Extraction du sha256 : cc77cdbd7bc1e2f452d8429402632b993034ee6bfccffc10cc8a951d8f9bf6b4 (8,5 s) Terminé
-#8 extraction du sha256 : db795874e1acc8dcd7dfaa11e545c47a36bd9db774d51cecf4ab0273da86053a
-#8 ...
-#7 [étape 1 1/3] DE docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551
-#7 Extraction de sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 (6,7 s) Terminé
-#7 TERMINÉ 19,5s
-#7 [étape 1 1/3] DE docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551
-#7 extraction de sha256 : a9247b2da494fffed9d04179a8f1dab65aa3413f202ac970e4af2c4429403c50
-#7 Extraction du sha256 : a9247b2da494fffed9d04179a8f1dab65aa3413f202ac970e4af2c4429403c50 (0,8 s) Terminé
-#7 TERMINÉ 20,2s
-#8 [build 1/9] FROM docker.io/library/eclipse-temurin:17-jdk-alpine@sha256:e2219a46b9e20e3fe8bb303dd851978bb8f9bfb3c54da19e1ea245e326f3b1f6
-#8 Extraction du sha256 : db795874e1acc8dcd7dfaa11e545c47a36bd9db774d51cecf4ab0273da86053a (7,4 s) Terminé
-#8 Extraction de sha256:ee4cba3796c63f930fa19b62040f34d6b16b4f7dd6a95896d3e6da8c177eabd7 (0,0 s) Terminé
-#8 Extraction de sha256:357173fc29013c94bdde74c736de14f4dfaf05e42614f5d5346add87083f20f3 (0,0 s) Terminé
-#8 TERMINÉ 20,3s
-#7 [étape 1 1/3] DE docker.io/library/eclipse-temurin:17-jre-alpine@sha256:71337aec9f5c665b2a6b49baed50251ee9a8fa9995c589a93be8badc85e40551
-#7 Extraction du sha256 : 6d8189bd200c048407210efb45fd23b31a6a50959b4337697e85a6200477c05b (0,0 s) Terminé
-#7 TERMINÉ 20,3s
-#9 [étape 1 2/3] RÉPERTOIRE DE TRAVAIL /app
-#9 TERMINÉ 0,1s
-#10 [build 2/9] RUN apk add --no-cache git
-#10 0.087 Récupération de https://dl-cdn.alpinelinux.org/alpine/v3.22/main/x86_64/APKINDEX.tar.gz
-#10 0.167 Récupération de https://dl-cdn.alpinelinux.org/alpine/v3.22/community/x86_64/APKINDEX.tar.gz
-#10 0.549 (1/7) Installation de c-ares (1.34.6-r0)
-#10 0.561 (2/7) Installation de nghttp2-libs (1.65.0-r0)
-#10 0.566 (3/7) Installation de libpsl (0.21.5-r3)
-#10 0.571 (4/7) Installation de libcurl (8.14.1-r2)
-#10 0.584 (5/7) Installation de pcre2 (10.46-r0)
-#10 0.596 (6/7) Installation de git (2.49.1-r0)
-#10 0.681 (7/7) Installation de git-init-template (2.49.1-r0)
-#10 0.688 Exécution de busybox-1.37.0-r20.trigger
-#10 0,720 OK : 61 Mio dans 84 paquets
-#10 TERMINÉ 3,8s
-#11 [build 3/9] WORKDIR /app
-#11 TERMINÉ 2.0s
-#12 [build 4/9] COPIER gradlew .
-#12 TERMINÉ 0,1s
-#13 [build 5/9] COPIER gradle gradle
-#13 TERMINÉ 0,0s
-#14 [build 6/9] COPIER build.gradle .
-#14 TERMINÉ 0,0s
-#15 [build 7/9] COPIER settings.gradle .
-#15 TERMINÉ 0,1s
-#16 [build 8/9] COPIE src src
-#16 TERMINÉ 0,1s
-#17 [build 9/9] RUN chmod +x ./gradlew && ./gradlew clean build -x test
-#17 0.184 Téléchargement de https://services.gradle.org/distributions/gradle-8.5-bin.zip
-#17 0,855 ............10%.............20%............30%.............40%.............50%............60%.............70%.............80%............90%.............100%
-#17 3,644
-#17 3.644 Bienvenue dans Gradle 8.5 !
-#17 3,644
-#17 3.644 Voici les points saillants de cette version :
-#17 3.644 - Prise en charge de l'exécution sur Java 21
-#17 3.644 - Première utilisation plus rapide avec Kotlin DSL
-#17 3.644 - Amélioration des messages d'erreur et d'avertissement
-#17 3,644
-#17 3.645 Pour plus de détails, consultez https://docs.gradle.org/8.5/release-notes.html
-#17 3,645
-#17 3.843 Démarrage d'un démon Gradle (les compilations suivantes seront plus rapides)
-#17 33.94 > Tâche :cleanJpaModelgenSourcesDir
-#17 33.94 > Tâche : supprimer le métamodèle généré
-#17 33.94 > Tâche :nettoyer
-#17 34.04 > Tâche :initJpaModelgenSourcesDir
-#17 64.04 > Tâche :compileJpaModelgen
-#17 66.44 Remarque : Générateur de métamodèle statique Hibernate/JPA 6.4.4.Final
-#17 89.94 Remarque : Certains fichiers d'entrée utilisent ou remplacent une API obsolète.
-#17 89.94 Remarque : Recompilez avec -Xlint:deprecation pour plus de détails.
-#17 89,94
-#17 89.94 > Tâche : compilerJava
-#17 89.94 Remarque : Certains fichiers d'entrée utilisent des opérations non vérifiées ou non sécurisées.
-#17 89.94 Remarque : Recompilez avec -Xlint:unchecked pour plus de détails.
-#17 91,34
-#17 91.34 > Tâche :processResources
-#17 92.14 > Tâche : updateAppProperties
-#17 92.14 > Tâche :classes
-#17 92.24 > Tâche :resolveMainClassName
-#17 98.94 > Tâche :bootWar
-#17 107.7 > Tâche :guerre
-#17 107.7 > Tâche :assembler
-#17 107.7 > Tâche :vérifier
-#17 107.7 > Tâche :build
-#17 107.7
-#17 107.7 Des fonctionnalités Gradle obsolètes ont été utilisées dans cette version, la rendant incompatible avec Gradle 9.0.
-#17 107.7
-#17 107.7 Vous pouvez utiliser '--warning-mode all' pour afficher les avertissements de dépréciation individuels et déterminer s'ils proviennent de vos propres scripts ou plugins.
-#17 107.7
-#17 107.7 Pour plus d'informations à ce sujet, veuillez vous référer à https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings dans la documentation Gradle.
-#17 107.7
-#17 107.7 CONSTRUCTION RÉUSSIE en 1 min 47 s
-#17 107.7 11 tâches réalisables : 11 exécutées
-#17 TERMINÉ 108,3s
-#18 [étape 1 3/3] COPIER --from=build /app/build/libs/fieldtrack.jar* app.jar
-#18 TERMINÉ 7,7s
-#19 Exportation au format d'image Docker
-#19 Exportation des calques terminée (0,1 s)
-#19 Exportation du manifeste sha256:09b55bb2b2207469fb83c7576e35f886fb4e70a5381eba6244888b1ad587975f 0,0s terminé
-#19 Exportation de la configuration sha256:fee9729415aefe16cdb6ac913a5634552b559577cd1b70b12ae4cb846858bb55 0,0s terminé
-#19 TERMINÉ 0,6s
-#20 Exportation du cache vers le répertoire client
-#20 Préparation du cache de compilation pour l'exportation
-#20 Écriture du manifeste de l'image cache sha256:d910a4cc154132171728064eef3cd51fa9757fbdfcfca55ef4f69802946ee5a9 0,0s terminé
-#20 TERMINÉ 45,4s
+#17 60.11 Remarque : Générateur de métamodèle statique Hibernate/JPA 6.4.4.Final
+#17 81,51
+#17 81.51 > Tâche : compilerJava
+#17 81.51 Remarque : Certains fichiers d'entrée utilisent ou remplacent une API obsolète.
+#17 81.51 Remarque : Recompilez avec -Xlint:deprecation pour plus de détails.
+#17 81.51 Remarque : Certains fichiers d'entrée utilisent des opérations non vérifiées ou non sécurisées.
+#17 81.51 Remarque : Recompilez avec -Xlint:unchecked pour plus de détails.
+#17 82,81
+#17 82.81 > Tâche :processResources
+#17 83.71 > Tâche : updateAppProperties
+#17 83.71 > Tâche :classes
+#17 83.76 > Tâche :resolveMainClassName
+#17 90.16 > Tâche :bootWar
+#17 97.66 > Tâche :guerre
+#17 97.66 > Tâche :assembler
+#17 98.86 > Tâche :bootJar
+#17 98,86 > Tâche :vérifier
+#17 98.86 > Tâche :build
+#17 98,86
+#17 98.86 Des fonctionnalités Gradle obsolètes ont été utilisées dans cette version, la rendant incompatible avec Gradle 9.0.
+#17 98,86
+#17 98.86 Vous pouvez utiliser '--warning-mode all' pour afficher les avertissements de dépréciation individuels et déterminer s'ils proviennent de vos propres scripts ou plugins.
+#17 98,86
+#17 98.86 Pour plus d'informations à ce sujet, veuillez vous référer à https://docs.gradle.org/8.5/userguide/command_line_interface.html#sec:command_line_warnings dans la documentation Gradle.
+#17 98,86
+#17 98,86 CONSTRUCTION RÉUSSIE en 1 min 38 s
+#17 98,86 12 tâches réalisables : 12 exécutées
+#17 TERMINÉ 99,4s
+#18 [étape 1 2/3] RÉPERTOIRE DE TRAVAIL /app
+#18 sha256:712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391 16,29 Mo / 16,29 Mo 0,2 s
+#18 sha256:712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391 16,29 Mo / 16,29 Mo 0,6 s terminé
+#18 extraction de sha256 : 712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391
+#18 Extraction du sha256 : 712170bbbcf08e7e6d5fdc5e77492f5ee689ccc346dfd3323e70ed3cd4ce6391 (4,5 s) Terminé
+#18 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 36,70 Mo / 46,72 Mo 0,2 s
+#18 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 46,72 Mo / 46,72 Mo 0,3 s
+#18 sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 46,72 Mo / 46,72 Mo 0,3 s terminé
+#18 extraction de sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804
+#18 Extraction de sha256:1ec4236d96f40951be5c39840082eb0bf7c851bf489142edaf46c7902a13d804 (1,1 s) Terminé
+#18 sha256:a9247b2da494fffed9d04179a8f1dab65aa3413f202ac970e4af2c4429403c50 126B / 126B terminé
+#18 Extraction du sha256 : a9247b2da494fffed9d04179a8f1dab65aa3413f202ac970e4af2c4429403c50 (0,0 s) Terminé
+#18 sha256:6d8189bd200c048407210efb45fd23b31a6a50959b4337697e85a6200477c05b 2,28 ko / 2,28 ko terminé
+#18 Extraction du sha256 : 6d8189bd200c048407210efb45fd23b31a6a50959b4337697e85a6200477c05b (0,0 s) Terminé
+#18 sha256:79dd52338ba2fa595c001ee8954845ca393322c78c42d2863bc2ba3aa116318c 92B / 92B terminé
+#18 Extraction de sha256:79dd52338ba2fa595c001ee8954845ca393322c78c42d2863bc2ba3aa116318c (0,0 s) Terminé
+#18 EN CACHÉ
+#19 [étape 1 3/3] COPIE --from=build /app/build/libs/fieldtrack.war app.jar
+#19 TERMINÉ 2,1s
+#20 Exportation au format d'image Docker
+#20 exportation des calques
+#20 Exportation des calques terminée (6,9 s)
+#20 Exportation du manifeste sha256:2d7ed4835fecada672cca704b0389a3ca04e3d8f61bf870aa8b93e21253c6282 terminé
+#20 Exportation de la configuration sha256:274e5ee3f3c50ee83eb1409051b8f7f6f2bbafa408497bd2602488a339244c90 terminée
+#20 TERMINÉ 8,8s
+#21 Exportation du cache vers le répertoire client
+#21 Préparation du cache de compilation pour l'exportation
+#21 Écriture du manifeste de l'image cache sha256:1aeb8c10e71a87a8d403fab217887ecdf2d9482275ec056f7bcdfb3335925e98
+#21 Écriture du manifeste de l'image cache sha256:1aeb8c10e71a87a8d403fab217887ecdf2d9482275ec056f7bcdfb3335925e98 0,2s terminé
+#21 TERMINÉ 54,4s
 Envoi de l'image au registre...
 Téléchargement réussi
 ==> Déploiement...
 ==> Définition de WEB_CONCURRENCY=1 par défaut, en fonction du nombre de cœurs CPU disponibles dans l'instance
-Erreur : Impossible d’accéder au fichier jar app.jar
-Erreur : Impossible d’accéder au fichier jar app.jar
+Découverte de la journalisation Commons standard en action avec spring-jcl : veuillez supprimer commons-logging.jar du classpath afin d’éviter d’éventuels conflits.
+  . ____ _ __ _ _
+/\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+\\/ ___)| |_)| | | | | || (_| | ) ) ) )
+  ' |____| .__|_| |_|_| |_\__, | / / / /
+=========|_|==============|___/=/_/_/_/
+:: Spring Boot :: (v3.2.3)
+2026-02-02T14:54:19.276Z INFO 1 --- [ main] ceabproject.FieldTrackApplication : Démarrage de FieldTrackApplication v0.0.1-SNAPSHOT utilisant Java 17.0.17 avec PID 1 (/app/app.jar lancé par root dans /app)
+2026-02-02T14:54:19.279Z DEBUG 1 --- [ main] ceabproject.FieldTrackApplication : Exécution avec Spring Boot v3.2.3, Spring v6.1.4
+2026-02-02T14:54:19.372Z INFO 1 --- [ main] ceabproject.FieldTrackApplication : Le profil suivant est actif : « prod »
+2026-02-02T14:54:44.877Z INFO 1 --- [ main] .sdrcRepositoryConfigurationDelegate : Initialisation des dépôts Spring Data JPA en mode DEFAULT.
+2026-02-02T14:54:46.279Z INFO 1 --- [ main] .sdrcRepositoryConfigurationDelegate : Analyse du dépôt Spring Data terminée en 1297 ms. 6 interfaces de dépôt JPA trouvées.
+Aucun port ouvert détecté, poursuite de l'analyse...
+==> Documentation sur la spécification d'un port : https://render.com/docs/web-services#port-binding
+2026-02-02T14:55:04.578Z INFO 1 --- [ main] osbwembedded.tomcat.TomcatWebServer : Tomcat initialisé avec le port 10000 (http)
+2026-02-02T14:55:04.875Z INFO 1 --- [ main] o.apache.catalina.core.StandardService : Démarrage du service [Tomcat]
+2026-02-02T14:55:04.875Z INFO 1 --- [ main] o.apache.catalina.core.StandardEngine : Démarrage du moteur de servlets : [Apache Tomcat/10.1.19]
+2026-02-02T14:55:07.680Z INFO 1 --- [ main] oaccC[Tomcat].[localhost].[/] : Initialisation du contexte d'application Web Spring intégré
+2026-02-02T14:55:07.774Z INFO 1 --- [ main] wscServletWebServerApplicationContext : Root WebApplicationContext : initialisation terminée en 46904 ms
+Découverte de la journalisation Commons standard en action avec spring-jcl : veuillez supprimer commons-logging.jar du classpath afin d’éviter d’éventuels conflits.
+2026-02-02T14:55:13.873Z INFO 1 --- [ main] com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Démarrage...
+2026-02-02T14:55:19.077Z INFO 1 --- [ main] com.zaxxer.hikari.pool.HikariPool : HikariPool-1 - Connexion ajoutée : org.postgresql.jdbc.PgConnection@38e46765
+2026-02-02T14:55:19.079Z INFO 1 --- [ main] com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Démarrage terminé.
+2026-02-02T14:55:21.173Z INFO 1 --- [ main] ofcinternal.license.VersionPrinter : Flyway Community Edition 9.22.3 par Redgate
+2026-02-02T14:55:21.174Z INFO 1 --- [ main] ofcinternal.license.VersionPrinter : Voir les notes de version ici : https://rd.gt/416ObMi
+2026-02-02T14:55:21.174Z INFO 1 --- [ main] ofcinternal.license.VersionPrinter :
+2026-02-02T14:55:21.872Z INFO 1 --- [ main] org.flywaydb.core.FlywayExecutor : Base de données : jdbc:postgresql://ep-frosty-voice-ahhm5bdk-pooler.c-3.us-east-1.aws.neon.tech/fieldtrack-db (PostgreSQL 15.15)
+2026-02-02T14:55:23.266Z INFO 1 --- [ main] ofcisJdbcTableSchemaHistory : La table d'historique de schéma « public ».« flyway_schema_history » n'existe pas encore
+2026-02-02T14:55:23.373Z INFO 1 --- [ main] ofcore.internal.command.DbValidate : 10 migrations validées avec succès (temps d'exécution : 00:00.599s)
+2026-02-02T14:55:24.272Z INFO 1 --- [ main] ofcisJdbcTableSchemaHistory : Création de la table d'historique de schéma « public ».« flyway_schema_history » ...
+2026-02-02T14:55:26.167Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Version actuelle du schéma « public » : << Schéma vide >>
+2026-02-02T14:55:26.765Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.01 - create-utilisateur »
+2026-02-02T14:55:28.756Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.02 - create-role »
+2026-02-02T14:55:30.672Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.03 - create-statut »
+2026-02-02T14:55:32.631Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.04 - create-session-travail »
+2026-02-02T14:55:34.695Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.05 - create-position-gps »
+2026-02-02T14:55:36.835Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.06 - create-changement-statut »
+2026-02-02T14:55:38.984Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.07 - add-telephone-to-utilisateur »
+2026-02-02T14:55:40.560Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.08 - add-entreprise-to-utilisateur »
+2026-02-02T14:55:42.237Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma « public » vers la version « 0.0.0.09 - create-entreprise »
+2026-02-02T14:55:44.474Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : Migration du schéma "public" vers la version "0.0.1.01 - ajout utilisateur"
+2026-02-02T14:55:45.867Z INFO 1 --- [ main] ofcore.internal.command.DbMigrate : 10 migrations ont été appliquées avec succès au schéma « public », désormais en version v0.0.1.01 (temps d'exécution : 00:07.760s)
+2026-02-02T14:55:48.476Z INFO 1 --- [ main] o.hibernate.jpa.internal.util.LogHelper : HHH000204: Traitement de PersistenceUnitInfo [nom : default]
+2026-02-02T14:55:49.774Z INFO 1 --- [ main] org.hibernate.Version : HHH000412: Version du noyau Hibernate ORM 6.4.4.Final
+2026-02-02T14:55:50.473Z INFO 1 --- [ main] ohcinternal.RegionFactoryInitiator : HHH000026 : Cache de second niveau désactivé
+2026-02-02T14:55:55.773Z INFO 1 --- [ main] osojpSpringPersistenceUnitInfo : Aucune configuration LoadTimeWeaver : transformateur de classe JPA ignoré
+2026-02-02T14:55:57.075Z AVERTISSEMENT 1 --- [ main] org.hibernate.orm.deprecation : HHH90000025 : Il n’est pas nécessaire de spécifier explicitement PostgreSQLDialect à l’aide de « hibernate.dialect » (supprimez le paramètre de propriété et il sera sélectionné par défaut).
+Aucun port ouvert détecté, poursuite de l'analyse...
+==> Documentation sur la spécification d'un port : https://render.com/docs/web-services#port-binding
+2026-02-02T14:56:20.576Z INFO 1 --- [ main] ohetjpiJtaPlatformInitiator : HHH000489 : Aucune plateforme JTA disponible (définissez « hibernate.transaction.jta.platform » pour activer l’intégration de la plateforme JTA)
+2026-02-02T14:56:21.780Z ERREUR 1 --- [ main] j.LocalContainerEntityManagerFactoryBean : Échec de l'initialisation de l'EntityManagerFactory JPA : [PersistenceUnit : default] Impossible de créer la SessionFactory Hibernate ; exception imbriquée : org.hibernate.tool.schema.spi.SchemaManagementException : Validation du schéma : type de colonne incorrect rencontré dans la colonne [latitude] de la table [position_gps] ; type trouvé : [numeric (Types#NUMERIC)], type attendu : [float(53) (Types#FLOAT)]
+2026-02-02T14:56:21.783Z ERREUR 1 --- [ main] osbweb.embedded.tomcat.TomcatStarter : Erreur lors du démarrage du contexte Tomcat. Exception : org.springframework.beans.factory.UnsatisfiedDependencyException. Message : Erreur lors de la création du bean nommé « jwtRequestFilter » défini dans l’URL [jar:nested:/app/app.jar/!WEB-INF/classes/!/com/eburtis/abproject/security/JwtRequestFilter.class] : Dépendance non satisfaite exprimée par le paramètre 0 du constructeur : Erreur lors de la création du bean nommé « securityService » défini dans l’URL [jar:nested:/app/app.jar/!WEB-INF/classes/!/com/eburtis/abproject/service/SecurityService.class] : Dépendance non satisfaite exprimée par le paramètre 1 du constructeur : Erreur lors de la création du bean nommé « utilisateurRepository » défini dans com.eburtis.abproject.repository.UtilisateurRepository défini dans @EnableJpaRepositories déclaré sur JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration : Impossible de résoudre la référence au bean 'jpaSharedEM_entityManagerFactory' lors de la définition de la propriété 'entityManager' du bean
+2026-02-02T14:56:22.873Z INFO 1 --- [ main] o.apache.catalina.core.StandardService : Arrêt du service [Tomcat]
+2026-02-02T14:56:22.973Z AVERTISSEMENT 1 --- [ main] oacloader.WebappClassLoaderBase : L'application web [ROOT] semble avoir démarré un thread nommé [HikariPool-1 housekeeper] mais n'a pas réussi à l'arrêter. Ceci risque fortement de provoquer une fuite de mémoire. Trace de la pile du thread :
+java.base@17.0.17/jdk.internal.misc.Unsafe.park(Méthode native)
+java.base@17.0.17/java.util.concurrent.locks.LockSupport.parkNanos(Source inconnue)
+java.base@17.0.17/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(Source inconnue)
+java.base@17.0.17/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Source inconnue)
+java.base@17.0.17/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(Source inconnue)
+java.base@17.0.17/java.util.concurrent.ThreadPoolExecutor.getTask(Source inconnue)
+java.base@17.0.17/java.util.concurrent.ThreadPoolExecutor.runWorker(Source inconnue)
+java.base@17.0.17/java.util.concurrent.ThreadPoolExecutor$Worker.run(Source inconnue)
+java.base@17.0.17/java.lang.Thread.run(Source inconnue)
+2026-02-02T14:56:22.977Z AVERTISSEMENT 1 --- [ main] ConfigServletWebServerApplicationContext : Une exception s'est produite lors de l'initialisation du contexte - tentative d'actualisation annulée : org.springframework.context.ApplicationContextException : Impossible de démarrer le serveur web
+2026-02-02T14:56:22.978Z INFO 1 --- [ main] com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Arrêt en cours...
+2026-02-02T14:56:24.021Z INFO 1 --- [ main] com.zaxxer.hikari.HikariDataSource : HikariPool-1 - Arrêt terminé.
+2026-02-02T14:56:24.175Z INFO 1 --- [ main] .sbalConditionEvaluationReportLogger :
+Erreur lors du démarrage d'ApplicationContext. Pour afficher le rapport d'évaluation des conditions, relancez votre application en mode débogage.
+2026-02-02T14:56:24.478Z ERREUR 1 --- [ main] osboot.SpringApplication : Échec de l'exécution de l'application
+org.springframework.context.ApplicationContextException : Impossible de démarrer le serveur web
+	à org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:165) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618) ~[spring-context-6.1.4.jar!/:6.1.4]
+	à org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.SpringApplication.run(SpringApplication.java:334) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.SpringApplication.run(SpringApplication.java:1354) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.SpringApplication.run(SpringApplication.java:1343) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à com.eburtis.abproject.FieldTrackApplication.main(FieldTrackApplication.java:22) ~[!/:0.0.1-SNAPSHOT]
+	à java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	à java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Source inconnue) ~[na:na]
+	à java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Source inconnue) ~[na:na]
+	sur java.base/java.lang.reflect.Method.invoke (source inconnue) ~[na:na]
+	à org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91) ~[app.jar:0.0.1-SNAPSHOT]
+	à org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53) ~[app.jar:0.0.1-SNAPSHOT]
+	à org.springframework.boot.loader.launch.WarLauncher.main(WarLauncher.java:57) ~[app.jar:0.0.1-SNAPSHOT]
+Causé par : org.springframework.boot.web.server.WebServerException : Impossible de démarrer Tomcat intégré
+	à org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:145) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.embedded.tomcat.TomcatWebServer.<init>(TomcatWebServer.java:105) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getTomcatWebServer(TomcatServletWebServerFactory.java:499) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:218) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	... 15 cadres communs omis
+Causé par : org.springframework.beans.factory.UnsatisfiedDependencyException : Erreur lors de la création du bean nommé « jwtRequestFilter » défini dans l’URL [jar:nested:/app/app.jar/!WEB-INF/classes/!/com/eburtis/abproject/security/JwtRequestFilter.class] : Dépendance non satisfaite exprimée par le paramètre 0 du constructeur : Erreur lors de la création du bean nommé « securityService » défini dans l’URL [jar:nested:/app/app.jar/!WEB-INF/classes/!/com/eburtis/abproject/service/SecurityService.class] : Dépendance non satisfaite exprimée par le paramètre 1 du constructeur : Erreur lors de la création du bean nommé « utilisateurRepository » défini dans com.eburtis.abproject.repository.UtilisateurRepository défini dans @EnableJpaRepositories déclaré sur JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration : Impossible de résoudre la référence au bean « jpaSharedEM_entityManagerFactory » lors de la définition de la propriété « entityManager » du bean.
+	à org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:798) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1355) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1192) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:204) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.boot.web.servlet.ServletContextInitializerBeans.getOrderedBeansOfType(ServletContextInitializerBeans.java:210) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:173) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAsRegistrationBean(ServletContextInitializerBeans.java:168) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.ServletContextInitializerBeans.addAdaptableBeans(ServletContextInitializerBeans.java:153) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.ServletContextInitializerBeans.<init>(ServletContextInitializerBeans.java:86) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getServletContextInitializerBeans(ServletWebServerApplicationContext.java:266) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.selfInitialize(ServletWebServerApplicationContext.java:240) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.springframework.boot.web.embedded.tomcat.TomcatStarter.onStartup(TomcatStarter.java:52) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	à org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4866) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à java.base/java.util.concurrent.FutureTask.run(Source inconnue) ~[na:na]
+	à org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à java.base/java.util.concurrent.AbstractExecutorService.submit(Source inconnue) ~[na:na]
+	à org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:845) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1332) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1322) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à java.base/java.util.concurrent.FutureTask.run(Source inconnue) ~[na:na]
+	à org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à java.base/java.util.concurrent.AbstractExecutorService.submit(Source inconnue) ~[na:na]
+	à org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:866) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:240) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.StandardService.startInternal(StandardService.java:433) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:921) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:171) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.apache.catalina.startup.Tomcat.start(Tomcat.java:437) ~[tomcat-embed-core-10.1.19.jar!/:na]
+	à org.springframework.boot.web.embedded.tomcat.TomcatWebServer.initialize(TomcatWebServer.java:126) ~[spring-boot-3.2.3.jar!/:3.2.3]
+	... 20 cadres communs omis
+Causé par : org.springframework.beans.factory.UnsatisfiedDependencyException : Erreur lors de la création du bean nommé « securityService » défini dans l’URL [jar:nested:/app/app.jar/!WEB-INF/classes/!/com/eburtis/abproject/service/SecurityService.class] : Dépendance non satisfaite exprimée par le paramètre 1 du constructeur : Erreur lors de la création du bean nommé « utilisateurRepository » défini dans com.eburtis.abproject.repository.UtilisateurRepository défini dans @EnableJpaRepositories déclaré sur JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration : Impossible de résoudre la référence au bean « jpaSharedEM_entityManagerFactory » lors de la définition de la propriété « entityManager » du bean
+	à org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:798) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:237) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1355) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1192) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:907) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:785) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	... 61 cadres communs omis
+Causé par : org.springframework.beans.factory.BeanCreationException : Erreur lors de la création du bean nommé « utilisateurRepository » défini dans com.eburtis.abproject.repository.UtilisateurRepository défini dans @EnableJpaRepositories déclaré sur JpaRepositoriesRegistrar.EnableJpaRepositoriesConfiguration : Impossible de résoudre la référence au bean « jpaSharedEM_entityManagerFactory » lors de la définition de la propriété « entityManager » du bean.
+	à org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:135) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1685) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1434) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:599) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:907) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	à org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:785) ~[spring-beans-6.1.4.jar!/:6.1.4]
+	... 75 cadres communs omis
+Causé par : org.springframework.beans.factory.BeanCreationException : Erreur lors de la création du bean nommé « jpaSharedEM_entityManagerFactory » : Impossible de résoudre la référence au bean « entityManagerFactory » lors de la définition de l’argument du constructeur
+	à org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveReference(BeanDefinitionValueResolver.java:377) ~[spring-beans-6.1.4.jar!/:6.1.4]
 ==> Sortie avec le code d'erreur 1
 ==> Méthodes courantes de dépannage de votre déploiement : https://render.com/docs/troubleshooting-deploys
+Découverte de la journalisation Commons standard en action avec spring-jcl : veuillez supprimer commons-logging.jar du classpath afin d’éviter d’éventuels conflits.
