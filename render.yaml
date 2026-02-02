@@ -1,25 +1,18 @@
 services:
-  # Service Web (Backend Spring Boot)
   - type: web
     name: fieldtrack-backend
     region: frankfurt
     plan: free
-    buildCommand: chmod +x backend/render-build.sh && backend/render-build.sh
-    startCommand: chmod +x backend/render-start.sh && backend/render-start.sh
+    buildCommand: cd backend && chmod +x gradlew && ./gradlew clean build -x test
+    startCommand: cd backend && java -jar build/libs/fieldtrack.jar --server.port=$PORT
     envVars:
-      # Configuration de l'application
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      # JWT Secret (à changer en production)
       - key: JWT_SECRET_KEY
         generateValue: true
-      # URLs client (à adapter selon votre frontend déployé)
       - key: CLIENT_BASE_URL_ONLINE
         value: https://votre-frontend.vercel.app
       - key: CLIENT_BASE_URL_LOCAL
         value: http://localhost:4200
       - key: CLIENT_BASE_URL_FLUTTER
         value: http://localhost:4300
-      # Base de données PostgreSQL (sera configuré manuellement après création)
-      # Note: Créez d'abord la base de données PostgreSQL dans Render Dashboard
-      # puis liez-la au service web pour obtenir automatiquement DATABASE_URL
