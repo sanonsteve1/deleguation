@@ -209,3 +209,14 @@ sonar {
 bootWar {
 	archiveFileName = 'fieldtrack.war'
 }
+
+// Configuration pour générer aussi un JAR exécutable
+jar {
+	enabled = false
+	archiveClassifier = ''
+}
+
+bootJar {
+	archiveFileName = 'fieldtrack.jar'
+	enabled = true
+}
