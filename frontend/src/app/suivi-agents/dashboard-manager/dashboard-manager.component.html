@@ -1,0 +1,208 @@
+<div class="dashboard-manager-container">
+    <div class="mb-4">
+        <h1 class="text-3xl font-bold">Dashboard Manager - Suivi des Agents</h1>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="kpi-container mb-6">
+        <div class="kpi-row">
+            <p-card class="stat-card stat-card-green">
+                <div class="flex items-center gap-4">
+                    <div class="stat-icon">
+                        <i class="pi pi-users text-5xl text-white"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-white mb-1">AGENTS ACTIFS</span>
+                        <span class="text-4xl font-bold text-white">{{ nombreAgentsActifs }}</span>
+                    </div>
+                </div>
+            </p-card>
+
+            <p-card class="stat-card stat-card-blue">
+                <div class="flex items-center gap-4">
+                    <div class="stat-icon">
+                        <i class="pi pi-calendar text-5xl text-white"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-white mb-1">SESSIONS AUJOURD'HUI</span>
+                        <span class="text-4xl font-bold text-white">{{ nombreSessionsAujourdhui }}</span>
+                    </div>
+                </div>
+            </p-card>
+
+            <p-card class="stat-card stat-card-purple">
+                <div class="flex items-center gap-4">
+                    <div class="stat-icon">
+                        <i class="pi pi-clock text-5xl text-white"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-white mb-1">HEURES TRAVAILLÉES</span>
+                        <span class="text-4xl font-bold text-white">{{ formaterHeuresTravailees() }}</span>
+                    </div>
+                </div>
+            </p-card>
+
+            <p-card class="stat-card stat-card-orange">
+                <div class="flex items-center gap-4">
+                    <div class="stat-icon">
+                        <i class="pi pi-exclamation-triangle text-5xl text-white"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-white mb-1">NON SYNCHRONISÉES</span>
+                        <span class="text-4xl font-bold text-white">{{ sessionsNonSynchronisees }}</span>
+                    </div>
+                </div>
+            </p-card>
+        </div>
+    </div>
+
+    <!-- Filtres -->
+    <p-card class="mb-6">
+        <div class="flex flex-wrap items-end gap-4">
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-2">Agent</label>
+                <p-dropdown 
+                    [(ngModel)]="agentFiltre" 
+                    [options]="agents" 
+                    optionLabel="fullName"
+                    placeholder="Tous les agents"
+                    [showClear]="true"
+                    class="w-full">
+                </p-dropdown>
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-2">Date de début</label>
+                <p-calendar 
+                    [(ngModel)]="dateDebut" 
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [showTime]="false"
+                    placeholder="Sélectionner une date"
+                    class="w-full">
+                </p-calendar>
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-2">Date de fin</label>
+                <p-calendar 
+                    [(ngModel)]="dateFin" 
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [showTime]="false"
+                    placeholder="Sélectionner une date"
+                    class="w-full">
+                </p-calendar>
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-2">Statut</label>
+                <p-dropdown 
+                    [(ngModel)]="statutFiltre" 
+                    [options]="statuts" 
+                    optionLabel="libelle"
+                    placeholder="Tous les statuts"
+                    [showClear]="true"
+                    class="w-full">
+                </p-dropdown>
+            </div>
+            <div class="flex items-end gap-2">
+                <p-button 
+                    label="Filtrer" 
+                    icon="pi pi-filter"
+                    (onClick)="appliquerFiltres()"
+                    [loading]="loading">
+                </p-button>
+                <p-button 
+                    label="Réinitialiser" 
+                    icon="pi pi-times"
+                    severity="secondary"
+                    [outlined]="true"
+                    (onClick)="reinitialiserFiltres()">
+                </p-button>
+            </div>
+        </div>
+    </p-card>
+
+    <!-- Historique des sessions -->
+    <p-card>
+        <ng-template pTemplate="header">
+            <div class="flex justify-between items-center p-4">
+                <h2 class="text-xl font-semibold">Historique des Sessions</h2>
+            </div>
+        </ng-template>
+        <p-table 
+            [value]="sessionsFiltrees.length > 0 ? sessionsFiltrees : sessions" 
+            [paginator]="true" 
+            [rows]="5"
+            [loading]="loading"
+            [globalFilterFields]="['utilisateur.nom', 'utilisateur.prenoms']"
+            styleClass="p-datatable-striped">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Agent</th>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th>Durée</th>
+                    <th>Position Début</th>
+                    <th>Position Fin</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-session>
+                <tr>
+                    <td>{{ getNomUtilisateur(session) }}</td>
+                    <td>{{ formaterDate(session.heureDebut) }}</td>
+                    <td>{{ session.heureFin ? formaterDate(session.heureFin) : '-' }}</td>
+                    <td>{{ formaterDureeSession(session) }}</td>
+                    <td>
+                        <span class="text-sm" *ngIf="session.latitudeDebut != null && session.longitudeDebut != null">
+                            {{ session.latitudeDebut.toFixed(6) }}, {{ session.longitudeDebut.toFixed(6) }}
+                        </span>
+                        <span *ngIf="session.latitudeDebut == null || session.longitudeDebut == null">-</span>
+                    </td>
+                    <td>
+                        <span class="text-sm" *ngIf="session.latitudeFin != null && session.longitudeFin != null">
+                            {{ session.latitudeFin.toFixed(6) }}, {{ session.longitudeFin.toFixed(6) }}
+                        </span>
+                        <span *ngIf="session.latitudeFin == null || session.longitudeFin == null">-</span>
+                    </td>
+                    <td>
+                        <p-badge 
+                            [value]="getStatutBadgeLabel(session)" 
+                            [severity]="getStatutBadgeSeverity(session)">
+                        </p-badge>
+                    </td>
+                    <td>
+                        <p-button 
+                            icon="pi pi-eye" 
+                            [rounded]="true"
+                            [text]="true"
+                            severity="info"
+                            pTooltip="Voir les détails"
+                            [routerLink]="['/suivi-agents/session', session.id]">
+                        </p-button>
+                        <p-button 
+                            icon="pi pi-map" 
+                            [rounded]="true"
+                            [text]="true"
+                            severity="success"
+                            pTooltip="Voir sur la carte"
+                            [routerLink]="['/suivi-agents/carte', session.id]">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="8" class="text-center p-4">
+                        <p class="text-gray-500">Aucune session trouvée</p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+
+    <!-- Loading overlay -->
+    <div *ngIf="loading" class="loading-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

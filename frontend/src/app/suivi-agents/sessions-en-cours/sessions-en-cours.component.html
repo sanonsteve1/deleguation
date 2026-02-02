@@ -1,0 +1,80 @@
+<div class="sessions-en-cours-container">
+    <div class="mb-4">
+        <h1 class="text-3xl font-bold">Sessions en Cours</h1>
+    </div>
+
+    <!-- Tableau des sessions en cours -->
+    <p-card>
+        <ng-template pTemplate="header">
+            <div class="flex justify-between items-center p-4">
+                <h2 class="text-xl font-semibold">Sessions en Cours ({{ sessionsEnCours.length }})</h2>
+            </div>
+        </ng-template>
+        <p-table 
+            [value]="sessionsEnCours" 
+            [paginator]="true" 
+            [rows]="20"
+            [loading]="loading"
+            styleClass="p-datatable-striped">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Agent</th>
+                    <th>Début</th>
+                    <th>Durée</th>
+                    <th>Position Début</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-session>
+                <tr>
+                    <td>{{ getNomUtilisateur(session) }}</td>
+                    <td>{{ formaterDate(session.heureDebut) }}</td>
+                    <td>{{ formaterDureeSession(session) }}</td>
+                    <td>
+                        <span class="text-sm" *ngIf="session.latitudeDebut != null && session.longitudeDebut != null">
+                            {{ session.latitudeDebut.toFixed(6) }}, {{ session.longitudeDebut.toFixed(6) }}
+                        </span>
+                        <span *ngIf="session.latitudeDebut == null || session.longitudeDebut == null">-</span>
+                    </td>
+                    <td>
+                        <p-badge 
+                            [value]="getStatutBadgeLabel(session)" 
+                            [severity]="getStatutBadgeSeverity(session)">
+                        </p-badge>
+                    </td>
+                    <td>
+                        <p-button 
+                            icon="pi pi-eye" 
+                            [rounded]="true"
+                            [text]="true"
+                            severity="info"
+                            pTooltip="Voir les détails"
+                            [routerLink]="['/suivi-agents/session', session.id]">
+                        </p-button>
+                        <p-button 
+                            icon="pi pi-map" 
+                            [rounded]="true"
+                            [text]="true"
+                            severity="success"
+                            pTooltip="Voir sur la carte"
+                            [routerLink]="['/suivi-agents/carte', session.id]">
+                        </p-button>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center p-4">
+                        <p class="text-gray-500">Aucune session en cours</p>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+
+    <!-- Loading overlay -->
+    <div *ngIf="loading" class="loading-overlay">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</div>

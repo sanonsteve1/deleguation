@@ -1,0 +1,260 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="gestion-agents-container">
+    <p-card>
+        <ng-template pTemplate="header">
+            <div class="card-header">
+                <h2>Gestion des Agents</h2>
+            </div>
+        </ng-template>
+
+        <div class="toolbar">
+            <p-iconfield class="search-field">
+                <p-inputicon class="pi pi-search" />
+                <input 
+                    pInputText 
+                    type="text" 
+                    placeholder="Rechercher un agent..." 
+                    (input)="chargerUtilisateurs()"
+                    class="w-full" />
+            </p-iconfield>
+            <p-button 
+                label="Nouvel Agent" 
+                icon="pi pi-user-plus"
+                (onClick)="ouvrirNouveau()"
+                severity="success">
+            </p-button>
+        </div>
+
+        <p-table 
+            [value]="utilisateurs" 
+            [loading]="loading"
+            [paginator]="true"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} agents"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            responsiveLayout="scroll"
+            styleClass="p-datatable-striped">
+            
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="prenoms">Nom Complet <p-sortIcon field="prenoms"></p-sortIcon></th>
+                    <th pSortableColumn="username">Nom d'utilisateur <p-sortIcon field="username"></p-sortIcon></th>
+                    <th>Téléphone</th>
+                    <th pSortableColumn="entreprise">Entreprise <p-sortIcon field="entreprise"></p-sortIcon></th>
+                    <th pSortableColumn="role">Rôle <p-sortIcon field="role"></p-sortIcon></th>
+                    <th pSortableColumn="statut">Statut <p-sortIcon field="statut"></p-sortIcon></th>
+                    <th style="width: 150px">Actions</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-utilisateur>
+                <tr>
+                    <td>
+                        <strong>{{ getNomComplet(utilisateur) }}</strong>
+                    </td>
+                    <td>{{ utilisateur.username }}</td>
+                    <td>{{ utilisateur.telephone || '-' }}</td>
+                    <td>{{ getEntrepriseNom(utilisateur) }}</td>
+                    <td>
+                        <span class="role-badge">{{ getRoleLabel(utilisateur.role) }}</span>
+                    </td>
+                    <td>
+                        <p-tag 
+                            [value]="getStatutLabel(utilisateur.statut)" 
+                            [severity]="getStatutSeverity(utilisateur.statut)">
+                        </p-tag>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <p-button 
+                                icon="pi pi-pencil" 
+                                [rounded]="true"
+                                [text]="true"
+                                severity="info"
+                                pTooltip="Modifier"
+                                (onClick)="modifierUtilisateur(utilisateur)">
+                            </p-button>
+                            <p-button 
+                                icon="pi pi-trash" 
+                                [rounded]="true"
+                                [text]="true"
+                                severity="danger"
+                                pTooltip="Supprimer"
+                                (onClick)="supprimerUtilisateur(utilisateur)">
+                            </p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <div class="empty-state">
+                            <i class="pi pi-users text-6xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600">Aucun agent trouvé</p>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+</div>
+
+<!-- Dialog pour créer/modifier un utilisateur -->
+<p-dialog 
+    [(visible)]="utilisateurDialog" 
+    [header]="isEditMode ? 'Modifier l\'agent' : 'Nouvel agent'"
+    [modal]="true"
+    [style]="{ width: '600px' }"
+    [closable]="true">
+    
+    <form (ngSubmit)="sauvegarder()">
+        <div class="form-grid">
+            <div class="form-group col-span-2">
+                <label for="username" class="required">Nom d'utilisateur</label>
+                <input 
+                    id="username"
+                    type="text" 
+                    pInputText 
+                    [(ngModel)]="formData.username"
+                    name="username"
+                    [disabled]="isEditMode"
+                    [class.ng-invalid]="submitted && !formData.username && !isEditMode"
+                    class="w-full" />
+                <small class="p-error" *ngIf="submitted && !formData.username && !isEditMode">
+                    Le nom d'utilisateur est requis
+                </small>
+            </div>
+
+            <div class="form-group col-span-2" *ngIf="!isEditMode">
+                <label for="password" class="required">Mot de passe</label>
+                <input 
+                    id="password"
+                    type="password" 
+                    pInputText 
+                    [(ngModel)]="formData.password"
+                    name="password"
+                    [class.ng-invalid]="submitted && !formData.password"
+                    class="w-full" />
+                <small class="p-error" *ngIf="submitted && !formData.password">
+                    Le mot de passe est requis
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="prenoms" class="required">Prénoms</label>
+                <input 
+                    id="prenoms"
+                    type="text" 
+                    pInputText 
+                    [(ngModel)]="formData.prenoms"
+                    name="prenoms"
+                    [class.ng-invalid]="submitted && !formData.prenoms"
+                    class="w-full" />
+                <small class="p-error" *ngIf="submitted && !formData.prenoms">
+                    Les prénoms sont requis
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="nom" class="required">Nom</label>
+                <input 
+                    id="nom"
+                    type="text" 
+                    pInputText 
+                    [(ngModel)]="formData.nom"
+                    name="nom"
+                    [class.ng-invalid]="submitted && !formData.nom"
+                    class="w-full" />
+                <small class="p-error" *ngIf="submitted && !formData.nom">
+                    Le nom est requis
+                </small>
+            </div>
+
+            <div class="form-group col-span-2">
+                <label for="telephone">Téléphone</label>
+                <input 
+                    id="telephone"
+                    type="text" 
+                    pInputText 
+                    [(ngModel)]="formData.telephone"
+                    name="telephone"
+                    class="w-full" />
+            </div>
+
+            <div class="form-group col-span-2">
+                <label for="entreprise" class="required">Entreprise</label>
+                <p-dropdown 
+                    id="entreprise"
+                    [options]="entreprises" 
+                    [(ngModel)]="formData.entrepriseId"
+                    name="entreprise"
+                    optionLabel="nom" 
+                    optionValue="id"
+                    placeholder="Sélectionner une entreprise"
+                    [class.ng-invalid]="submitted && !formData.entrepriseId"
+                    class="w-full">
+                </p-dropdown>
+                <small class="p-error" *ngIf="submitted && !formData.entrepriseId">
+                    L'entreprise est requise
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="role" class="required">Rôle</label>
+                <p-dropdown 
+                    id="role"
+                    [options]="roles" 
+                    [(ngModel)]="formData.role"
+                    name="role"
+                    optionLabel="label" 
+                    optionValue="value"
+                    placeholder="Sélectionner un rôle"
+                    [class.ng-invalid]="submitted && !formData.role"
+                    class="w-full">
+                </p-dropdown>
+                <small class="p-error" *ngIf="submitted && !formData.role">
+                    Le rôle est requis
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="statut" class="required">Statut</label>
+                <p-dropdown 
+                    id="statut"
+                    [options]="statuts" 
+                    [(ngModel)]="formData.statut"
+                    name="statut"
+                    optionLabel="label" 
+                    optionValue="value"
+                    placeholder="Sélectionner un statut"
+                    [class.ng-invalid]="submitted && !formData.statut"
+                    class="w-full">
+                </p-dropdown>
+                <small class="p-error" *ngIf="submitted && !formData.statut">
+                    Le statut est requis
+                </small>
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <p-button 
+            label="Annuler" 
+            icon="pi pi-times" 
+            [text]="true"
+            (onClick)="annuler()"
+            [disabled]="loading">
+        </p-button>
+        <p-button 
+            [label]="isEditMode ? 'Modifier' : 'Créer'" 
+            icon="pi pi-check" 
+            (onClick)="sauvegarder()"
+            [loading]="loading">
+        </p-button>
+    </ng-template>
+</p-dialog>

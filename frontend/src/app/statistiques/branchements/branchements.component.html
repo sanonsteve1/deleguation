@@ -1,0 +1,246 @@
+<div class="dashboard-container">
+    <!-- Filtres responsives -->
+    <div class="filters-responsive">
+        <!-- Filtre Date -->
+        <div class="filter-item">
+            <label for="date" class="font-medium text-sm block mb-2 text-gray-700">Période</label>
+            <p-calendar 
+                id="date" 
+                [(ngModel)]="dateSelectionnee" 
+                placeholder="Sélectionner une date" 
+                (onSelect)="filtrerParDate()" 
+                (onClear)="filtrerParDate()"
+                (onYearChange)="onYearChange($event)"
+                styleClass="w-full" 
+                [showClear]="true"
+                [showIcon]="true"
+                dateFormat="mm/yy"
+                [view]="'month'"
+                [yearRange]="yearRange"
+                [monthNavigator]="true"
+                [yearNavigator]="true"
+                [defaultDate]="defaultDate"
+                appendTo="body"
+                [baseZIndex]="9999">
+            </p-calendar>
+        </div>
+
+        <!-- Filtre Région -->
+        <div class="filter-item">
+            <label for="region" class="font-medium text-sm block mb-2 text-gray-700">Région</label>
+            <p-multiselect 
+                id="region" 
+                [options]="regions" 
+                [(ngModel)]="regionsSelectionnees" 
+                optionLabel="label" 
+                optionValue="value" 
+                placeholder="Toutes les régions" 
+                (onChange)="filtrerParRegion()" 
+                styleClass="w-full" 
+                [showClear]="true"
+                [filter]="true" 
+                filterPlaceholder="Rechercher..."
+                [showToggleAll]="true"
+                display="chip"
+                appendTo="body"
+                [baseZIndex]="9999">
+            </p-multiselect>
+        </div>
+
+        <!-- Filtre Agence -->
+        <div class="filter-item">
+            <label for="agence" class="font-medium text-sm block mb-2 text-gray-700">Agence</label>
+            <p-multiselect 
+                id="agence" 
+                [options]="agences" 
+                [(ngModel)]="agencesSelectionnees" 
+                optionLabel="label" 
+                optionValue="value" 
+                placeholder="Toutes les agences" 
+                (onChange)="filtrerParAgence()" 
+                styleClass="w-full" 
+                [showClear]="true" 
+                [filter]="true" 
+                filterPlaceholder="Rechercher..."
+                [showToggleAll]="true"
+                display="chip"
+                appendTo="body"
+                [baseZIndex]="9999">
+            </p-multiselect>
+        </div>
+
+        <!-- Filtre Ampérage -->
+        <div class="filter-item">
+            <label for="amperage" class="font-medium text-sm block mb-2 text-gray-700">Ampérage</label>
+            <p-multiselect 
+                id="amperage" 
+                [options]="amperages" 
+                [(ngModel)]="amperagesSelectionnes" 
+                optionLabel="label" 
+                optionValue="value" 
+                placeholder="Tous les ampérages" 
+                (onChange)="filtrerParAmperage()" 
+                styleClass="w-full" 
+                [showClear]="true"
+                [showToggleAll]="true"
+                display="chip"
+                appendTo="body"
+                [baseZIndex]="9999">
+            </p-multiselect>
+        </div>
+
+        <!-- Filtre Phase -->
+        <div class="filter-item">
+            <label for="phase" class="font-medium text-sm block mb-2 text-gray-700">Type de branchement</label>
+            <p-multiselect 
+                id="phase" 
+                [options]="phases" 
+                [(ngModel)]="phasesSelectionnees" 
+                optionLabel="label" 
+                optionValue="value" 
+                placeholder="Tous les types" 
+                (onChange)="filtrerParPhase()" 
+                styleClass="w-full" 
+                [showClear]="true"
+                [showToggleAll]="true"
+                display="chip"
+                appendTo="body"
+                [baseZIndex]="9999">
+            </p-multiselect>
+        </div>
+
+        <!-- Filtre Type -->
+        <div class="filter-item">
+            <label for="typeBranchement" class="font-medium text-sm block mb-2 text-gray-700">Type de compteur</label>
+            <p-multiselect 
+                id="typeBranchement" 
+                [options]="typesBranchement" 
+                [(ngModel)]="typesBranchementSelectionnes" 
+                optionLabel="label" 
+                optionValue="value" 
+                placeholder="Tous les types" 
+                (onChange)="filtrerParTypeBranchement()" 
+                styleClass="w-full" 
+                [showClear]="true"
+                [showToggleAll]="true"
+                display="chip"
+                appendTo="body"
+                [baseZIndex]="9999">
+            </p-multiselect>
+        </div>
+
+        <!-- Filtre Source -->
+        <div class="filter-item">
+            <label for="source" class="font-medium text-sm block mb-2 text-gray-700">Source des données</label>
+            <p-multiselect 
+                id="source" 
+                [options]="sourcesDonnees" 
+                [(ngModel)]="sourcesSelectionnees" 
+                optionLabel="label" 
+                optionValue="value" 
+                placeholder="Toutes les sources" 
+                (onChange)="filtrerParSource()" 
+                styleClass="w-full" 
+                [showClear]="true"
+                [showToggleAll]="true"
+                display="chip"
+                appendTo="body"
+                [baseZIndex]="9999">
+            </p-multiselect>
+        </div>
+
+        <!-- Bouton Reset -->
+        <div class="filter-item filter-reset">
+            <label class="font-medium text-sm block mb-2 text-gray-700">&nbsp;</label>
+            <button 
+                type="button" 
+                class="inline-flex items-center justify-center w-full h-10 rounded-lg border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-800 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
+                (click)="reinitialiserFiltres()"
+                [disabled]="loading"
+                pTooltip="Réinitialiser les filtres"
+                tooltipPosition="top">
+                <i class="pi pi-refresh text-sm" [class.pi-spin]="loading"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sections principales en 3 colonnes -->
+    <div class="grid grid-cols-12 gap-3">
+        <!-- Section 1: Distribution par Ampérage -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="card" style="min-height: 500px">
+                <h6 class="mb-3 font-semibold">⚡ Distribution par Ampérage</h6>
+                <app-amperage-widget [statistiques]="statistiquesAmperage"></app-amperage-widget>
+            </div>
+        </div>
+
+        <!-- Section 2: Répartition par Région -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="card" style="min-height: 500px">
+                <h6 class="mb-3 font-semibold">🗺️ Répartition par Région</h6>
+                <app-region-widget [statistiques]="statistiquesRegions" (detailClick)="voirDetailRegion($event)"></app-region-widget>
+            </div>
+        </div>
+
+        <!-- Section 3: Top 10 Agences -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="card" style="min-height: 500px">
+                <h6 class="mb-3 font-semibold">🏢 Répartition par Agence</h6>
+                <app-agence-widget [statistiques]="statistiquesAgences"></app-agence-widget>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog Détail Région -->
+    <p-dialog [(visible)]="afficherDetailRegion" [modal]="true" [style]="{ width: '25vw' }" [dismissableMask]="true" [draggable]="false" [resizable]="false" [closable]="true">
+        <ng-template pTemplate="header">
+            <div>
+                <div class="font-semibold text-lg mb-1">Statistiques - {{ regionDetail?.nomDepartement }}</div>
+                <!---
+                <div class="text-base mb-1">{{ regionDetail?.nomDepartement }}</div>
+            -->
+                <div class="font-semibold text-lg mb-1">
+                    Total branchement : <span class="font-bold text-blue-600">{{ regionDetail?.nombreBranchements | number: '1.0-0' : 'fr-FR' }}</span>
+                </div>
+                <!---
+                <div class="font-bold text-blue-600">{{ regionDetail?.nombreBranchements | number:'1.0-0':'fr-FR' }}</div>
+            --></div>
+        </ng-template>
+
+        <div *ngIf="regionDetail">
+            <!-- Tableau de répartition -->
+            <div class="mb-3">
+                <h6 class="font-semibold mb-2">Répartition par Ampérage</h6>
+                <p-table [value]="regionDetail.repartitionAmperages" styleClass="p-datatable-gridlines" [scrollable]="true" scrollHeight="300px">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Ampérage</th>
+                            <th class="text-right">Nombre de branchements</th>
+                            <th class="text-right">Pourcentage</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-repartition>
+                        <tr>
+                            <td>
+                                <p-tag [value]="repartition.libelleAmperage" severity="info" [rounded]="true"></p-tag>
+                            </td>
+                            <td class="text-right font-bold">
+                                {{ repartition.nombreBranchements | number: '1.0-0' : 'fr-FR' }}
+                            </td>
+                            <td class="text-right font-semibold">{{ repartition.pourcentage | number: '1.2-2' : 'fr-FR' }}%</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+
+            <!-- Bouton Retour 
+            <div class="flex justify-content-end mt-3">
+                <button pButton 
+                        label="Retour" 
+                        class="p-button-outlined" 
+                        (click)="fermerDetail()"></button>
+            </div>
+            -->
+        </div>
+    </p-dialog>
+</div>

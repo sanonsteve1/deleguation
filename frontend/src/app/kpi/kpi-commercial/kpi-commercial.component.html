@@ -1,0 +1,435 @@
+<div class="kpi-commercial-container">
+
+	<!-- Section des filtres KPI Commercial -->
+	<div class="filters-row">
+
+		<!-- Filtre Année -->
+		<div class="filter-item">
+			<label for="annee" class="filter-label">Année</label>
+			<p-dropdown
+				id="annee"
+				[options]="annees"
+				[(ngModel)]="anneeSelectionnee"
+				placeholder="Année"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Mois -->
+		<div class="filter-item">
+			<label for="mois" class="filter-label">Mois</label>
+			<p-dropdown
+				id="mois"
+				[options]="mois"
+				[(ngModel)]="moisSelectionne"
+				optionLabel="label"
+				optionValue="value"
+				placeholder="Toute l'année"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Niveau de Tension -->
+		<div class="filter-item">
+			<label for="niveauTension" class="filter-label">Tension</label>
+			<p-dropdown
+				id="niveauTension"
+				[options]="niveauxTension"
+				[(ngModel)]="niveauTensionSelectionne"
+				optionLabel="code"
+				optionValue="id"
+				placeholder="Tous"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Mode de Facturation -->
+		<div class="filter-item">
+			<label for="modeFacturation" class="filter-label">Mode facturation</label>
+			<p-dropdown
+				id="modeFacturation"
+				[options]="modesFacturation"
+				[(ngModel)]="modeFacturationSelectionne"
+				optionLabel="designation"
+				optionValue="id"
+				placeholder="Tous"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Bouton Réinitialiser -->
+		<div class="filter-item filter-action">
+			<label class="filter-label opacity-0">Actions</label>
+			<p-button
+				label="Réinitialiser"
+				icon="pi pi-refresh"
+				(onClick)="reinitialiserFiltres()"
+				styleClass="p-button-outlined w-full"
+			></p-button>
+		</div>
+
+	</div>
+
+	<!-- Spinner de chargement -->
+	<div *ngIf="loading" class="loading-overlay">
+		<div class="loading-content">
+			<p-progressSpinner
+				styleClass="custom-spinner"
+				strokeWidth="4"
+				animationDuration="1s">
+			</p-progressSpinner>
+			<div class="loading-text">{{ loadingMessage }}</div>
+		</div>
+	</div>
+
+	<!-- Conteneur des données avec opacité pendant le chargement -->
+	<div class="data-container" [class.loading-blur]="loading">
+
+	<!-- Section des KPIs principaux -->
+	<div class="kpi-main-section">
+
+		<!-- Ligne des KPI cumulés
+		<div class="kpi-row-label">KPI Cumulés</div>
+		-->
+		<div class="kpi-cumulative-row">
+			<!-- Consommation KWh du cumulé -->
+			<div class="kpi-main-card kwh-cumulative">
+				<div class="kpi-main-icon">
+					<i class="pi pi-bolt"></i>
+				</div>
+				<div class="kpi-main-content">
+					<div class="kpi-main-label">Cumul des ventes</div>
+					<div class="kpi-main-value">{{formatKWhToGWh(donneesMensuelleAnneeCourante?.cumulConsommationKwh)}}</div>
+                </div>
+            </div>
+
+			<!-- Consommation FCFA du cumulé -->
+			<div class="kpi-main-card fcfa-cumulative">
+				<div class="kpi-main-icon">
+					<i class="pi pi-money-bill"></i>
+				</div>
+				<div class="kpi-main-content">
+					<div class="kpi-main-label">Cumul des ventes</div>
+					<div class="kpi-main-value">{{formatFcfaAuto(donneesMensuelleAnneeCourante?.cumulConsommationFcfa)}}</div>
+				</div>
+			</div>
+
+			<!-- Nombre d'abonnés cumulé -->
+			<div class="kpi-main-card subscribers-cumul">
+                <div class="kpi-main-icon">
+					<i class="pi pi-users"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-main-label">Abonnés</div>
+                    <div class="kpi-main-value">{{formatKPIValue(donneesMensuelleAnneeCourante?.cumulAbonnes)}}</div>
+                </div>
+            </div>
+
+			<!-- Nombre de branchements cumulé -->
+			<div class="kpi-main-card connections-cumul">
+				<div class="kpi-main-icon">
+					<i class="pi pi-link"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-main-label">Branchements réalisés</div>
+                    <div class="kpi-main-value">{{formatKPIValue(donneesMensuelleAnneeCourante?.cumulBranchement)}}</div>
+                </div>
+            </div>
+
+            <!-- Taux de recouvrement cumulé -->
+            <div class="kpi-main-card recovery-rate-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-percentage"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-main-label">Taux de recouvrement</div>
+                    <div class="kpi-main-value">{{formatTauxRecouvrement(tauxRecouvrementCumule)}}</div>
+                </div>
+            </div>
+		</div>
+
+		<!-- Ligne des KPI mensuels
+		<div *ngIf="moisSelectionne" class="kpi-row-label">KPI du Mois</div>
+		-->
+		<div *ngIf="moisSelectionne" class="kpi-monthly-row">
+			<!-- Consommation KWh du mois -->
+			<div class="kpi-main-card kwh-month">
+				<div class="kpi-main-icon">
+					<i class="pi pi-bolt"></i>
+				</div>
+				<div class="kpi-main-content">
+					<div class="kpi-main-label">Vente au mois</div>
+					<div class="kpi-main-value">{{formatKWhToGWh(donneesMensuelleAnneeCourante?.consommationKwhMois)}}</div>
+				</div>
+			</div>
+
+			<!-- Consommation FCFA du mois -->
+			<div class="kpi-main-card fcfa-month">
+				<div class="kpi-main-icon">
+					<i class="pi pi-money-bill"></i>
+				</div>
+				<div class="kpi-main-content">
+					<div class="kpi-main-label">Ventes au mois</div>
+					<div class="kpi-main-value">{{formatFcfaAuto(donneesMensuelleAnneeCourante?.consommationFcfaMois)}}</div>
+				</div>
+			</div>
+
+			<!-- Nombre d'abonnés du mois -->
+			<div class="kpi-main-card subscribers-month">
+				<div class="kpi-main-icon">
+					<i class="pi pi-users"></i>
+				</div>
+				<div class="kpi-content">
+					<div class="kpi-main-label">Abonnés au mois</div>
+					<div class="kpi-main-value">{{formatKPIValue(nombreAbonnesMois)}}</div>
+				</div>
+			</div>
+
+			<!-- Nombre de branchements du mois -->
+			<div class="kpi-main-card connections-month">
+				<div class="kpi-main-icon">
+					<i class="pi pi-link"></i>
+				</div>
+                <div class="kpi-content">
+					<div class="kpi-main-label">Branchements réalisés au mois</div>
+                    <div class="kpi-main-value">{{formatKPIValue(nombreBranchementsMois)}}</div>
+                </div>
+			</div>
+
+			<!-- Taux de recouvrement du mois -->
+			<div class="kpi-main-card recovery-rate-month">
+				<div class="kpi-main-icon">
+					<i class="pi pi-percentage"></i>
+				</div>
+                <div class="kpi-content">
+					<div class="kpi-main-label">Taux de recouvrement au mois</div>
+                    <div class="kpi-main-value">{{formatTauxRecouvrement(tauxRecouvrementMois)}}</div>
+                </div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Cartes KPI (affichées si un mois est sélectionné) -->
+	<div *ngIf="moisSelectionne && !loading" class="grid grid-cols-12 gap-2 mb-2">
+
+	</div>
+
+	<!-- Graphiques principaux -->
+	<div class="grid grid-cols-12 gap-2 charts-section">
+
+		<!-- Graphique 1 : Évolution Consommation MT/BT groupé -->
+		<div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+			<div class="chart-card">
+				<div class="chart-header">
+					<h4 class="chart-title">
+						{{headerMensuellesMTBTConsommation}}
+					</h4>
+					<div class="chart-toggle">
+						<span class="toggle-label">GWh</span>
+						<p-toggleswitch
+							[(ngModel)]="afficherMontant"
+							(onChange)="updataChartRepartitionConsommationBTEtMTGroupe()"
+						></p-toggleswitch>
+						<span class="toggle-label">FCFA</span>
+					</div>
+				</div>
+				<div class="chart-subtitle">{{ anneeSelectionnee }} vs {{ anneeSelectionnee - 1 }}</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container">
+					<div *ngIf="aucuneDonneeDisponible; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="line"
+							[data]="chartDonneesMensuellesMTBTConsommation"
+							[options]="chartOptionsDonneesMensuellesMTBTConsommation"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+		<!-- Graphique 2 : Répartition MT vs BT -->
+		<div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+			<div class="chart-card">
+				<div class="chart-header">
+					<h4 class="chart-title">{{headerRepartitionMTBT}}</h4>
+					<div class="chart-toggle">
+						<span class="toggle-label">GWh</span>
+						<p-toggleswitch
+							[(ngModel)]="afficherMontantRepartitionMensuellesMTBTConsommation"
+							(onChange)="updataChartRepartitionConsommationBTEtMT()"
+						></p-toggleswitch>
+						<span class="toggle-label">FCFA</span>
+					</div>
+				</div>
+				<div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container">
+					<div *ngIf="aucuneDonneeDisponibleMTBTConsommation; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="bar"
+							[data]="chartRepartitionMensuellesMTBTConsommation"
+							[options]="chartOptionsRepartitionMensuellesMTBTConsommation"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+		<!-- Graphique 3 : Évolution des abonnés -->
+		<div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+			<div class="chart-card">
+				<div class="chart-header">
+					<h4 class="chart-title">{{headerEvolutionAbonne}}</h4>
+				</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container">
+					<div *ngIf="aucuneDonneeDisponibleEvolutionAbonnes; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="line"
+							[data]="chartEvolutionAbonnes"
+							[options]="chartOptionsEvolutionAbonne"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Graphiques secondaires : Branchements + Camemberts -->
+	<div class="grid grid-cols-12 gap-2 charts-section-secondary">
+
+		<!-- Graphique 4 : Branchements sur l'année -->
+		<div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+			<div class="chart-card-small">
+				<div class="chart-header">
+					<h4 class="chart-title">{{headerBranchements}} {{anneeSelectionnee}}</h4>
+				</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container-small">
+					<div *ngIf="aucuneDonneeBranchementsDisponible; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="line"
+							[data]="chartBranchements"
+							[options]="chartOptionsBranchements"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+		<!-- Graphique 5 : Répartition abonnés BT/MT -->
+		<div *ngIf="false" class="col-span-6 lg:col-span-4">
+			<div class="chart-card-small">
+				<div class="chart-header">
+					<h4 class="chart-title">{{headerRepartitionAbonneMTBT}}</h4>
+				</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container-small">
+					<div *ngIf="aucuneDonneeAbonnesDisponible; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="doughnut"
+							[data]="chartRepartitionAbonnes"
+							[options]="chartOptionsRepartitionAbonnes"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+		<!-- Graphique 6 : Répartition abonnés Postpayé/Prépayé -->
+		<!-- Masquer ce graphique quand tension = MT OU mode de facturation spécifique sélectionné -->
+		<div *ngIf="!shouldHidePostpayePrepayeChart()" class="col-span-6 lg:col-span-4">
+			<div class="chart-card-small">
+				<div class="chart-header">
+					<h4 class="chart-title">{{headerRepartitionAbonnePostpayePrepaye}}</h4>
+				</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container-small">
+					<div *ngIf="aucuneDonneeAbonnesPostpayeEtPrepayeDisponible; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="doughnut"
+							[data]="chartRepartitionAbonnesPostpayeEtPrepaye"
+							[options]="chartOptionsRepartitionAbonnesPostpayeEtPrepaye"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Graphique 7 : Répartition des taxes (si mois sélectionné) -->
+	<div *ngIf="false" class="grid grid-cols-12 gap-2 charts-section-secondary">
+		<div class="col-span-12">
+			<div class="chart-card-small">
+				<div class="chart-header">
+					<h4 class="chart-title">{{headerRepartitionTaxes}}</h4>
+				</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container-small">
+					<div *ngIf="aucuneDonneeTaxesDisponible; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="doughnut"
+							[data]="chartRepartitionTaxes"
+							[options]="chartOptionsRepartitionTaxes"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	</div> <!-- Fin du conteneur data-container -->
+
+	<!-- Template de chargement -->
+	<ng-template #loadingTemplate>
+		<div class="loading-container">
+			<i class="pi pi-spin pi-spinner"></i>
+			<p>{{ loadingMessage }}</p>
+			<div class="progress-bar-container" *ngIf="loadingProgress > 0">
+				<div class="progress-bar">
+					<div class="progress-fill" [style.width.%]="loadingProgress"></div>
+				</div>
+				<span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+			</div>
+		</div>
+	</ng-template>
+
+</div>

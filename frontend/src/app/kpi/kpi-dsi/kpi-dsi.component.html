@@ -1,0 +1,99 @@
+<div class="container p-4">
+
+
+    <!-- Spinner de chargement -->
+    <div *ngIf="loading" class="loading-overlay">
+        <div class="loading-content">
+            <p-progressSpinner
+                styleClass="custom-spinner"
+                strokeWidth="4"
+                animationDuration="1s">
+            </p-progressSpinner>
+            <div class="loading-text">{{ loadingMessage }}</div>
+        </div>
+    </div>
+    <div class="filters flex gap-3 mb-4">
+        <p-dropdown
+            [options]="annees"
+            [(ngModel)]="anneeSelectionnee"
+            placeholder="Année"
+            (onChange)="chargerStatistiques()">
+        </p-dropdown>
+
+        <p-dropdown
+            [options]="mois"
+            [(ngModel)]="moisSelectionne"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Mois"
+            [showClear]="true"
+            (onChange)="chargerStatistiques()">
+        </p-dropdown>
+
+        <p-button label="" icon="pi pi-refresh" (onClick)="reinitialiserFiltres()"></p-button>
+    </div>
+
+    <!-- Métriques principales avec période et filtre année intégrés -->
+    <div class="metrics-overview">
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="pi pi-chart-line"></i> <!-- taux de disponibilité -->
+            </div>
+            <div class="metric-content">
+                <div class="metric-label">Taux De Disponibilite Annuel (%)</div>
+                <div class="metric-value">{{ formatKPIValue(statistiqueMensuelKpiDsi?.tauxDisponibiliteAnnuel) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="metric-card" *ngIf="moisSelectionne">
+            <div class="metric-icon">
+                <i class="pi pi-chart-line"></i> <!-- taux de disponibilité -->
+            </div>
+            <div class="metric-content">
+                <div class="metric-label">Taux De Disponibilite Mensuel (%)</div>
+                <div class="metric-value">{{ tauxDisponibiliteMensuelle }}</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Grille des KPI -->
+    <div class="kpi-grid">
+
+        <!-- KPI ÉVOLUTION DISPONIBILITÉ (avec graphique) -->
+        <div class="kpi-section" *ngIf="!moisSelectionne">
+            <div class="chart-card">
+                <!-- Header du graphique -->
+                <div class="chart-header">
+                    <h5 class="chart-title">Evolution taux de disponibilité des serveurs </h5>
+                    <!-- Toggle si nécessaire (GWh / FCFA ou autre) -->
+
+                </div>
+
+                <div class="chart-subtitle">Année {{ anneeSelectionnee }}</div>
+
+                <div class="kpi-chart">
+                    <div *ngIf="!loading"
+                    >
+                        <div *ngIf="!statistiqueMensuelKpiDsi; else chartTemplate" class="no-data-message">
+                            <i class="pi pi-exclamation-triangle"></i>
+                            <p>Aucune donnée disponible</p>
+                        </div>
+
+                        <ng-template #chartTemplate>
+                            <p-chart
+                                type="line"
+                                height="200px"
+                                [data]="chartData"
+                                [options]="chartOptions"
+                                class="chart-container"
+                            ></p-chart>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

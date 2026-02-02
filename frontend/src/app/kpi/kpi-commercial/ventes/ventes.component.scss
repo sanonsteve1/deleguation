@@ -1,0 +1,617 @@
+.ventes-container {
+	padding: 2rem;
+	max-width: 100%;
+	position: relative;
+}
+
+// Overlay de chargement
+.loading-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+	backdrop-filter: blur(4px);
+}
+
+.loading-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.5rem;
+	background: var(--surface-card);
+	padding: 2rem 3rem;
+	border-radius: 12px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.loading-text {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--text-color);
+	text-align: center;
+}
+
+// Conteneur des données
+.data-container {
+	transition: opacity 0.3s ease;
+
+	&.loading-blur {
+		opacity: 0.4;
+		pointer-events: none;
+	}
+}
+
+// Style personnalisé pour le spinner
+::ng-deep .custom-spinner {
+	.p-progress-spinner-circle {
+		stroke: var(--primary-color) !important;
+		animation: custom-progress-spinner-dash 1.5s ease-in-out infinite !important;
+	}
+}
+
+@keyframes custom-progress-spinner-dash {
+	0% {
+		stroke-dasharray: 1, 200;
+		stroke-dashoffset: 0;
+	}
+	50% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -35px;
+	}
+	100% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -124px;
+	}
+}
+
+// Section des filtres - style moderne avec bordures inférieures
+.filters-row {
+	display: flex;
+	align-items: end;
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+	padding: 0;
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+	flex-wrap: wrap;
+
+	@media (max-width: 1200px) {
+		gap: 1rem;
+	}
+
+	@media (max-width: 768px) {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 1rem;
+	}
+}
+
+.filter-item {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	min-width: 100px;
+	align-items: flex-start;
+
+	&.filter-action {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		min-width: 80px;
+		align-items: flex-start;
+	}
+}
+
+.filter-label {
+	font-weight: 700;
+	font-size: 0.8rem;
+	color: var(--text-color);
+	margin-bottom: 0.5rem;
+	text-align: left;
+	line-height: 1.2;
+	display: block;
+}
+
+.opacity-0 {
+	opacity: 0;
+	pointer-events: none;
+}
+
+// Styles pour les dropdowns avec bordures inférieures
+::ng-deep .filters-row {
+	.p-dropdown {
+		background: transparent;
+		border: none;
+		border-bottom: 1px solid #d1d5db;
+		border-radius: 0;
+		padding: 0.25rem 0;
+		min-width: 120px;
+		height: 2rem;
+		display: flex;
+		align-items: center;
+
+		&:hover {
+			border-bottom-color: var(--primary-color);
+		}
+
+		&.p-focus {
+			border-bottom-color: var(--primary-color);
+			box-shadow: none;
+		}
+
+		.p-dropdown-label {
+			padding: 0;
+			font-size: 0.9rem;
+			font-weight: 400;
+			color: var(--text-color);
+			line-height: 1.5rem;
+			height: 1.5rem;
+			display: flex;
+			align-items: center;
+		}
+
+		.p-dropdown-trigger {
+			width: auto;
+			padding: 0 0.25rem;
+			
+			.p-dropdown-trigger-icon {
+				color: var(--text-color-secondary);
+				font-size: 0.7rem;
+			}
+		}
+	}
+
+	// Styles pour le multi-select
+	.p-multiselect {
+		background: transparent;
+		border: none;
+		border-bottom: 1px solid #d1d5db;
+		border-radius: 0;
+		padding: 0.25rem 0;
+		min-width: 150px;
+		width: 100%;
+		align-self: flex-start;
+		height: 2rem;
+		display: flex;
+		align-items: center;
+
+		&:hover {
+			border-bottom-color: var(--primary-color);
+		}
+
+		&.p-focus {
+			border-bottom-color: var(--primary-color);
+			box-shadow: none;
+		}
+
+		.p-multiselect-label {
+			padding: 0;
+			font-size: 0.9rem;
+			font-weight: 400;
+			color: var(--text-color);
+			line-height: 1.5rem;
+			height: 1.5rem;
+			display: flex;
+			align-items: center;
+
+			&.p-placeholder {
+				color: var(--text-color-secondary);
+			}
+
+			.p-multiselect-token {
+				padding: 0.15rem 0.4rem;
+				margin-right: 0.25rem;
+				background: var(--primary-color);
+				color: white;
+				border-radius: 3px;
+				font-size: 0.75rem;
+				height: 1.2rem;
+				display: inline-flex;
+				align-items: center;
+
+				.p-multiselect-token-icon {
+					font-size: 0.6rem;
+					margin-left: 0.25rem;
+				}
+			}
+		}
+
+		.p-multiselect-trigger {
+			width: auto;
+			padding: 0 0.25rem;
+			
+			.p-multiselect-trigger-icon {
+				color: var(--text-color-secondary);
+				font-size: 0.7rem;
+			}
+		}
+	}
+
+	// Style du bouton Réinitialiser
+	.p-button {
+		background: transparent;
+		border: 1px solid var(--primary-color);
+		color: var(--primary-color);
+		padding: 0.4rem 0.8rem;
+		border-radius: 4px;
+		font-weight: 600;
+		font-size: 0.8rem;
+		transition: all 0.2s ease;
+
+		&:hover {
+			background: var(--primary-color);
+			color: white;
+		}
+
+		.p-button-icon {
+			margin-right: 0.25rem;
+			font-size: 0.7rem;
+		}
+	}
+}
+
+// Contenu de la page
+.content-placeholder {
+	background: var(--surface-card);
+	border-radius: 12px;
+	padding: 3rem 2rem;
+	text-align: center;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.placeholder-icon {
+	margin-bottom: 1.5rem;
+}
+
+.placeholder-icon i {
+	font-size: 4rem;
+	color: var(--primary-color);
+}
+
+.content-placeholder h3 {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--text-color);
+	margin: 0 0 1rem 0;
+}
+
+.content-placeholder p {
+	font-size: 1rem;
+	color: var(--text-color-secondary);
+	margin: 0 0 2rem 0;
+}
+
+.placeholder-features {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 1rem;
+	margin-top: 2rem;
+}
+
+.feature-item {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 1rem;
+	background: var(--surface-50);
+	border-radius: 8px;
+	border-left: 4px solid var(--primary-color);
+}
+
+.feature-item i {
+	color: var(--green-500);
+	font-size: 1.2rem;
+}
+
+.feature-item span {
+	font-weight: 500;
+	color: var(--text-color);
+}
+
+// Section des graphiques
+.charts-section {
+	margin-top: 2rem;
+}
+
+// Grille des graphiques responsive simplifiée
+.charts-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 1rem;
+	margin-top: 2rem;
+
+	@media (max-width: 1200px) {
+		grid-template-columns: 1fr 1fr;
+		gap: 0.75rem;
+		
+		.chart-card:last-child {
+			grid-column: 1 / -1;
+			max-width: 60%;
+			margin: 0 auto;
+		}
+	}
+
+	@media (max-width: 768px) {
+		grid-template-columns: 1fr;
+		gap: 1rem;
+		
+		.chart-card:last-child {
+			grid-column: 1;
+			max-width: 100%;
+			margin: 0;
+		}
+	}
+
+	// Grille filtrée : les 2 cartes restantes se déplacent vers la gauche
+	&.charts-grid-filtered {
+		display: flex; // Utiliser flexbox au lieu de grid
+		gap: 1rem;
+		justify-content: flex-start; // Aligner les cartes à gauche
+
+		@media (max-width: 1200px) {
+			gap: 0.75rem;
+		}
+
+		@media (max-width: 768px) {
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		// Les cartes gardent leur taille initiale
+		.chart-card {
+			width: calc(33.333% - 0.67rem); // Même largeur que dans la grille 3 colonnes
+			height: 300px; // Même hauteur que la grille normale
+			flex-shrink: 0; // Empêcher les cartes de rétrécir
+
+			@media (max-width: 1200px) {
+				width: calc(50% - 0.375rem);
+			}
+
+			@media (max-width: 768px) {
+				width: 100%;
+				height: 250px;
+			}
+		}
+	}
+}
+
+.chart-card {
+	background: var(--surface-card);
+	border: 1px solid var(--surface-border);
+	border-radius: 12px;
+	padding: 1rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	height: 300px;
+	//max-height: 450px;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	&:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	}
+
+	@media (max-width: 768px) {
+		height: 250px;
+		padding: 0.75rem;
+	}
+}
+
+.chart-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.25rem;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+
+	@media (max-width: 768px) {
+		flex-direction: column;
+		align-items: flex-start;
+		margin-bottom: 0.15rem;
+		gap: 0.3rem;
+	}
+}
+
+.chart-title {
+	font-size: 1rem;
+	font-weight: 700;
+	color: var(--text-color);
+	margin: 0;
+
+	@media (max-width: 768px) {
+		font-size: 0.9rem;
+	}
+}
+
+.chart-toggle {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.25rem 0.5rem;
+	background: var(--surface-50);
+	border-radius: 6px;
+	border: 1px solid var(--surface-border);
+}
+
+.toggle-label {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--text-color-secondary);
+}
+
+.chart-subtitle {
+	font-size: 0.8rem;
+	color: var(--text-color-secondary);
+	margin-bottom: 0.5rem;
+	font-weight: 500;
+
+	@media (max-width: 768px) {
+		font-size: 0.7rem;
+		margin-bottom: 0.3rem;
+	}
+}
+
+.chart-container {
+	flex: 1;
+	min-height: 0;
+	position: relative;
+	height: calc(100% - 80px);
+	padding: 0.25rem;
+	overflow: hidden;
+
+	@media (max-width: 768px) {
+		height: calc(100% - 70px);
+		padding: 0.15rem;
+	}
+
+	// Assurer que les graphiques remplissent complètement le conteneur sans débordement
+	::ng-deep canvas {
+		width: 100% !important;
+		height: 100% !important;
+		max-width: 100%;
+		max-height: 100%;
+	}
+
+	::ng-deep .p-chart {
+		width: 100% !important;
+		height: 100% !important;
+		max-width: 100%;
+		max-height: 100%;
+		overflow: hidden;
+	}
+}
+
+.no-data-message {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	color: var(--text-color-secondary);
+
+	i {
+		font-size: 3rem;
+		margin-bottom: 1rem;
+		opacity: 0.5;
+	}
+
+	p {
+		font-size: 1.1rem;
+		font-weight: 500;
+		margin: 0;
+	}
+}
+
+// Styles pour la légende des directions
+.directions-list {
+	max-height: 220px;
+	overflow-y: auto;
+	margin-bottom: 1rem;
+	padding-right: 0.5rem;
+
+	// Style de la scrollbar
+	&::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: var(--surface-100);
+		border-radius: 2px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: var(--primary-color);
+		border-radius: 2px;
+		
+		&:hover {
+			background: var(--primary-600);
+		}
+	}
+}
+
+.direction-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0.5rem;
+	margin-bottom: 0.25rem;
+	border: 1px solid var(--surface-border);
+	border-radius: 6px;
+	background: var(--surface-50);
+	transition: all 0.2s ease;
+
+	&:hover {
+		background: var(--surface-100);
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+}
+
+.direction-info {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	flex: 1;
+}
+
+.direction-color {
+	width: 16px;
+	height: 16px;
+	border-radius: 4px;
+	border: 1px solid var(--surface-border);
+	flex-shrink: 0;
+}
+
+.direction-details {
+	flex: 1;
+}
+
+.direction-name {
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--text-color);
+}
+
+.direction-value {
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: var(--primary-color);
+	text-align: right;
+}
+
+.total-section {
+	margin-top: 1rem;
+	padding: 1rem;
+	background: var(--primary-50);
+	border-radius: 8px;
+	border: 1px solid var(--primary-200);
+}
+
+.total-info {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.total-label {
+	font-size: 1rem;
+	font-weight: 700;
+	color: var(--text-color);
+}
+
+.total-value {
+	font-size: 1.1rem;
+	font-weight: 800;
+	color: var(--primary-color);
+}
+

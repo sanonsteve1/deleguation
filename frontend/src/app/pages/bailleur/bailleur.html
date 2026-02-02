@@ -1,0 +1,114 @@
+<div class="card">
+    <div class="flex justify-between mb-2">
+        <div class="text-3xl font-bold text-gray-800">Gestion des Bailleurs</div>
+        <div class="flex md:flex-row flex-col justify-self-end gap-4">
+            <p-iconfield class="h-10">
+                <p-inputicon styleClass="pi pi-search" />
+                <input class="w-full" pInputText type="text" (input)="filtrer(dt, $event)" placeholder="Rechercher..." />
+            </p-iconfield>
+            <p-button label="Nouveau" icon="pi pi-plus" severity="success" (onClick)="openNew()"> </p-button>
+        </div>
+    </div>
+
+    <!-- Barre de recherche -->
+    <!--	<div class="mb-4">-->
+    <!--		<p-iconfield>-->
+    <!--			<p-inputicon styleClass="pi pi-search"/>-->
+    <!--			<input-->
+    <!--				pInputText-->
+    <!--				type="text"-->
+    <!--				(input)="filtrerBailleurs($event)"-->
+    <!--				placeholder="Rechercher un bailleur..."-->
+    <!--				class="w-full"/>-->
+    <!--		</p-iconfield>-->
+    <!--	</div>-->
+
+    <!-- Table des bailleurs -->
+    <p-table
+        #dt
+        [value]="bailleursAffiches"
+        [globalFilterFields]="['code','abbreviation', 'designation']"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} bailleurs"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [rowHover]="true"
+        scrollHeight="490px"
+        [scrollable]="true"
+        dataKey="id"
+        styleClass="p-datatable-sm"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="code" style="min-width: 5rem">
+                    Code
+                    <p-sortIcon field="code" />
+                </th>
+                <th pSortableColumn="abbreviation" style="min-width: 5rem">
+                    Abréviation
+                    <p-sortIcon field="abbreviation" />
+                </th>
+                <th pSortableColumn="designation" style="min-width: 5rem">
+                    Designation
+                    <p-sortIcon field="designation" />
+                </th>
+
+                <th style="">Actions</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-bailleur>
+            <tr>
+                <td>
+                    <span class="align-middle">{{ bailleur.code }}</span>
+                </td>
+                <td>
+                    <span class="">{{ bailleur.abbreviation }}</span>
+                </td>
+                <td>
+                    <div class="">{{ bailleur.designation }}</div>
+                </td>
+
+                <td>
+                    <div class="flex gap-2">
+                        <p-button icon="pi pi-pencil" severity="info" size="small" rounded outlined pTooltip="Modifier" (onClick)="editBailleur(bailleur)"> </p-button>
+                        <p-button icon="pi pi-trash" severity="danger" size="small" rounded outlined pTooltip="Supprimer" (onClick)="supprimerBailleur(bailleur)"> </p-button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="9" class="text-center py-8">
+                    <div class="text-gray-500">
+                        <i class="pi pi-inbox text-4xl mb-4 block"></i>
+                        <p>Aucun bailleur trouvé</p>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Dialog pour créer/modifier un bailleur -->
+<p-dialog [(visible)]="bailleurDialog" [style]="{width: '50rem'}" [header]="bailleur.id ? 'Modifier le Bailleur' : 'Nouveau Bailleur'" [modal]="true" [draggable]="false" [resizable]="false">
+    <div class="grid grid-cols-2 gap-4">
+        <div class="field">
+            <label for="designation" class="font-semibold block mb-2">Designation *</label>
+            <input id="designation" pInputText [(ngModel)]="bailleur.designation" required autofocus class="w-full" />
+            <small *ngIf="submitted && !bailleur.designation" class="p-error block mt-1"> La designation est requise. </small>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Annuler" icon="pi pi-times" (onClick)="hideDialog()" class="p-button-text"> </p-button>
+        <p-button label="Enregistrer" icon="pi pi-check" (onClick)="bailleur.id ? modifierBailleur(bailleur) : enregistrerBailleur()" class="p-button-success"> </p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Composants de confirmation et notification -->
+<p-confirmDialog />
+<p-toast />

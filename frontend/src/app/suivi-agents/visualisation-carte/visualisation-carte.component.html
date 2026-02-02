@@ -1,0 +1,220 @@
+<div class="carte-layout">
+    <!-- Sidebar gauche -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">
+                <i class="pi pi-map mr-2"></i>
+                Visualisation GPS
+            </h2>
+        </div>
+
+        <div class="sidebar-content">
+            <!-- Filtres -->
+            <div class="filters-section">
+                <h3 class="section-title">Filtres</h3>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Agent</label>
+                    <p-dropdown 
+                        [(ngModel)]="selectedAgent" 
+                        [options]="agents" 
+                        optionLabel="fullName"
+                        placeholder="Tous les agents"
+                        [showClear]="true"
+                        class="w-full">
+                    </p-dropdown>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Date</label>
+                    <p-calendar 
+                        [(ngModel)]="dateFiltre" 
+                        [showIcon]="true"
+                        dateFormat="dd/mm/yy"
+                        [showTime]="false"
+                        placeholder="Sélectionner une date"
+                        class="w-full">
+                    </p-calendar>
+                </div>
+
+                <div class="filter-actions">
+                    <p-button 
+                        label="Filtrer" 
+                        icon="pi pi-filter"
+                        (onClick)="appliquerFiltres()"
+                        [loading]="loading"
+                        class="filter-btn">
+                    </p-button>
+                    <p-button 
+                        label="Réinitialiser" 
+                        icon="pi pi-refresh"
+                        severity="secondary"
+                        [outlined]="true"
+                        (onClick)="reinitialiserFiltres()"
+                        class="filter-btn">
+                    </p-button>
+                </div>
+            </div>
+
+            <!-- Statistiques -->
+            <div class="stats-section" *ngIf="!loading && sessions.length > 0">
+                <h3 class="section-title">Statistiques</h3>
+                
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-blue">
+                        <i class="pi pi-calendar"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Sessions</div>
+                        <div class="stat-value">{{ sessions.length }}</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-green">
+                        <i class="pi pi-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Agents</div>
+                        <div class="stat-value">{{ getAgentsDistincts() }}</div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-purple">
+                        <i class="pi pi-map-marker"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">Points GPS</div>
+                        <div class="stat-value">{{ getTotalPositions() }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message si aucune session -->
+            <div class="empty-state" *ngIf="!loading && sessions.length === 0">
+                <i class="pi pi-map-marker text-5xl text-gray-300 mb-3"></i>
+                <p class="empty-title">Aucune session trouvée</p>
+                <p class="empty-message">Modifiez les filtres pour voir des résultats</p>
+            </div>
+
+            <!-- Légende -->
+            <div class="legend-section" *ngIf="!loading && sessions.length > 0">
+                <h3 class="section-title">Légende</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-marker legend-green"></div>
+                        <span class="legend-label">Point de départ</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-marker legend-red"></div>
+                        <span class="legend-label">Point d'arrivée</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-marker legend-line"></div>
+                        <span class="legend-label">Itinéraire</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Zone carte -->
+    <div class="carte-area">
+        <div class="carte-header">
+            <div class="carte-title">
+                <i class="pi pi-map mr-2"></i>
+                Carte des Itinéraires
+            </div>
+            <div class="carte-info" *ngIf="!loading && (sessions.length > 0 || sessionsActives.length > 0)">
+                <span class="info-badge" *ngIf="sessionsActives.length > 0">
+                    <i class="pi pi-circle-fill mr-1" style="color: #E53935; font-size: 0.5rem;"></i>
+                    {{ sessionsActives.length }} agent(s) actif(s)
+                </span>
+                <span class="info-badge ml-2" *ngIf="sessions.length > 0">
+                    <i class="pi pi-info-circle mr-1"></i>
+                    {{ sessions.length }} session(s) affichée(s)
+                </span>
+            </div>
+        </div>
+        
+        <div class="carte-container">
+            <div *ngIf="loading" class="loading-overlay">
+                <p-progressSpinner></p-progressSpinner>
+                <p class="loading-text">Chargement des données...</p>
+            </div>
+            <div id="map" class="map" [class.hidden]="loading"></div>
+            
+            <!-- Contrôles de la carte (boutons flottants) -->
+            <div class="map-controls">
+                <button 
+                    class="control-btn" 
+                    [class.active]="isFollowingActive"
+                    (click)="isFollowingActive = !isFollowingActive"
+                    pTooltip="Suivre les agents actifs"
+                    tooltipPosition="left">
+                    <i class="pi" [ngClass]="isFollowingActive ? 'pi-lock' : 'pi-lock-open'"></i>
+                </button>
+                <button 
+                    class="control-btn" 
+                    (click)="chargerDonnees()"
+                    pTooltip="Actualiser"
+                    tooltipPosition="left">
+                    <i class="pi pi-refresh"></i>
+                </button>
+                <button 
+                    *ngIf="selectedSessionId"
+                    class="control-btn control-btn-reset" 
+                    (click)="reinitialiserVue()"
+                    pTooltip="Réinitialiser la vue"
+                    tooltipPosition="left">
+                    <i class="pi pi-times"></i>
+                </button>
+            </div>
+
+            <!-- Carte d'information flottante (style Yango) -->
+            <div class="info-card" *ngIf="!loading && (sessions.length > 0 || sessionsActives.length > 0)">
+                <div class="info-card-header">
+                    <i class="pi pi-route mr-2"></i>
+                    <span>Informations</span>
+                    <button 
+                        *ngIf="selectedSessionId"
+                        class="btn-close-info"
+                        (click)="reinitialiserVue()"
+                        pTooltip="Réinitialiser">
+                        <i class="pi pi-times"></i>
+                    </button>
+                </div>
+                <div class="info-card-content">
+                    <div class="info-stat" *ngIf="selectedSessionId">
+                        <div class="stat-icon-selected">
+                            <i class="pi pi-map"></i>
+                        </div>
+                        <div class="stat-details">
+                            <div class="stat-value">Itinéraire</div>
+                            <div class="stat-label">Session #{{ selectedSessionId }}</div>
+                        </div>
+                    </div>
+                    <div class="info-stat" *ngIf="sessionsActives.length > 0">
+                        <div class="stat-icon-active">
+                            <i class="pi pi-user"></i>
+                        </div>
+                        <div class="stat-details">
+                            <div class="stat-value">{{ sessionsActives.length }}</div>
+                            <div class="stat-label">Agent(s) actif(s)</div>
+                        </div>
+                    </div>
+                    <div class="info-stat">
+                        <div class="stat-icon">
+                            <i class="pi pi-map-marker"></i>
+                        </div>
+                        <div class="stat-details">
+                            <div class="stat-value">{{ getTotalPositions() }}</div>
+                            <div class="stat-label">Points GPS</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

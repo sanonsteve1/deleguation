@@ -1,0 +1,103 @@
+.gestion-entreprises-container {
+    padding: 1.5rem;
+
+    .card-header {
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 8px 8px 0 0;
+
+        h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+    }
+
+    .toolbar {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        align-items: center;
+
+        .search-field {
+            flex: 1;
+            max-width: 400px;
+        }
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .empty-state {
+        padding: 3rem;
+        text-align: center;
+
+        i {
+            display: block;
+            margin-bottom: 1rem;
+        }
+    }
+}
+
+:host ::ng-deep {
+    .p-dialog {
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+
+            .col-span-2 {
+                grid-column: span 2;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            label {
+                font-weight: 500;
+                color: #374151;
+
+                &.required::after {
+                    content: ' *';
+                    color: #ef4444;
+                }
+            }
+
+            .p-error {
+                color: #ef4444;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+            }
+
+            input.ng-invalid.ng-touched,
+            textarea.ng-invalid.ng-touched {
+                border-color: #ef4444;
+            }
+        }
+    }
+
+    .p-datatable {
+        .p-datatable-thead > tr > th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .p-datatable-tbody > tr {
+            transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #f9fafb;
+            }
+        }
+    }
+}

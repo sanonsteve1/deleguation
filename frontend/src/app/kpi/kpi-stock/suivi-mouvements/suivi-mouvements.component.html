@@ -1,0 +1,476 @@
+<div class="kpi-stock-subview">
+  <div class="filters-row">
+    <div class="filter-item">
+      <label for="annee" class="filter-label">Année</label>
+      <p-dropdown
+        id="annee"
+        [options]="annees"
+        [(ngModel)]="anneeSelectionnee"
+        placeholder="Année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item">
+      <label for="mois" class="filter-label">Mois</label>
+      <p-dropdown
+        id="mois"
+        [options]="mois"
+        [(ngModel)]="moisSelectionne"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Toute l'année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+        [showClear]="true"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item filter-action">
+      <label class="filter-label opacity-0">Actions</label>
+      <p-button
+        label="Réinitialiser"
+        icon="pi pi-refresh"
+        (onClick)="reinitialiserFiltres()"
+        styleClass="p-button-outlined w-full"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="kpi-main-section">
+    <div class="kpi-cumulative-row">
+      <div class="kpi-main-card fcfa-month">
+        <div class="kpi-main-icon">
+          <i class="pi pi-calendar-times"></i>
+        </div>
+        <div class="kpi-main-content">
+          <div class="kpi-main-label-wrapper">
+            <div class="kpi-main-label">Délai moyen d'approvisionnement</div>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-question-circle" 
+              class="p-button-rounded p-button-text p-button-help-kpi"
+              (click)="helpPanelDelaiApprovisionnement.toggle($event)"
+              [attr.aria-label]="'Aide sur le délai moyen d\'approvisionnement'"
+            ></button>
+            <p-overlayPanel #helpPanelDelaiApprovisionnement [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+              <div class="help-content">
+                <div class="help-section">
+                  <h4 class="help-title">
+                    <i class="pi pi-calendar-times"></i>
+                    Délai moyen d'approvisionnement
+                  </h4>
+                  <p class="help-description">
+                    Ce KPI mesure le <strong>délai moyen</strong> entre la date de commande et la date de réception effective des équipements.
+                  </p>
+                  <div class="help-logic">
+                    <h5 class="help-subtitle">Logique métier :</h5>
+                    <ul class="help-list">
+                      <li>Le délai est calculé comme la <strong>moyenne</strong> de (date réception effective - date commande) en jours</li>
+                      <li>Seules les commandes avec statut <strong>LIVREE</strong> ou <strong>RECEPTIONNEE</strong> sont prises en compte</li>
+                      <li>Les commandes sans date de réception effective sont exclues du calcul</li>
+                      <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                      <li>Un délai faible indique une <strong>livraison rapide</strong> et une bonne performance logistique</li>
+                      <li>Un délai élevé peut indiquer des <strong>problèmes de livraison</strong> ou des <strong>retards fournisseurs</strong></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
+          <div class="kpi-main-value">{{ formatJoursEnAnneeMoisJours(dataKpiStock?.delaiMoyenApprovisionnement) }}</div>
+        </div>
+      </div>
+
+      <div class="kpi-main-card commandes-livrees">
+        <div class="kpi-main-icon">
+          <i class="pi pi-check-circle"></i>
+        </div>
+        <div class="kpi-main-content">
+          <div class="kpi-main-label-wrapper">
+            <div class="kpi-main-label">Commandes livrées</div>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-question-circle" 
+              class="p-button-rounded p-button-text p-button-help-kpi"
+              (click)="helpPanelCommandesLivrees.toggle($event)"
+              [attr.aria-label]="'Aide sur les commandes livrées'"
+            ></button>
+            <p-overlayPanel #helpPanelCommandesLivrees [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+              <div class="help-content">
+                <div class="help-section">
+                  <h4 class="help-title">
+                    <i class="pi pi-check-circle"></i>
+                    Commandes livrées
+                  </h4>
+                  <p class="help-description">
+                    Ce KPI compte le <strong>nombre total de commandes livrées</strong> sur la période sélectionnée.
+                  </p>
+                  <div class="help-logic">
+                    <h5 class="help-subtitle">Logique métier :</h5>
+                    <ul class="help-list">
+                      <li>Compte toutes les commandes avec statut <strong>LIVREE</strong>, <strong>RECEPTIONNEE</strong> ou <strong>FACTUREE</strong></li>
+                      <li>Le comptage se fait sur la base de la <strong>date de commande</strong></li>
+                      <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                      <li>Ce KPI mesure le <strong>volume d'activité</strong> et la <strong>performance de livraison</strong></li>
+                      <li>Un nombre élevé indique une <strong>activité importante</strong> et une bonne <strong>exécution des commandes</strong></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
+          <div class="kpi-main-value">{{ formatKPIValue(dataKpiStock?.nombreCommandesLivrees) }}</div>
+        </div>
+      </div>
+
+      <div class="kpi-main-card commandes-en-cours">
+        <div class="kpi-main-icon">
+          <i class="pi pi-clock"></i>
+        </div>
+        <div class="kpi-main-content">
+          <div class="kpi-main-label-wrapper">
+            <div class="kpi-main-label">Commandes en cours</div>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-question-circle" 
+              class="p-button-rounded p-button-text p-button-help-kpi"
+              (click)="helpPanelCommandesEnCours.toggle($event)"
+              [attr.aria-label]="'Aide sur les commandes en cours'"
+            ></button>
+            <p-overlayPanel #helpPanelCommandesEnCours [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+              <div class="help-content">
+                <div class="help-section">
+                  <h4 class="help-title">
+                    <i class="pi pi-clock"></i>
+                    Commandes en cours
+                  </h4>
+                  <p class="help-description">
+                    Ce KPI compte le <strong>nombre de commandes en cours de traitement</strong> sur la période sélectionnée.
+                  </p>
+                  <div class="help-logic">
+                    <h5 class="help-subtitle">Logique métier :</h5>
+                    <ul class="help-list">
+                      <li>Compte toutes les commandes avec statut <strong>EN_COURS_LIVRAISON</strong>, <strong>PARTIELLEMENT_LIVREE</strong>, <strong>CONFIRMEE</strong>, <strong>ENVOYEE</strong> ou <strong>BROUILLON</strong></li>
+                      <li>Le comptage se fait sur la base de la <strong>date de commande</strong></li>
+                      <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                      <li>Ce KPI mesure le <strong>volume de commandes en attente</strong> de livraison</li>
+                      <li>Un nombre élevé peut indiquer des <strong>retards de livraison</strong> ou une <strong>charge de travail importante</strong></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
+          <div class="kpi-main-value">{{ formatKPIValue(dataKpiStock?.nombreCommandesEnCours) }}</div>
+        </div>
+      </div>
+
+      <div class="kpi-main-card commandes-annulees">
+        <div class="kpi-main-icon">
+          <i class="pi pi-times-circle"></i>
+        </div>
+        <div class="kpi-main-content">
+          <div class="kpi-main-label-wrapper">
+            <div class="kpi-main-label">Commandes annulées</div>
+            <button 
+              pButton 
+              type="button" 
+              icon="pi pi-question-circle" 
+              class="p-button-rounded p-button-text p-button-help-kpi"
+              (click)="helpPanelCommandesAnnulees.toggle($event)"
+              [attr.aria-label]="'Aide sur les commandes annulées'"
+            ></button>
+            <p-overlayPanel #helpPanelCommandesAnnulees [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+              <div class="help-content">
+                <div class="help-section">
+                  <h4 class="help-title">
+                    <i class="pi pi-times-circle"></i>
+                    Commandes annulées
+                  </h4>
+                  <p class="help-description">
+                    Ce KPI compte le <strong>nombre de commandes annulées</strong> sur la période sélectionnée.
+                  </p>
+                  <div class="help-logic">
+                    <h5 class="help-subtitle">Logique métier :</h5>
+                    <ul class="help-list">
+                      <li>Compte toutes les commandes avec statut <strong>ANNULEE</strong></li>
+                      <li>Le comptage se fait sur la base de la <strong>date de commande</strong></li>
+                      <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                      <li>Ce KPI mesure le <strong>taux d'annulation</strong> des commandes</li>
+                      <li>Un nombre élevé peut indiquer des <strong>problèmes de planification</strong>, des <strong>changements de besoins</strong> ou des <strong>difficultés avec les fournisseurs</strong></li>
+                      <li>Permet d'identifier les <strong>tendances d'annulation</strong> et d'améliorer la <strong>gestion des commandes</strong></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
+          <div class="kpi-main-value">{{ formatKPIValue(dataKpiStock?.nombreCommandesAnnulees) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-12 gap-2 charts-section">
+    <div class="col-span-12 lg:col-span-6">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h4 class="chart-title">Entrées/Sorties par période</h4>
+        </div>
+        <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+        <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+          <div *ngIf="aucuneDonneeEntreesSortiesDisponible; else chartEntreesSortiesTemplate" class="no-data-message">
+            <i class="pi pi-exclamation-triangle"></i>
+            <p>Aucune donnée disponible</p>
+          </div>
+          <ng-template #chartEntreesSortiesTemplate>
+            <p-chart type="bar" [data]="chartDonneesEntreesSorties" [options]="chartOptionsEntreesSorties"></p-chart>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+
+    <!-- Équipements utilisés et critiques -->
+    <div class="col-span-12 lg:col-span-6">
+      <div class="equipements-container">
+        <div class="equipements-header">
+          <div class="equipements-header-top-row">
+            <div class="equipements-title-wrapper">
+              <h3 class="equipements-title">
+                <span *ngIf="!afficherEquipementsCritiques">Équipements les plus utilisés</span>
+                <span *ngIf="afficherEquipementsCritiques">Équipements à stock critique</span>
+              </h3>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help"
+                (click)="helpPanel.toggle($event)"
+                [attr.aria-label]="'Aide sur les équipements'"
+              ></button>
+              <p-overlayPanel #helpPanel [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section" *ngIf="!afficherEquipementsCritiques">
+                    <h4 class="help-title">
+                      <i class="pi pi-info-circle"></i>
+                      Équipements les plus utilisés
+                    </h4>
+                    <p class="help-description">
+                      Ce graphique présente les <strong>10 équipements les plus consommés</strong> sur la période sélectionnée.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Les équipements sont classés par <strong>quantité consommée</strong> décroissante</li>
+                        <li>La consommation correspond aux <strong>sorties de stock</strong> enregistrées</li>
+                        <li>Seuls les équipements ayant une consommation > 0 sont affichés</li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="help-section" *ngIf="afficherEquipementsCritiques">
+                    <h4 class="help-title">
+                      <i class="pi pi-exclamation-triangle"></i>
+                      Équipements à stock critique
+                    </h4>
+                    <p class="help-description">
+                      Ce graphique identifie les <strong>10 équipements avec le stock le plus faible</strong>, nécessitant une attention prioritaire.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Les équipements sont classés par <strong>quantité restante en stock</strong> croissante</li>
+                        <li>Un équipement est considéré comme critique lorsque sa <strong>quantité restante est faible</strong> par rapport à sa consommation habituelle</li>
+                        <li>Le calcul se base sur le <strong>stock actuel disponible</strong> dans l'entrepôt</li>
+                        <li>Seuls les équipements avec stock > 0 sont affichés</li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Permet d'identifier les <strong>besoins de réapprovisionnement</strong> urgents pour éviter les ruptures de stock</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="equipements-switch">
+              <span class="switch-label">Plus utilisés</span>
+              <p-toggleswitch
+                [(ngModel)]="afficherEquipementsCritiques"
+              ></p-toggleswitch>
+              <span class="switch-label">Critiques</span>
+            </div>
+          </div>
+          <span class="equipements-subtitle">{{ anneeSelectionnee }}</span>
+        </div>
+
+        <div *ngIf="!loading; else loadingTemplate" class="equipements-content">
+          <!-- Plus utilisés -->
+          <ng-container *ngIf="!afficherEquipementsCritiques">
+            <div *ngIf="aucuneDonneeEquipementPlusUtiliseDisponible" class="no-data-message-equipements">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <div *ngIf="!aucuneDonneeEquipementPlusUtiliseDisponible" class="equipements-grid">
+              <div *ngFor="let equipement of (dataKpiStock?.top10EquipementPlusUtilises || [])"
+                   class="equipement-box equipement-box-used">
+                <i class="equipement-icon" [ngClass]="getEquipementIcon(equipement.nomEquipement)"></i>
+                <div class="equipement-name">{{ equipement.nomEquipement }}</div>
+                <div class="equipement-value">
+                  {{ formatKPIValue(equipement.quantiteConsomme) }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <!-- Critiques -->
+          <ng-container *ngIf="afficherEquipementsCritiques">
+            <div *ngIf="aucuneDonneeEquipementRuptureStockDisponible" class="no-data-message-equipements">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <div *ngIf="!aucuneDonneeEquipementRuptureStockDisponible" class="equipements-grid">
+              <div *ngFor="let equipement of (dataKpiStock?.top10EquipementCritique || [])"
+                   class="equipement-box equipement-box-critical">
+                <i class="equipement-icon" [ngClass]="getEquipementIcon(equipement.nomEquipement)"></i>
+                <div class="equipement-name">{{ equipement.nomEquipement }}</div>
+                <div class="equipement-value">
+                  {{ formatKPIValue(equipement.quantiteRestante) }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liste des commandes traitées -->
+  <div class="col-span-12">
+    <div class="commandes-container">
+      <div class="commandes-header">
+        <h3 class="commandes-title">Liste des commandes</h3>
+        <span class="commandes-subtitle">{{ anneeSelectionnee }}</span>
+      </div>
+      <div *ngIf="!loading; else loadingTemplate" class="commandes-content">
+        <div *ngIf="!dataKpiStock?.listeCommandesTraitees || dataKpiStock.listeCommandesTraitees.length === 0" class="no-data-message-commandes">
+          <i class="pi pi-exclamation-triangle"></i>
+          <p>Aucune commande disponible</p>
+        </div>
+        <div *ngIf="dataKpiStock?.listeCommandesTraitees && dataKpiStock.listeCommandesTraitees.length > 0" class="commandes-table">
+          <div class="commandes-table-header">
+            <div class="col-numero">
+              <div class="header-label">N° Commande</div>
+              <input 
+                type="text" 
+                class="filter-input" 
+                placeholder="Rechercher..."
+                [(ngModel)]="filterNumeroCommande"
+                (input)="appliquerFiltres()"
+              />
+            </div>
+            <div class="col-date">
+              <div class="header-label">Date Commande</div>
+              <input 
+                type="text" 
+                class="filter-input" 
+                placeholder="Rechercher..."
+                [(ngModel)]="filterDateCommande"
+                (input)="appliquerFiltres()"
+              />
+            </div>
+            <div class="col-date">
+              <div class="header-label">Date Réception</div>
+              <input 
+                type="text" 
+                class="filter-input" 
+                placeholder="Rechercher..."
+                [(ngModel)]="filterDateReception"
+                (input)="appliquerFiltres()"
+              />
+            </div>
+            <div class="col-fournisseur">
+              <div class="header-label">Fournisseur</div>
+              <input 
+                type="text" 
+                class="filter-input" 
+                placeholder="Rechercher..."
+                [(ngModel)]="filterFournisseur"
+                (input)="appliquerFiltres()"
+              />
+            </div>
+            <div class="col-statut">
+              <div class="header-label">Statut</div>
+              <p-dropdown
+                [options]="statutsOptions"
+                [(ngModel)]="filterStatut"
+                placeholder="Tous"
+                optionLabel="label"
+                optionValue="value"
+                (onChange)="appliquerFiltres()"
+                styleClass="w-full filter-dropdown"
+                [showClear]="true"
+              ></p-dropdown>
+            </div>
+            <div class="col-montant">
+              <div class="header-label">Montant</div>
+              <input 
+                type="text" 
+                class="filter-input" 
+                placeholder="Rechercher..."
+                [(ngModel)]="filterMontant"
+                (input)="appliquerFiltres()"
+              />
+            </div>
+          </div>
+          <div class="commandes-table-body">
+            <div *ngFor="let commande of commandesPaginees" class="commande-row">
+              <div class="col-numero" data-label="N° Commande">
+                <i class="pi pi-file-edit commande-icon"></i>
+                <span>{{ commande.numeroCommande }}</span>
+              </div>
+              <div class="col-date" data-label="Date Commande">{{ formatDate(commande.dateCommande) }}</div>
+              <div class="col-date" data-label="Date Réception">{{ formatDate(commande.dateReceptionEffective) || '-' }}</div>
+              <div class="col-fournisseur" data-label="Fournisseur">{{ commande.nomFournisseur }}</div>
+              <div class="col-statut" data-label="Statut">
+                <span class="statut-badge" [ngClass]="getStatutClass(commande.statut)">
+                  {{ getStatutLabel(commande.statut) }}
+                </span>
+              </div>
+              <div class="col-montant" data-label="Montant">{{ formatFCFA(commande.montantTotal) }}</div>
+            </div>
+          </div>
+          <div class="commandes-pagination">
+            <p-paginator
+              [first]="firstCommande"
+              [rows]="rowsCommande"
+              [totalRecords]="totalCommandes"
+              [rowsPerPageOptions]="[2]"
+              (onPageChange)="onPageChangeCommandes($event)"
+              [showFirstLastIcon]="true"
+              styleClass="commandes-paginator">
+            </p-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>{{ loadingMessage }}</p>
+      <div class="progress-bar-container" *ngIf="loadingProgress > 0">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+        </div>
+        <span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+

@@ -1,0 +1,10 @@
+.titre {
+	font-family: "Bauhaus 93", serif;
+	font-weight: normal;
+	font-size: 35px;
+}
+
+/* Masquer les 3 boutons dans layout-topbar-actions-end */
+.layout-topbar-actions-end .layout-topbar-items > li {
+	display: none !important;
+}

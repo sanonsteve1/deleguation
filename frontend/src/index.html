@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>ABLink</title>
+        <base href="/" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <link rel="preconnect" href="https://primefaces.org" />
+        <link href="https://fonts.cdnfonts.com/css/lato" rel="stylesheet" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="/layout/styles/preloading.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    </head>
+
+    <body>
+        <app-root>
+            <div class="layout-preloader-container">
+                <div class="layout-preloader-content">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="xMidYMid"
+                        width="60"
+                        height="60"
+                        style="shape-rendering: auto; display: block; background: rgba(216, 11, 11, 0)"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                        <g>
+                            <rect fill="#ffffff" height="40" width="15" y="30" x="17.5">
+                                <animate begin="-0.2s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="18;30;30" keyTimes="0;0.5;1" calcMode="spline" dur="1s" repeatCount="indefinite" attributeName="y"></animate>
+                                <animate begin="-0.2s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="64;40;40" keyTimes="0;0.5;1" calcMode="spline" dur="1s" repeatCount="indefinite" attributeName="height"></animate>
+                            </rect>
+                            <rect fill="#ffffff" height="40" width="15" y="30" x="42.5">
+                                <animate begin="-0.1s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline" dur="1s" repeatCount="indefinite" attributeName="y"></animate>
+                                <animate begin="-0.1s" keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline" dur="1s" repeatCount="indefinite" attributeName="height"></animate>
+                            </rect>
+                            <rect fill="#ffffff" height="40" width="15" y="30" x="67.5">
+                                <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="20.999999999999996;30;30" keyTimes="0;0.5;1" calcMode="spline" dur="1s" repeatCount="indefinite" attributeName="y"></animate>
+                                <animate keySplines="0 0.5 0.5 1;0 0.5 0.5 1" values="58.00000000000001;40;40" keyTimes="0;0.5;1" calcMode="spline" dur="1s" repeatCount="indefinite" attributeName="height"></animate>
+                            </rect>
+                            <g></g>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </app-root>
+    </body>
+</html>

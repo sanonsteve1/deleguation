@@ -1,0 +1,683 @@
+.carte-layout {
+    display: flex;
+    height: 800px; // Hauteur de l'écran moins le header
+   // max-height: calc(100vh - 80px);
+    overflow: hidden;
+    background: #f5f7fa;
+    position: relative;
+}
+
+// Sidebar gauche
+.sidebar {
+    width: 380px;
+    min-width: 380px;
+    max-width: 380px;
+    background: white;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-content {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0; // Important pour permettre le scroll
+}
+
+.section-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+// Filtres
+.filters-section {
+    .filter-group {
+        margin-bottom: 1rem;
+    }
+
+    .filter-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.75rem;
+        
+        .filter-btn {
+            flex: 1;
+        }
+    }
+}
+
+// Statistiques
+.stats-section {
+    .stat-card {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: #f9fafb;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: white;
+        margin-right: 1rem;
+    }
+
+    .stat-icon-blue {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stat-icon-green {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .stat-icon-purple {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin-top: 0.25rem;
+    }
+}
+
+// État vide
+.empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #6b7280;
+
+    .empty-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0.5rem 0;
+    }
+
+    .empty-message {
+        font-size: 0.875rem;
+        margin: 0;
+    }
+}
+
+// Légende
+.legend-section {
+    .legend-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .legend-marker {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .legend-green {
+        background: #10b981;
+    }
+
+    .legend-red {
+        background: #ef4444;
+    }
+
+    .legend-line {
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        height: 3px;
+    }
+
+    .legend-label {
+        font-size: 0.875rem;
+        color: #374151;
+    }
+}
+
+// Zone carte
+.carte-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0; // Important pour éviter le débordement
+    height: 100%;
+}
+
+.carte-header {
+    padding: 1rem 1.5rem;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.carte-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.carte-info {
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: #eff6ff;
+        color: #2563eb;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+}
+
+.carte-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0; // Important pour permettre le redimensionnement
+    height: 100%;
+}
+
+.map {
+    width: 100%;
+    height: 100%;
+    
+    &.hidden {
+        display: none;
+    }
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    gap: 1rem;
+}
+
+.loading-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+// Contrôles de la carte (boutons flottants)
+.map-controls {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .control-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: white;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #374151;
+        font-size: 1.2rem;
+
+        &:hover {
+            background: #f3f4f6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        &.active {
+            background: #E53935;
+            color: white;
+
+            &:hover {
+                background: #c62828;
+            }
+        }
+
+        &.control-btn-reset {
+            background: #ef4444;
+            color: white;
+
+            &:hover {
+                background: #dc2626;
+            }
+        }
+    }
+}
+
+// Carte d'information flottante (style Yango)
+.info-card {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    min-width: 200px;
+    max-width: 300px;
+
+    .info-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 12px;
+        font-size: 0.9rem;
+
+        .btn-close-info {
+            background: transparent;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+
+            &:hover {
+                background: #f3f4f6;
+                color: #111827;
+            }
+        }
+    }
+
+    .info-card-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .info-stat {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .stat-icon,
+        .stat-icon-active {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .stat-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .stat-icon-active {
+            background: linear-gradient(135deg, #E53935 0%, #c62828 100%);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .stat-icon-selected {
+            background: linear-gradient(135deg, #E53935 0%, #c62828 100%);
+            color: white;
+        }
+
+        .stat-details {
+            flex: 1;
+
+            .stat-value {
+                font-size: 1.25rem;
+                font-weight: 700;
+                color: #111827;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+        }
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+// Styles pour les marqueurs personnalisés
+::ng-deep {
+    .leaflet-container {
+        height: 100%;
+        width: 100%;
+        z-index: 1;
+    }
+
+    // Marqueur de départ
+    .custom-marker-start,
+    .custom-marker-end {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .marker-container {
+        position: relative;
+        width: 40px;
+        height: 40px;
+    }
+
+    .marker-pulse {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #10b981;
+        opacity: 0.3;
+        animation: markerPulse 2s infinite;
+    }
+
+    .marker-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+        border: 3px solid white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .marker-start {
+        background: #10b981;
+    }
+
+    .marker-start.marker-selected {
+        background: #E53935;
+        box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.3);
+        animation: markerSelected 1.5s infinite;
+    }
+
+    .marker-end {
+        background: #ef4444;
+    }
+
+    @keyframes markerSelected {
+        0%, 100% {
+            box-shadow: 0 0 0 4px rgba(229, 57, 53, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 0 8px rgba(229, 57, 53, 0.1);
+        }
+    }
+
+    // Marqueur actif (agent en mouvement)
+    .custom-marker-active {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .marker-container-active {
+        position: relative;
+        width: 50px;
+        height: 50px;
+    }
+
+    .marker-pulse-active {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #E53935;
+        opacity: 0.2;
+        animation: markerPulseActive 1.5s infinite;
+    }
+
+    .marker-icon-active {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(229, 57, 53, 0.4);
+        animation: markerBounce 2s infinite;
+    }
+
+    @keyframes markerPulse {
+        0% {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+        50% {
+            transform: scale(1.5);
+            opacity: 0.1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.3;
+        }
+    }
+
+    @keyframes markerPulseActive {
+        0% {
+            transform: scale(1);
+            opacity: 0.2;
+        }
+        50% {
+            transform: scale(1.3);
+            opacity: 0.1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0.2;
+        }
+    }
+
+    @keyframes markerBounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-5px);
+        }
+    }
+
+    // Popup personnalisée
+    .popup-content {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        
+        b {
+            color: #111827;
+            font-size: 1rem;
+        }
+        
+        small {
+            color: #6b7280;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .btn-tracer {
+            margin-top: 8px;
+            padding: 6px 12px;
+            background: #E53935;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            width: 100%;
+
+            &:hover {
+                background: #c62828;
+                transform: translateY(-1px);
+            }
+        }
+
+        .badge-selected {
+            margin-top: 8px;
+            display: inline-block;
+            padding: 6px 12px;
+            background: #10b981;
+            color: white;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+    }
+
+    .popup-content-active {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        
+        .popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            
+            b {
+                color: #111827;
+                font-size: 1rem;
+            }
+            
+            .badge-active {
+                background: #E53935;
+                color: white;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 0.7rem;
+                font-weight: 600;
+            }
+        }
+        
+        small {
+            color: #6b7280;
+            display: block;
+            margin-top: 4px;
+        }
+    }
+
+    // Scrollbar personnalisée pour la sidebar
+    .sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+
+        &:hover {
+            background: #555;
+        }
+    }
+}

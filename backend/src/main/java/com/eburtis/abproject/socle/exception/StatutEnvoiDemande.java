@@ -1,0 +1,13 @@
+package com.eburtis.abproject.socle.exception;
+
+public enum StatutEnvoiDemande {
+    INITIALISE,
+    ECHOUE,
+    PREMIERE_TENTATIVE_ECHOUE,
+    DEUXIEME_TENTATIVE_ECHOUE,
+    TROISIEME_TENTATIVE_ECHOUE,
+    QUATRIEME_TENTATIVE_ECHOUE,
+    CINQUIEME_TENTATIVE_ECHOUE,
+    SIXIEME_TENTATIVE_ECHOUE,
+    REUSSIE;
+}

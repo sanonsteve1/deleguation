@@ -1,0 +1,14 @@
+rootProject.name = 'fieldtrack'
+
+//
+//        {
+//            "projetId": 1,
+//            "utilisateurId": 1,
+//            "auteur": "komenan",
+//            "contenu": "Preuves des donnes",
+//            "date": "2025-09-02",
+//            "type": "string",
+//            "fichiersJointes": [ ],
+//            "latitude": 4564.0000,
+//            "longitude": 6546400.0000
+//        }

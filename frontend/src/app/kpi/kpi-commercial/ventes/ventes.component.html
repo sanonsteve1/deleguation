@@ -1,0 +1,230 @@
+<div class="ventes-container">
+
+	<!-- Spinner de chargement -->
+	<div *ngIf="loading" class="loading-overlay">
+		<div class="loading-content">
+			<p-progressSpinner
+				styleClass="custom-spinner"
+				strokeWidth="4"
+				animationDuration="1s">
+			</p-progressSpinner>
+			<div class="loading-text">{{ loadingMessage }}</div>
+		</div>
+	</div>
+
+	<!-- Conteneur des données avec opacité pendant le chargement -->
+	<div class="data-container" [class.loading-blur]="loading">
+	
+	<!-- Section des filtres -->
+	<div class="filters-row">
+
+		<!-- Filtre Année -->
+		<div class="filter-item">
+			<label for="annee" class="filter-label">Année</label>
+			<p-dropdown
+				id="annee"
+				[options]="annees"
+				[(ngModel)]="anneeSelectionnee"
+				placeholder="Année"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Mois -->
+		<div class="filter-item">
+			<label for="mois" class="filter-label">Mois</label>
+			<p-dropdown
+				id="mois"
+				[options]="mois"
+				[(ngModel)]="moisSelectionne"
+				optionLabel="label"
+				optionValue="value"
+				placeholder="Toute l'année"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Niveau de Tension -->
+		<div class="filter-item">
+			<label for="niveauTension" class="filter-label">Tension</label>
+			<p-dropdown
+				id="niveauTension"
+				[options]="niveauxTension"
+				[(ngModel)]="niveauTensionSelectionne"
+				optionLabel="code"
+				optionValue="id"
+				placeholder="Tous"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Mode de Facturation -->
+		<div class="filter-item">
+			<label for="modeFacturation" class="filter-label">Mode facturation</label>
+			<p-dropdown
+				id="modeFacturation"
+				[options]="modesFacturation"
+				[(ngModel)]="modeFacturationSelectionne"
+				optionLabel="designation"
+				optionValue="id"
+				placeholder="Tous"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Direction -->
+		<div class="filter-item">
+			<label for="direction" class="filter-label">Directions</label>
+			<p-multiselect
+				id="direction"
+				[options]="directions"
+				[(ngModel)]="directionsSelectionnees"
+				optionLabel="designation"
+				optionValue="id"
+				placeholder="Toutes"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+				display="chip"
+				[maxSelectedLabels]="2"
+			></p-multiselect>
+		</div>
+
+		<!-- Filtre Catégorie Client - Masqué -->
+		<!-- <div class="filter-item">
+			<label for="categorieClient" class="filter-label">Catégorie client</label>
+			<p-dropdown
+				id="categorieClient"
+				[options]="categoriesClient"
+				[(ngModel)]="categorieClientSelectionnee"
+				optionLabel="designation"
+				optionValue="id"
+				placeholder="Tous"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div> -->
+
+		<!-- Bouton Réinitialiser -->
+		<div class="filter-item filter-action">
+			<label class="filter-label opacity-0">Actions</label>
+			<p-button
+				label="Réinitialiser"
+				icon="pi pi-refresh"
+				(onClick)="reinitialiserFiltres()"
+				styleClass="p-button-outlined w-full"
+			></p-button>
+		</div>
+
+	</div>
+
+	<!-- Section des graphiques sur une ligne -->
+	<div class="charts-grid" [class.charts-grid-filtered]="directionsSelectionnees?.length > 0">
+		
+		<!-- Graphique Evolution des ventes -->
+		<!-- Masqué si des directions sont sélectionnées -->
+		<div class="chart-card" *ngIf="!directionsSelectionnees?.length">
+			<div class="chart-header">
+				<h4 class="chart-title">
+					{{headerMensuellesMTBTConsommation}}
+				</h4>
+				<div class="chart-toggle">
+					<span class="toggle-label">GWh</span>
+					<p-toggleswitch
+						[(ngModel)]="afficherMontant"
+						(onChange)="updataChartRepartitionConsommationBTEtMTGroupe()"
+					></p-toggleswitch>
+					<span class="toggle-label">FCFA</span>
+				</div>
+			</div>
+			<div class="chart-subtitle">{{ anneeSelectionnee }} vs {{ anneeSelectionnee - 1 }}</div>
+
+			<div class="chart-container">
+				<div *ngIf="aucuneDonneeDisponible" class="no-data-message">
+					<i class="pi pi-exclamation-triangle"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart 
+					*ngIf="!aucuneDonneeDisponible"
+					type="line"
+					[data]="chartDonneesMensuellesMTBTConsommation"
+					[options]="chartOptionsDonneesMensuellesMTBTConsommation"
+				></p-chart>
+			</div>
+		</div>
+
+		<!-- Graphique Consommations par Direction -->
+		<div class="chart-card">
+			<div class="chart-header">
+				<h4 class="chart-title">
+					Ventes Gwh par Direction - {{ anneeSelectionnee }}
+				</h4>
+			</div>
+
+			<div class="chart-container">
+				<div *ngIf="aucuneDonneeDisponibleDirection" class="no-data-message">
+					<i class="pi pi-exclamation-triangle"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart 
+					*ngIf="!aucuneDonneeDisponibleDirection"
+					type="bar"
+					[data]="chartDataDirection"
+					[options]="chartOptionsDirection"
+				></p-chart>
+			</div>
+		</div>
+
+		<!-- Légende des Directions -->
+		<div class="chart-card">
+			<div class="chart-header">
+				<h4 class="chart-title">Directions</h4>
+			</div>
+			
+			<!-- Liste des directions avec couleurs -->
+			<div class="directions-list">
+				<div *ngIf="getDirectionsFiltrees()?.length; else noDirectionsTemplate">
+					<div *ngFor="let item of getDirectionsFiltrees()" class="direction-item">
+						<div class="direction-info">
+							<div class="direction-color" [style.background-color]="item.couleur"></div>
+							<div class="direction-details">
+								<div class="direction-name">{{ item.directionDesignation }}</div>
+							</div>
+						</div>
+						<div class="direction-value">
+							{{ (item.consommationKwh / 1000000) | number:'1.2-2':'fr-FR' }} GWh
+						</div>
+					</div>
+				</div>
+				<ng-template #noDirectionsTemplate>
+					<div class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+				</ng-template>
+			</div>
+
+			<!-- Total -->
+			<div class="total-section" *ngIf="getDirectionsFiltrees()?.length">
+				<div class="total-info">
+					<div class="total-label">Total</div>
+					<div class="total-value">
+						{{ (getTotalConsommationDirection() / 1000000) | number:'1.2-2':'fr-FR' }} GWh
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	</div> <!-- Fin du conteneur data-container -->
+</div>
+

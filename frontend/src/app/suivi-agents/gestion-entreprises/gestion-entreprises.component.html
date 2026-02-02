@@ -1,0 +1,185 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="gestion-entreprises-container">
+    <p-card>
+        <ng-template pTemplate="header">
+            <div class="card-header">
+                <h2>Gestion des Entreprises</h2>
+            </div>
+        </ng-template>
+
+        <div class="toolbar">
+            <p-iconfield class="search-field">
+                <p-inputicon class="pi pi-search" />
+                <input 
+                    pInputText 
+                    type="text" 
+                    placeholder="Rechercher une entreprise..." 
+                    (input)="chargerEntreprises()"
+                    class="w-full" />
+            </p-iconfield>
+            <p-button 
+                label="Nouvelle Entreprise" 
+                icon="pi pi-building"
+                (onClick)="ouvrirNouveau()"
+                severity="success">
+            </p-button>
+        </div>
+
+        <p-table 
+            [value]="entreprises" 
+            [loading]="loading"
+            [paginator]="true"
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} entreprises"
+            [rowsPerPageOptions]="[10, 25, 50]"
+            responsiveLayout="scroll"
+            styleClass="p-datatable-striped">
+            
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+                    <th>Description</th>
+                    <th>Adresse</th>
+                    <th>Téléphone</th>
+                    <th>Email</th>
+                    <th style="width: 150px">Actions</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-entreprise>
+                <tr>
+                    <td>
+                        <strong>{{ entreprise.nom }}</strong>
+                    </td>
+                    <td>{{ entreprise.description || '-' }}</td>
+                    <td>{{ entreprise.adresse || '-' }}</td>
+                    <td>{{ entreprise.telephone || '-' }}</td>
+                    <td>{{ entreprise.email || '-' }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <p-button 
+                                icon="pi pi-pencil" 
+                                [rounded]="true"
+                                [text]="true"
+                                severity="info"
+                                pTooltip="Modifier"
+                                (onClick)="modifierEntreprise(entreprise)">
+                            </p-button>
+                            <p-button 
+                                icon="pi pi-trash" 
+                                [rounded]="true"
+                                [text]="true"
+                                severity="danger"
+                                pTooltip="Supprimer"
+                                (onClick)="supprimerEntreprise(entreprise)">
+                            </p-button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="6" class="text-center">
+                        <div class="empty-state">
+                            <i class="pi pi-building text-6xl text-gray-400 mb-4"></i>
+                            <p class="text-gray-600">Aucune entreprise trouvée</p>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-card>
+</div>
+
+<!-- Dialog pour créer/modifier une entreprise -->
+<p-dialog 
+    [(visible)]="entrepriseDialog" 
+    [header]="isEditMode ? 'Modifier l\'entreprise' : 'Nouvelle entreprise'"
+    [modal]="true"
+    [style]="{ width: '700px' }"
+    [closable]="true">
+    
+    <form (ngSubmit)="sauvegarder()">
+        <div class="form-grid">
+            <div class="form-group col-span-2">
+                <label for="nom" class="required">Nom de l'entreprise</label>
+                <input 
+                    id="nom"
+                    type="text" 
+                    pInputText 
+                    [(ngModel)]="formData.nom"
+                    name="nom"
+                    [class.ng-invalid]="submitted && !formData.nom"
+                    class="w-full" />
+                <small class="p-error" *ngIf="submitted && !formData.nom">
+                    Le nom est requis
+                </small>
+            </div>
+
+            <div class="form-group col-span-2">
+                <label for="description">Description</label>
+                <textarea 
+                    id="description"
+                    pTextarea 
+                    [(ngModel)]="formData.description"
+                    name="description"
+                    rows="3"
+                    class="w-full">
+                </textarea>
+            </div>
+
+            <div class="form-group col-span-2">
+                <label for="adresse">Adresse</label>
+                <input 
+                    id="adresse"
+                    type="text" 
+                    pInputText 
+                    [(ngModel)]="formData.adresse"
+                    name="adresse"
+                    class="w-full" />
+            </div>
+
+            <div class="form-group">
+                <label for="telephone">Téléphone</label>
+                <input 
+                    id="telephone"
+                    type="text" 
+                    pInputText 
+                    [(ngModel)]="formData.telephone"
+                    name="telephone"
+                    class="w-full" />
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    id="email"
+                    type="email" 
+                    pInputText 
+                    [(ngModel)]="formData.email"
+                    name="email"
+                    class="w-full" />
+            </div>
+        </div>
+    </form>
+
+    <ng-template pTemplate="footer">
+        <p-button 
+            label="Annuler" 
+            icon="pi pi-times" 
+            [text]="true"
+            (onClick)="annuler()"
+            [disabled]="loading">
+        </p-button>
+        <p-button 
+            [label]="isEditMode ? 'Modifier' : 'Créer'" 
+            icon="pi pi-check" 
+            (onClick)="sauvegarder()"
+            [loading]="loading">
+        </p-button>
+    </ng-template>
+</p-dialog>

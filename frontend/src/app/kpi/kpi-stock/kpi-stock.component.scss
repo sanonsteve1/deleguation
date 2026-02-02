@@ -1,0 +1,2482 @@
+// Container principal
+.kpi-commercial-container {
+    width: 100%;
+    height: 790px;
+    max-height: 790px;
+    overflow: hidden;
+    padding: 0.5rem;
+    position: relative;
+
+    @media (max-width: 1024px) {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        padding: 0.4rem;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.3rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.2rem;
+    }
+}
+
+// Overlay de chargement
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--surface-card);
+    padding: 2rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.loading-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-align: center;
+}
+
+// Conteneur des données
+.data-container {
+    transition: opacity 0.3s ease;
+
+    &.loading-blur {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+}
+
+// Style personnalisé pour le spinner
+::ng-deep .custom-spinner {
+    .p-progress-spinner-circle {
+        stroke: var(--primary-color) !important;
+        animation: custom-progress-spinner-dash 1.5s ease-in-out infinite !important;
+    }
+}
+
+@keyframes custom-progress-spinner-dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -35px;
+    }
+    100% {
+        stroke-dasharray: 89, 200;
+        stroke-dashoffset: -124px;
+    }
+}
+
+// Section des KPIs principaux
+.kpi-main-section {
+    margin-bottom: 0.75rem;
+}
+
+.kpi-row-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+    padding-left: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+.kpi-cumulative-row,
+.kpi-monthly-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    @media (max-width: 1600px) {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    @media (max-width: 1400px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 900px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+}
+
+.kpi-main-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+
+    @media (max-width: 1400px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 900px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+}
+
+.kpi-main-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem;
+    background: var(--surface-card);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 65px;
+    min-width: 0; // Permet au contenu de se rétrécir
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    @media (max-width: 1400px) {
+        height: 60px;
+        padding: 0.5rem;
+        gap: 0.4rem;
+    }
+
+    @media (max-width: 1200px) {
+        height: 55px;
+        padding: 0.45rem;
+        gap: 0.35rem;
+    }
+
+    @media (max-width: 900px) {
+        height: 50px;
+        padding: 0.4rem;
+        gap: 0.3rem;
+    }
+
+    @media (max-width: 600px) {
+        height: 60px;
+        padding: 0.5rem;
+        gap: 0.4rem;
+    }
+}
+
+.kpi-main-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    flex-shrink: 0;
+
+    i {
+        font-size: 1.1rem;
+    }
+
+    @media (max-width: 1400px) {
+        width: 32px;
+        height: 32px;
+
+        i {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        width: 30px;
+        height: 30px;
+
+        i {
+            font-size: 0.9rem;
+        }
+    }
+
+    @media (max-width: 900px) {
+        width: 28px;
+        height: 28px;
+
+        i {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        width: 32px;
+        height: 32px;
+
+        i {
+            font-size: 1rem;
+        }
+    }
+}
+
+.kpi-main-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.kpi-main-label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.kpi-main-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: normal; /* Permet le retour à la ligne */
+    overflow-wrap: break-word; /* Coupe les mots trop longs */
+    text-overflow: clip; /* Supprime l'ellipse (...) */
+    flex: 1;
+    min-width: 0;
+
+    @media (max-width: 1400px) {
+        font-size: 0.6rem;
+        letter-spacing: 0.2px;
+    }
+
+    @media (max-width: 1200px) {
+        font-size: 0.55rem;
+        letter-spacing: 0.1px;
+    }
+
+    @media (max-width: 900px) {
+        font-size: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+        font-size: 0.6rem;
+        letter-spacing: 0.2px;
+    }
+}
+
+.kpi-main-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    @media (max-width: 1400px) {
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 1200px) {
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+        font-size: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+        font-size: 0.85rem;
+    }
+}
+
+// Ligne de filtres horizontale
+.filters-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    align-items: end;
+    flex-wrap: nowrap;
+
+
+    @media (max-width: 1200px) {
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+}
+
+// Lignes de KPIs
+.kpi-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+
+    &.row-2 {
+        margin-bottom: 0.75rem;
+    }
+
+    @media (max-width: 1200px) {
+        gap: 0.4rem;
+    }
+
+    @media (max-width: 768px) {
+        gap: 0.3rem;
+        flex-direction: column;
+
+        .kpi-card {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        gap: 0.2rem;
+
+        .kpi-card {
+            margin-bottom: 0.3rem;
+            padding: 0.5rem;
+
+            h3 {
+                font-size: 0.7rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .kpi-value {
+                font-size: 0.9rem;
+            }
+        }
+    }
+}
+
+// Éléments de filtre individuels
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    flex: 1;
+
+    // Année et Mois - plus petits
+    &:nth-child(1),
+    &:nth-child(2) {
+        flex: 0 0 120px;
+
+        @media (max-width: 1200px) {
+            flex: 0 0 100px;
+        }
+
+        @media (max-width: 768px) {
+            flex: 0 0 calc(50% - 0.2rem);
+        }
+    }
+
+    // Tension et Mode facturation - moyens
+    &:nth-child(3),
+    &:nth-child(4) {
+        flex: 0 0 150px;
+
+        @media (max-width: 1200px) {
+            flex: 0 0 130px;
+        }
+
+        @media (max-width: 768px) {
+            flex: 0 0 calc(50% - 0.2rem);
+        }
+    }
+
+    // Bouton Réinitialiser - plus petit
+    &.filter-action {
+        flex: 0 0 100px;
+
+        @media (max-width: 1200px) {
+            flex: 0 0 90px;
+        }
+
+        @media (max-width: 768px) {
+            flex: 0 0 100%;
+            margin-top: 0.5rem;
+        }
+    }
+}
+
+// Labels des filtres
+.filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.1rem;
+
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+    }
+}
+
+// Cartes KPI - design moderne et compact
+.kpi-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--surface-card);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    height: 80px;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    }
+}
+
+.kpi-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    flex-shrink: 0;
+
+    i {
+        font-size: 1.5rem;
+    }
+}
+
+.kpi-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.kpi-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kpi-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kpi-sublabel {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    i {
+        font-size: 0.65rem;
+    }
+}
+
+// Sections de graphiques
+.charts-section {
+    margin-bottom: 0.5rem;
+}
+
+.charts-section-secondary {
+    margin-bottom: 0.5rem;
+}
+
+// Cartes de graphiques principales
+.chart-card {
+    background: var(--surface-card);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    height: 280px;
+    overflow: hidden; // Empêche le débordement
+
+    @media (max-width: 1024px) {
+        height: 320px;
+    }
+}
+
+// Cartes de graphiques secondaires (plus petites)
+.chart-card-small {
+    background: var(--surface-card);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    height: 250px;
+
+    @media (max-width: 1024px) {
+        height: 280px;
+    }
+
+    @media (max-width: 768px) {
+        height: 220px;
+        padding: 0.5rem;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 480px) {
+        height: 200px;
+        padding: 0.4rem;
+        border-radius: 6px;
+    }
+
+    @media (max-width: 360px) {
+        height: 180px;
+        padding: 0.3rem;
+    }
+}
+
+// En-têtes de graphiques
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+    min-height: 20px;
+    padding-bottom: 0.3rem;
+    flex-shrink: 0;
+    
+    // Pour chart-card-bottom, le header doit être plus compact
+    .chart-card-bottom & {
+        margin-bottom: 0.1rem;
+        padding-bottom: 0.2rem;
+    }
+
+    @media (max-width: 768px) {
+        gap: 0.3rem;
+        margin-bottom: 0.1rem;
+        min-height: 18px;
+    }
+
+    @media (max-width: 480px) {
+        gap: 0.25rem;
+        margin-bottom: 0.08rem;
+        min-height: 16px;
+    }
+
+    @media (max-width: 360px) {
+        gap: 0.2rem;
+        margin-bottom: 0.05rem;
+        min-height: 14px;
+    }
+}
+
+.chart-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+    margin-bottom: 0.4rem;
+}
+
+.chart-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: left;
+    color: #000000;
+    flex: 1;
+    min-width: 0;
+}
+
+.chart-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-color-secondary);
+    margin-bottom: 0.4rem;
+    text-align: left;
+    font-weight: 400;
+    flex-shrink: 0;
+}
+
+// Toggle pour kWh/FCFA
+.chart-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-shrink: 0;
+}
+
+.toggle-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+    white-space: nowrap;
+}
+
+// Conteneurs de graphiques
+.chart-container {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    height: 100%;
+    padding: 0.15rem; // Padding modéré
+    overflow: hidden; // Empêche le débordement
+
+    :host ::ng-deep {
+        p-chart {
+            display: block;
+            height: 100% !important;
+            width: 100% !important;
+
+            canvas {
+                height: 100% !important;
+                width: 100% !important;
+                max-height: none !important;
+                max-width: none !important;
+            }
+        }
+    }
+}
+
+.chart-container-donut {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    height: calc(100% - 48px); // Donne plus de place au graphique + légende
+    padding: 0;
+    margin-top: -2.5rem; // Réduit l'espace après le header
+
+    :host ::ng-deep {
+        p-chart {
+            display: block;
+            height: 100% !important;
+            width: 100% !important;
+
+            canvas {
+                height: 100% !important;
+                width: 100% !important;
+                max-height: none !important;
+                max-width: none !important;
+            }
+        }
+    }
+}
+
+// Style spécifique pour le header de la carte donut
+.chart-card:has(.chart-container-donut) {
+    .chart-header {
+        margin-bottom: 0;
+        padding-bottom: 0.1rem;
+    }
+}
+
+.chart-container-small {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    height: calc(100% - 50px); // Réduit de 60px à 50px pour plus d'espace
+    padding: 0.2rem; // Padding minimal pour maximiser l'espace du graphique
+
+    @media (max-width: 768px) {
+        height: calc(100% - 40px); // Réduit de 50px à 40px
+        padding: 0.15rem;
+    }
+
+    @media (max-width: 480px) {
+        height: calc(100% - 35px); // Réduit de 40px à 35px
+        padding: 0.1rem;
+    }
+
+    @media (max-width: 360px) {
+        height: calc(100% - 30px); // Réduit de 30px à 30px
+        padding: 0.05rem;
+    }
+
+    :host ::ng-deep {
+        p-chart {
+            display: block;
+            height: 100% !important;
+            width: 100% !important;
+            min-height: 350px !important; // Augmenté pour inclure légende et axe X
+
+            @media (max-width: 768px) {
+                min-height: 240px !important; // Augmenté de 180px à 240px
+            }
+
+            @media (max-width: 480px) {
+                min-height: 220px !important; // Augmenté de 160px à 220px
+            }
+
+            @media (max-width: 360px) {
+                min-height: 200px !important; // Augmenté de 140px à 200px
+            }
+
+            canvas {
+                height: 100% !important;
+                width: 100% !important;
+                max-height: none !important;
+                max-width: none !important;
+                min-height: 280px !important; // Augmenté de 220px à 280px
+
+                @media (max-width: 768px) {
+                    min-height: 240px !important; // Augmenté de 180px à 240px
+                }
+
+                @media (max-width: 480px) {
+                    min-height: 220px !important; // Augmenté de 160px à 220px
+                }
+
+                @media (max-width: 360px) {
+                    min-height: 200px !important; // Augmenté de 140px à 200px
+                }
+            }
+        }
+    }
+}
+
+// Message "aucune donnée"
+.no-data-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-color-secondary);
+
+    i {
+        font-size: 2rem;
+        color: var(--orange-500);
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        font-size: 0.85rem;
+        margin: 0;
+    }
+}
+
+// Loading
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--primary-color);
+
+    i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+        margin: 0 0 1rem 0;
+        font-weight: 500;
+    }
+}
+
+// Barre de progression
+.progress-bar-container {
+    width: 100%;
+    max-width: 200px;
+    margin-top: 0.5rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: rgba(var(--primary-color-rgb), 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    animation: progressShine 1.5s ease-in-out infinite;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    text-align: center;
+    display: block;
+}
+
+@keyframes progressShine {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+// Styles pour PrimeNG
+:host ::ng-deep {
+    .p-dropdown {
+        width: 100%;
+        font-size: 0.8rem;
+
+        .p-dropdown-label {
+            padding: 0.4rem 0.5rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .p-dropdown-trigger {
+            width: 2rem;
+        }
+    }
+
+    // Styles spécifiques pour les filtres en ligne
+    .filters-row {
+        .p-dropdown {
+            .p-dropdown-label {
+                padding: 0.35rem 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            .p-dropdown-trigger {
+                width: 1.8rem;
+            }
+        }
+
+        .p-button {
+            font-size: 0.75rem;
+            padding: 0.35rem 0.6rem;
+
+            .p-button-icon {
+                font-size: 0.8rem;
+            }
+        }
+    }
+
+    .p-button {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.75rem;
+
+        .p-button-icon {
+            font-size: 0.9rem;
+        }
+    }
+
+    .p-toggleswitch {
+        width: 2.25rem;
+        height: 1.125rem;
+
+        .p-toggleswitch-slider {
+            &:before {
+                width: 0.875rem;
+                height: 0.875rem;
+            }
+        }
+    }
+
+    // Optimisation des légendes de graphiques
+    .p-chart {
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+}
+
+// Responsive - écrans moyens
+@media (max-width: 1024px) {
+    .kpi-commercial-container {
+        padding: 0.4rem;
+    }
+
+    .kpi-card {
+        height: 75px;
+    }
+
+    .kpi-icon {
+        width: 40px;
+        height: 40px;
+
+        i {
+            font-size: 1.3rem;
+        }
+    }
+
+    .kpi-value {
+        font-size: 1.1rem;
+    }
+}
+
+
+// Styles spécifiques pour la disposition 5 KPI par ligne
+.kpi-main-grid {
+    // Assurer que les cartes s'adaptent bien à la grille
+    .kpi-main-card {
+        // Éviter que le contenu déborde
+        overflow: hidden;
+
+        // Assurer une répartition équitable de l'espace
+        flex-shrink: 1;
+        flex-grow: 1;
+
+        // Améliorer la lisibilité sur petits écrans
+        @media (max-width: 1200px) {
+            .kpi-main-label {
+                // Permettre le retour à la ligne sur très petits écrans
+                white-space: normal;
+                line-height: 1.2;
+                max-height: 2.4em; // 2 lignes max
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+        }
+    }
+}
+
+// Responsive - petits écrans
+@media (max-width: 768px) {
+    .kpi-commercial-container {
+        padding: 0.3rem;
+    }
+
+    .filter-label {
+        font-size: 0.7rem;
+    }
+
+    .kpi-card {
+        height: 70px;
+        padding: 0.6rem;
+        gap: 0.5rem;
+    }
+
+    .kpi-icon {
+        width: 35px;
+        height: 35px;
+
+        i {
+            font-size: 1.1rem;
+        }
+    }
+
+    .kpi-label {
+        font-size: 0.65rem;
+    }
+
+    .kpi-value {
+        font-size: 1rem;
+    }
+
+    .kpi-sublabel {
+        font-size: 0.65rem;
+    }
+
+    .chart-card,
+    .chart-card-small {
+        padding: 0.6rem;
+    }
+
+    .chart-title {
+        font-size: 0.7rem;
+    }
+
+    .chart-subtitle {
+        font-size: 0.65rem;
+    }
+}
+
+// Très petits écrans
+@media (max-width: 480px) {
+    .kpi-card {
+        height: 65px;
+    }
+
+    .kpi-icon {
+        width: 32px;
+        height: 32px;
+
+        i {
+            font-size: 1rem;
+        }
+    }
+
+    .kpi-value {
+        font-size: 0.95rem;
+    }
+
+    .chart-card {
+        height: 260px;
+    }
+}
+
+// Empêcher les débordements
+* {
+    box-sizing: border-box;
+}
+
+// Couleurs pour les taux de croissance
+.text-green-600 {
+    color: #16a34a;
+}
+
+.text-red-600 {
+    color: #dc2626;
+}
+
+// Styles spécifiques pour les cartes KPI
+.kpi-card {
+
+    &.conso-kwh-mois {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+
+        h3 {
+            color: white;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h3 {
+                font-size: 0.75rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .kpi-value {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h3 {
+                font-size: 0.7rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .kpi-value {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    &.conso-fcfa-mois {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        color: white;
+
+        h3 {
+            color: white;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h3 {
+                font-size: 0.75rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .kpi-value {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h3 {
+                font-size: 0.7rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .kpi-value {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    &.conso-kwh-cumule {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        color: white;
+
+        h3 {
+            color: white;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h3 {
+                font-size: 0.75rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .kpi-value {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h3 {
+                font-size: 0.7rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .kpi-value {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    &.conso-fcfa-cumules {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        color: #333;
+
+        h3 {
+            color: #333;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h3 {
+                font-size: 0.75rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .kpi-value {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h3 {
+                font-size: 0.7rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .kpi-value {
+                font-size: 0.9rem;
+            }
+        }
+    }
+
+    &.abonnes-mois {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        color: #333;
+
+        h3 {
+            color: #333;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            h3 {
+                font-size: 0.75rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .kpi-value {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h3 {
+                font-size: 0.7rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .kpi-value {
+                font-size: 0.9rem;
+            }
+        }
+    }
+}
+
+// Styles spécifiques pour les KPIs principaux
+.kpi-main-card {
+    &.mt-sales {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.bt-sales {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.kwh-month {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.fcfa-month {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.kwh-cumulative {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.fcfa-cumulative {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.subscribers-month {
+        background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.subscribers-cumul {
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); /* Bleu intense */
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.connections-month {
+        background: linear-gradient(135deg, #14b8a6 0%, #0f766e 100%);
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+    &.connections-cumul {
+        background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); /* Orange ambré */
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.recovery-rate-cumul {
+        background: linear-gradient(135deg, #92400e 0%, #78350f 100%); /* Marron foncé */
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    &.recovery-rate-month {
+        background: linear-gradient(135deg, #a16207 0%, #854d0e 100%); /* Marron ambré */
+        color: white;
+
+        .kpi-main-icon {
+            background-color: rgba(255, 255, 255, 0.25);
+
+            i {
+                color: white;
+            }
+        }
+
+        .kpi-main-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .kpi-main-value {
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+    }
+}
+
+// ============================================
+// Styles pour le bouton d'aide et le popover
+// ============================================
+
+:host ::ng-deep {
+  .p-button-help-kpi {
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+    color: var(--text-color-secondary);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      color: var(--primary-color);
+      background-color: rgba(var(--primary-color-rgb), 0.1);
+      transform: scale(1.1);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.15rem rgba(var(--primary-color-rgb), 0.2);
+    }
+
+    .p-button-icon {
+      font-size: 0.7rem;
+    }
+
+    @media (max-width: 1200px) {
+      width: 1.15rem;
+      height: 1.15rem;
+
+      .p-button-icon {
+        font-size: 0.65rem;
+      }
+    }
+
+    @media (max-width: 900px) {
+      width: 1.1rem;
+      height: 1.1rem;
+
+      .p-button-icon {
+        font-size: 0.6rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      width: 1.2rem;
+      height: 1.2rem;
+
+      .p-button-icon {
+        font-size: 0.65rem;
+      }
+    }
+  }
+
+  // Styles spécifiques pour les boutons d'aide dans les cartes KPI avec fond coloré
+  .kpi-main-card.kwh-cumulative .p-button-help-kpi,
+  .kpi-main-card.subscribers-cumul .p-button-help-kpi,
+  .kpi-main-card.fcfa-month .p-button-help-kpi,
+  .kpi-main-card.subscribers-month .p-button-help-kpi,
+  .kpi-main-card.connections-cumul .p-button-help-kpi,
+  .kpi-main-card.fcfa-cumulative .p-button-help-kpi {
+    color: rgba(255, 255, 255, 0.8);
+
+    &:hover {
+      color: #fff;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .help-panel {
+    max-width: 380px;
+    width: 90vw;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    padding: 0;
+
+    .p-overlaypanel-content {
+      padding: 0;
+    }
+
+    @media (max-width: 480px) {
+      max-width: calc(100vw - 2rem);
+      width: calc(100vw - 2rem);
+    }
+  }
+
+  // Styles pour les boutons d'aide des graphiques
+  .p-button-help {
+    width: 1.15rem;
+    height: 1.15rem;
+    padding: 0;
+    color: var(--text-color-secondary);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-left: 0.25rem;
+
+    &:hover {
+      color: var(--primary-color);
+      background-color: rgba(var(--primary-color-rgb), 0.1);
+      transform: scale(1.1);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.15rem rgba(var(--primary-color-rgb), 0.2);
+    }
+
+    .p-button-icon {
+      font-size: 0.65rem;
+    }
+
+    @media (max-width: 768px) {
+      width: 1.1rem;
+      height: 1.1rem;
+
+      .p-button-icon {
+        font-size: 0.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      width: 1.05rem;
+      height: 1.05rem;
+
+      .p-button-icon {
+        font-size: 0.55rem;
+      }
+    }
+  }
+}
+
+.help-content {
+  padding: 1.25rem;
+  color: var(--text-color);
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+}
+
+.help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.help-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 0.5rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--primary-color);
+
+  i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+.help-description {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0;
+  padding: 0.75rem;
+  background: rgba(var(--primary-color-rgb), 0.05);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-color);
+
+  strong {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+}
+
+.help-logic {
+  margin-top: 0.25rem;
+}
+
+.help-subtitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0.75rem 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
+}
+
+.help-formula-text {
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--text-color);
+  margin: 0 0 0.75rem 0;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.08) 0%, rgba(var(--primary-color-rgb), 0.03) 100%);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-color);
+  font-weight: 500;
+
+  strong {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem;
+  }
+}
+
+.help-formula-example {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-color-secondary);
+  margin: 0 0 0.75rem 0;
+  padding: 0.75rem;
+  background: rgba(var(--primary-color-rgb), 0.03);
+  border-radius: 8px;
+  border: 1px dashed rgba(var(--primary-color-rgb), 0.2);
+  font-style: italic;
+
+  strong {
+    color: var(--text-color);
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+    padding: 0.6rem;
+  }
+}
+
+.help-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  li {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-color-secondary);
+    position: relative;
+    padding-left: 1.25rem;
+
+    &::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    strong {
+      color: var(--text-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.8rem;
+      padding-left: 1rem;
+    }
+  }
+}
+
+// ============================================
+// Styles pour les boxes d'équipements
+// ============================================
+
+.equipements-section {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+// Style spécifique pour les cartes de la section du bas
+
+.chart-card-bottom,
+.equipements-container {
+    height: 370px;
+
+    @media (max-width: 1024px) {
+        height: 320px;
+    }
+
+    @media (max-width: 767px) {
+        height: 280px;
+    }
+}
+
+// Maximiser la surface utile des histogrammes dans les cartes de la dernière ligne
+.chart-card-bottom {
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    
+    // Le wrapper du contenu (loading/data) doit prendre tout l'espace disponible
+    > div:not(.chart-header):not(.chart-subtitle) {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+}
+
+// p-chart occupe TOUT l'espace disponible
+.chart-card-bottom p-chart {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+    height: 100% !important;
+    min-height: 0;
+}
+
+// Canvas qui s'adapte parfaitement
+:host ::ng-deep .chart-card-bottom p-chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    aspect-ratio: auto !important;
+    object-fit: contain;
+}
+
+// Message "Aucune donnée" dans chart-card-bottom
+.chart-card-bottom .no-data-message {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+}
+
+.equipements-container {
+    background: var(--surface-card);
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 1024px) {
+        height: 280px;
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.875rem;
+        height: auto;
+        min-height: 300px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.75rem;
+        border-radius: 10px;
+        min-height: 250px;
+    }
+}
+
+.equipements-content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.equipements-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+    
+    .equipements-header-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.625rem;
+        
+        .equipements-header-top-row {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        margin-bottom: 0.625rem;
+        padding-bottom: 0.5rem;
+    }
+}
+
+.equipements-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.equipements-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+    line-height: 1.3;
+    flex: 1;
+    min-width: 0;
+    letter-spacing: -0.02em;
+
+    @media (max-width: 768px) {
+        font-size: 1rem;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.9rem;
+    }
+}
+
+.equipements-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-color-secondary);
+    font-weight: 500;
+    opacity: 0.8;
+
+    @media (max-width: 480px) {
+        font-size: 0.75rem;
+    }
+}
+
+.equipements-switch {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    
+    .switch-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-color-secondary);
+        
+        &:first-child {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        &:last-child {
+            color: #ef4444;
+            font-weight: 600;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        gap: 0.5rem;
+        
+        .switch-label {
+            font-size: 0.8rem;
+        }
+    }
+}
+
+.equipements-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.65rem;
+    flex: 1;
+    width: 100%;
+
+    @media (max-width: 1400px) {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.6rem;
+    }
+
+    @media (max-width: 1200px) {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.55rem;
+    }
+
+    @media (max-width: 768px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.45rem;
+    }
+}
+
+.equipement-box {
+    background: #f8fafc;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    padding: 0.85rem 0.6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 110px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.5s ease;
+    }
+
+    &:hover {
+        transform: translateY(-5px) scale(1.03);
+        
+        &::before {
+            left: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 0.7rem 0.5rem;
+        min-height: 95px;
+        border-radius: 8px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.6rem 0.4rem;
+        min-height: 90px;
+        border-radius: 7px;
+    }
+}
+
+.equipement-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @media (max-width: 768px) {
+        font-size: 1.5rem;
+        margin-bottom: 0.4rem;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 1.3rem;
+        margin-bottom: 0.35rem;
+    }
+}
+
+.equipement-box:hover .equipement-icon {
+    transform: scale(1.1);
+}
+
+.equipement-box-used {
+    background: #f8fafc;
+    border: 2px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        background: #f1f5f9;
+        border-color: rgba(245, 158, 11, 0.5);
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .equipement-icon {
+        color: #f59e0b;
+    }
+
+    .equipement-name {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .equipement-value {
+        color: #f59e0b;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+}
+
+.equipement-box-critical {
+    background: #f8fafc;
+    border: 2px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        background: #f1f5f9;
+        border-color: rgba(239, 68, 68, 0.5);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .equipement-icon {
+        color: #ef4444;
+    }
+
+    .equipement-name {
+        color: #1e293b;
+        font-weight: 600;
+    }
+
+    .equipement-value {
+        color: #ef4444;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+}
+
+.equipement-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    transition: color 0.3s ease;
+
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+        margin-bottom: 0.4rem;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.65rem;
+        margin-bottom: 0.35rem;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+}
+
+.equipement-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+    flex-shrink: 0;
+
+    @media (max-width: 768px) {
+        font-size: 1.1rem;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 1rem;
+    }
+}
+
+.no-data-message-equipements {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    color: var(--text-color-secondary);
+    padding: 2rem;
+
+    i {
+        font-size: 2.5rem;
+        color: var(--orange-500);
+        margin-bottom: 1rem;
+        opacity: 0.6;
+
+        @media (max-width: 768px) {
+            font-size: 2rem;
+        }
+    }
+
+    p {
+        font-size: 0.95rem;
+        margin: 0;
+        font-weight: 500;
+        opacity: 0.8;
+
+        @media (max-width: 768px) {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        min-height: 250px;
+        padding: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        min-height: 200px;
+        padding: 1rem;
+    }
+}
+
+// Section compacte des équipements (top 5)
+.equipements-compact-section {
+    margin-top: 1rem;
+    
+    .equipements-compact-card {
+        background: var(--surface-card);
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        
+        .equipements-compact-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+            
+            .equipements-compact-title {
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--text-color);
+                flex: 1;
+                min-width: 200px;
+            }
+            
+            .equipements-compact-year {
+                font-size: 0.875rem;
+                color: var(--text-color-secondary);
+                padding: 0.25rem 0.75rem;
+                background: var(--surface-100);
+                border-radius: 6px;
+            }
+            
+            .equipements-compact-switch {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                
+                .switch-label {
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    color: var(--text-color-secondary);
+                }
+            }
+            
+            @media (max-width: 768px) {
+                flex-direction: column;
+                align-items: flex-start;
+                
+                .equipements-compact-title {
+                    width: 100%;
+                }
+            }
+        }
+        
+        .equipements-compact-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            
+            .no-data-message-compact {
+                padding: 2rem;
+                text-align: center;
+                color: var(--text-color-secondary);
+                font-size: 0.9rem;
+                
+                i {
+                    font-size: 2rem;
+                    color: var(--text-color-secondary);
+                    margin-bottom: 0.5rem;
+                }
+            }
+            
+            .equipement-compact-box {
+                display: grid;
+                grid-template-columns: 40px 40px 1fr auto;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.75rem;
+                border-radius: 8px;
+                transition: all 0.2s ease;
+                
+                .equipement-compact-rank {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: white;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+                }
+                
+                .equipement-compact-icon {
+                    font-size: 1.5rem;
+                    color: var(--text-color-secondary);
+                }
+                
+                .equipement-compact-name {
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    color: var(--text-color);
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+                
+                .equipement-compact-value {
+                    font-size: 1rem;
+                    font-weight: 700;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 6px;
+                    text-align: center;
+                    white-space: nowrap;
+                }
+                
+                &.equipement-compact-used {
+                    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fcd34d 100%);
+                    
+                    &:hover {
+                        background: linear-gradient(135deg, #fde68a 0%, #fbbf24 50%, #f59e0b 100%);
+                        transform: translateX(4px);
+                    }
+                    
+                    .equipement-compact-value {
+                        background: rgba(245, 158, 11, 0.15);
+                        color: #b45309;
+                    }
+                }
+                
+                &.equipement-compact-critical {
+                    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 50%, #fca5a5 100%);
+                    
+                    &:hover {
+                        background: linear-gradient(135deg, #fecaca 0%, #fca5a5 50%, #f87171 100%);
+                        transform: translateX(4px);
+                    }
+                    
+                    .equipement-compact-value {
+                        background: rgba(239, 68, 68, 0.15);
+                        color: #b91c1c;
+                    }
+                }
+            }
+        }
+    }
+}
+

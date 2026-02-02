@@ -1,0 +1,203 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Styles globaux pour la responsivité des composants PrimeNG */
+.p-datepicker {
+    z-index: 9999 !important;
+}
+
+.p-multiselect-panel,
+.p-dropdown-panel {
+    z-index: 9999 !important;
+    max-height: 300px !important;
+    overflow-y: auto !important;
+}
+
+/* Responsive design général */
+@media (max-width: 768px) {
+    .p-dialog {
+        width: 95vw !important;
+        max-width: 95vw !important;
+    }
+    
+    .p-datepicker {
+        width: 90vw !important;
+        max-width: 90vw !important;
+    }
+    
+    .p-multiselect-panel,
+    .p-dropdown-panel {
+        width: 90vw !important;
+        max-width: 90vw !important;
+    }
+}
+
+/* Amélioration des cartes pour mobile */
+@media (max-width: 640px) {
+    .card {
+        padding: 1rem !important;
+    }
+    
+    .dashboard-container {
+        padding: 0.5rem !important;
+    }
+}
+/* Styles globaux pour le popup DetailPopupComponent */
+.leaflet-popup-content-wrapper .enhanced-popup,
+.dynamic-component-container .enhanced-popup,
+app-detail-popup .enhanced-popup {
+  background: #ffffff !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid #e5e7eb !important;
+  overflow: hidden !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  max-width: 480px !important;
+  min-width: 400px !important;
+}
+
+.leaflet-popup-content-wrapper .popup-header,
+.dynamic-component-container .popup-header,
+app-detail-popup .popup-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  padding: 20px 24px !important;
+  position: relative !important;
+}
+
+.leaflet-popup-content-wrapper .popup-stats,
+.dynamic-component-container .popup-stats,
+app-detail-popup .popup-stats {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+  padding: 24px !important;
+  background: #f8fafc !important;
+}
+
+.leaflet-popup-content-wrapper .popup-projects-section,
+.dynamic-component-container .popup-projects-section,
+app-detail-popup .popup-projects-section {
+  padding: 0 24px 24px !important;
+}
+
+.leaflet-popup-content-wrapper .popup-footer,
+.dynamic-component-container .popup-footer,
+app-detail-popup .popup-footer {
+  background: #f8fafc !important;
+  border-top: 1px solid #e5e7eb !important;
+  padding: 20px 24px !important;
+}
+
+/* Forcer la priorité des styles du popup */
+.leaflet-popup-content-wrapper .enhanced-popup *,
+.dynamic-component-container .enhanced-popup *,
+app-detail-popup .enhanced-popup * {
+  box-sizing: border-box !important;
+}
+
+/* Amélioration globale de la visibilité des popups Leaflet */
+.leaflet-popup {
+  z-index: 9999 !important;
+  position: relative !important;
+}
+
+.leaflet-popup-content-wrapper {
+  z-index: 9999 !important;
+  position: relative !important;
+  border: 2px solid rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.25), 
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+.leaflet-popup-tip {
+  z-index: 9999 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Styles spécifiques pour les popups de projets */
+.project-mini-popup .leaflet-popup-content-wrapper {
+  border: 2px solid rgba(34, 197, 94, 0.3) !important;
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.2), 
+    0 5px 15px rgba(0, 0, 0, 0.1),
+    0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+}
+
+.project-mini-popup .leaflet-popup-tip {
+  background: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Animation d'apparition des popups */
+.leaflet-popup {
+  animation: popupFadeIn 0.3s ease-out !important;
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Amélioration de la visibilité au zoom */
+@media (max-width: 768px) {
+  .leaflet-popup-content-wrapper {
+    min-width: 300px !important;
+    max-width: 90vw !important;
+  }
+  
+  .enhanced-popup-container .leaflet-popup-content {
+    min-width: 300px !important;
+    max-width: 90vw !important;
+  }
+}
+
+/* Correction globale des z-index pour les dropdowns PrimeNG */
+::ng-deep .p-dropdown-panel {
+  z-index: 10000 !important;
+}
+
+::ng-deep .p-dropdown-overlay {
+  z-index: 10000 !important;
+}
+
+/* S'assurer que les dropdowns sont au-dessus du menu mobile */
+.layout-mobile-active ::ng-deep .p-dropdown-panel {
+  z-index: 10000 !important;
+}
+
+.layout-mobile-active ::ng-deep .p-dropdown-overlay {
+  z-index: 10000 !important;
+}
+
+/* Correction pour les écrans mobiles */
+@media (max-width: 1024px) {
+  ::ng-deep .p-dropdown-panel {
+    z-index: 10000 !important;
+  }
+  
+  .layout-mobile-active ::ng-deep .p-dropdown-panel {
+    z-index: 10000 !important;
+  }
+}
+
+/* Styles Leaflet pour la visualisation des cartes */
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+}
+
+.leaflet-popup-content {
+  margin: 13px 19px;
+  line-height: 1.4;
+}

@@ -1,0 +1,145 @@
+<p-toast></p-toast>
+<div class="rapports-container">
+    <div class="header">
+        <h1 class="title">
+            <i class="pi pi-chart-bar mr-2"></i>
+            Rapports et Statistiques
+        </h1>
+        <p class="subtitle">Analysez l'activité de vos agents avec des rapports détaillés</p>
+    </div>
+
+    <!-- Filtres -->
+    <p-card class="filters-card">
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label class="filter-label">Agent</label>
+                <p-dropdown 
+                    [(ngModel)]="selectedAgent" 
+                    [options]="agents" 
+                    optionLabel="fullName"
+                    placeholder="Tous les agents"
+                    [showClear]="true"
+                    class="w-full">
+                </p-dropdown>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Date de début</label>
+                <p-calendar 
+                    [(ngModel)]="dateDebut" 
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [showTime]="false"
+                    placeholder="Sélectionner une date"
+                    class="w-full">
+                </p-calendar>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Date de fin</label>
+                <p-calendar 
+                    [(ngModel)]="dateFin" 
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [showTime]="false"
+                    placeholder="Sélectionner une date"
+                    class="w-full">
+                </p-calendar>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Période</label>
+                <p-dropdown 
+                    [(ngModel)]="periode" 
+                    [options]="[
+                        { label: 'Jour', value: 'jour' },
+                        { label: 'Semaine', value: 'semaine' },
+                        { label: 'Mois', value: 'mois' }
+                    ]"
+                    optionLabel="label"
+                    optionValue="value"
+                    class="w-full">
+                </p-dropdown>
+            </div>
+
+            <div class="filter-actions">
+                <p-button 
+                    label="Filtrer" 
+                    icon="pi pi-filter"
+                    (onClick)="appliquerFiltres()"
+                    [loading]="loading"
+                    class="filter-btn">
+                </p-button>
+                <p-button 
+                    label="Réinitialiser" 
+                    icon="pi pi-refresh"
+                    severity="secondary"
+                    [outlined]="true"
+                    (onClick)="reinitialiserFiltres()"
+                    class="filter-btn">
+                </p-button>
+            </div>
+
+            <div class="export-actions">
+                <p-button 
+                    icon="pi pi-file-excel"
+                    severity="success"
+                    [rounded]="true"
+                    [text]="true"
+                    pTooltip="Exporter en Excel"
+                    (onClick)="exporterExcel()"
+                    [disabled]="loading || statistiquesAgents.length === 0"
+                    class="export-btn">
+                </p-button>
+                <p-button 
+                    icon="pi pi-file-pdf"
+                    severity="danger"
+                    [rounded]="true"
+                    [text]="true"
+                    pTooltip="Exporter en PDF"
+                    (onClick)="exporterPDF()"
+                    [disabled]="loading || statistiquesAgents.length === 0"
+                    class="export-btn">
+                </p-button>
+            </div>
+        </div>
+    </p-card>
+
+    <!-- Graphiques -->
+    <div class="charts-grid" *ngIf="!loading && statistiquesAgents.length > 0">
+        <p-card class="chart-card">
+            <ng-template pTemplate="header">
+                <div class="card-header">
+                    <h3>Heures travaillées par agent</h3>
+                </div>
+            </ng-template>
+            <p-chart type="bar" [data]="chartHeures" [options]="chartOptions" [style]="{'height': '300px'}"></p-chart>
+        </p-card>
+
+        <p-card class="chart-card">
+            <ng-template pTemplate="header">
+                <div class="card-header">
+                    <h3>Évolution dans le temps</h3>
+                </div>
+            </ng-template>
+            <p-chart type="line" [data]="chartEvolution" [options]="chartOptions" [style]="{'height': '300px'}"></p-chart>
+        </p-card>
+    </div>
+
+    <!-- Message si aucune donnée -->
+    <div *ngIf="!loading && statistiquesAgents.length === 0" class="empty-state">
+        <p-card>
+            <div class="text-center p-8">
+                <i class="pi pi-chart-line text-6xl text-gray-300 mb-4"></i>
+                <p class="text-lg text-gray-600">Aucune donnée disponible</p>
+                <p class="text-sm text-gray-500 mt-2">Modifiez les filtres pour voir des statistiques</p>
+            </div>
+        </p-card>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-overlay">
+        <p-progressSpinner></p-progressSpinner>
+        <p class="loading-text">Calcul des statistiques...</p>
+    </div>
+</div>

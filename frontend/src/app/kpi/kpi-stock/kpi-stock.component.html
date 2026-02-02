@@ -1,0 +1,1073 @@
+<div class="kpi-commercial-container">
+
+    <!-- Section des filtres KPI Commercial -->
+    <div class="filters-row">
+
+        <!-- Filtre Année -->
+        <div class="filter-item">
+            <label for="annee" class="filter-label">Année</label>
+            <p-dropdown
+                id="annee"
+                [options]="annees"
+                [(ngModel)]="anneeSelectionnee"
+                placeholder="Année"
+                (onChange)="chargerStatistiques()"
+                styleClass="w-full"
+            ></p-dropdown>
+        </div>
+
+        <!-- Filtre Mois -->
+        <div class="filter-item">
+            <label for="mois" class="filter-label">Mois</label>
+            <p-dropdown
+                id="mois"
+                [options]="mois"
+                [(ngModel)]="moisSelectionne"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Toute l'année"
+                (onChange)="chargerStatistiques()"
+                styleClass="w-full"
+                [showClear]="true"
+            ></p-dropdown>
+        </div>
+
+        <!-- Bouton Réinitialiser -->
+        <div class="filter-item filter-action">
+            <label class="filter-label opacity-0">Actions</label>
+            <p-button
+                label="Réinitialiser"
+                icon="pi pi-refresh"
+                (onClick)="reinitialiserFiltres()"
+                styleClass="p-button-outlined w-full"
+            ></p-button>
+        </div>
+
+    </div>
+    <!-- Spinner de chargement -->
+    <div *ngIf="loading" class="loading-overlay">
+        <div class="loading-content">
+            <p-progressSpinner
+                styleClass="custom-spinner"
+                strokeWidth="4"
+                animationDuration="1s">
+            </p-progressSpinner>
+            <div class="loading-text">{{ loadingMessage }}</div>
+        </div>
+    </div>
+
+
+    <!-- Section des KPIs principaux -->
+    <div class="kpi-main-section">
+
+        <!-- Ligne des KPI cumulés
+        <div class="kpi-row-label">KPI Cumulés</div>
+        -->
+        <div class="kpi-cumulative-row">
+            <!--Nombre d'équipement total en stock -->
+            <div class="kpi-main-card kwh-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Nombre d'équipements en stock</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelNombreEquipements.toggle($event)"
+                            [attr.aria-label]="'Aide sur le nombre d\'équipements en stock'"
+                        ></button>
+                        <p-overlayPanel #helpPanelNombreEquipements [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-bolt"></i>
+                                        Nombre d'équipements en stock
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI compte le <strong>nombre total d'équipements distincts</strong> présents en stock sur la période sélectionnée.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque équipement, on calcule : <strong>Stock restant = Entrées - Sorties</strong> (en quantités)<br>
+                                            Puis on compte uniquement les équipements ayant un <strong>stock restant > 0</strong>
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez reçu 100 transformateurs et en avez sorti 30, il reste 70 en stock. Si vous avez 5 types d'équipements différents avec du stock, le KPI affichera 5.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Mesure la <strong>diversité du stock</strong> : combien de types d'équipements différents vous gérez</li>
+                                            <li>Permet de voir si vous avez une <strong>gamme variée</strong> ou si vous vous concentrez sur quelques références</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatKPIValue(dataKpiStock?.quantiteStockAnnee)}}</div>
+                </div>
+            </div>
+
+            <!-- Valeur total equipement en stock -->
+            <div class="kpi-main-card subscribers-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-users"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Valeur du stock</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelValeurStock.toggle($event)"
+                            [attr.aria-label]="'Aide sur la valeur du stock'"
+                        ></button>
+                        <p-overlayPanel #helpPanelValeurStock [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-users"></i>
+                                        Valeur du stock
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI représente la <strong>valeur totale du stock</strong> (en FCFA) à la fin de la période sélectionnée. C'est l'argent que vous avez investi dans vos équipements en stock.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            <strong>Valeur du stock = (Somme de toutes les entrées) - (Somme de toutes les sorties)</strong><br>
+                                            Chaque entrée augmente la valeur, chaque sortie la diminue.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez acheté pour 10 millions FCFA d'équipements et en avez sorti pour 3 millions, votre stock vaut 7 millions FCFA.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Mesure le <strong>capital immobilisé</strong> : l'argent que vous avez investi dans vos stocks</li>
+                                            <li>Impacte votre <strong>trésorerie</strong> : plus le stock est élevé, moins vous avez d'argent disponible</li>
+                                            <li>Permet de suivre l'<strong>évolution de la valeur</strong> de votre stock dans le temps</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatFcfaAuto(dataKpiStock?.valeurTotalStockAnnee)}}</div>
+                </div>
+            </div>
+
+            <!-- Taux de rupture -->
+            <div class="kpi-main-card subscribers-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-exclamation-triangle"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Taux de rupture</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelTauxRupture.toggle($event)"
+                            [attr.aria-label]="'Aide sur le taux de rupture'"
+                        ></button>
+                        <p-overlayPanel #helpPanelTauxRupture [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-exclamation-triangle"></i>
+                                        Taux de rupture
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI mesure le <strong>pourcentage d'équipements en rupture de stock</strong> (plus rien en stock). Plus ce pourcentage est faible, mieux c'est !
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque équipement : <strong>Stock restant = Entrées - Sorties</strong><br>
+                                            Si stock restant ≤ 0, l'équipement est en rupture.<br>
+                                            <strong>Taux de rupture = (Nombre d'équipements en rupture / Nombre total d'équipements) × 100</strong>
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous gérez 20 types d'équipements et que 2 sont en rupture (stock = 0), votre taux de rupture est de 10%. Idéalement, il devrait être inférieur à 5%.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Un taux faible (≤5%) = <strong>bonne gestion</strong> : vous avez toujours les équipements nécessaires</li>
+                                            <li>Un taux élevé = <strong>problème</strong> : vous risquez de ne pas pouvoir répondre aux besoins</li>
+                                            <li>Permet d'identifier les équipements nécessitant un <strong>réapprovisionnement urgent</strong></li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatPercent(dataKpiStock?.tauxRupture)}}</div>
+                </div>
+            </div>
+
+            <!-- Ratio Stock / Consommation -->
+            <div class="kpi-main-card kwh-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-percentage"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Ratio Stock/Consommation</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelRatioStockConsommation.toggle($event)"
+                            [attr.aria-label]="'Aide sur le ratio stock/consommation'"
+                        ></button>
+                        <p-overlayPanel #helpPanelRatioStockConsommation [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-percentage"></i>
+                                        Ratio Stock/Consommation
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI compare votre <strong>stock maximum</strong> à votre <strong>consommation totale</strong>. Il indique si vous avez trop ou trop peu de stock par rapport à vos besoins.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            On calcule d'abord le stock à la fin de chaque mois : <strong>Stock fin de mois = Entrées - Sorties</strong> (cumulé)<br>
+                                            Puis on prend le <strong>stock le plus élevé</strong> sur la période.<br>
+                                            <strong>Ratio = Stock maximum / Total des sorties</strong>
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si votre stock maximum était de 100 millions FCFA et que vous avez sorti pour 50 millions sur l'année, le ratio est de 2. Cela signifie que vous avez assez de stock pour 2 ans de consommation au rythme actuel.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Un ratio élevé (>2) = <strong>surstockage</strong> : vous avez peut-être trop de stock par rapport à vos besoins</li>
+                                            <li>Un ratio faible (<1) = <strong>rotation rapide</strong> ou <strong>stock optimisé</strong> : votre stock se renouvelle souvent</li>
+                                            <li>Permet d'ajuster vos <strong>commandes</strong> pour éviter d'avoir trop ou trop peu de stock</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatRatio(dataKpiStock?.ratioStockConsommation)}}</div>
+                </div>
+            </div>
+
+            <!-- Articles en surstock -->
+            <div class="kpi-main-card subscribers-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-box"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Articles en surstock</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelArticlesSurstock.toggle($event)"
+                            [attr.aria-label]="'Aide sur les articles en surstock'"
+                        ></button>
+                        <p-overlayPanel #helpPanelArticlesSurstock [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-box"></i>
+                                        Articles en surstock
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI compte le <strong>nombre d'équipements en surstock</strong>, c'est-à-dire ceux qui restent trop longtemps en stock sans être utilisés. Ces équipements immobilisent votre capital inutilement.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque équipement : <strong>Taux de rotation = Sorties totales / Stock moyen</strong><br>
+                                            Si le taux de rotation < 30%, l'équipement est considéré en surstock.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez un stock moyen de 1000 unités d'un équipement mais que vous n'en sortez que 200 par an, le taux de rotation est de 20% (200/1000). C'est un surstock car vous avez assez de stock pour 5 ans !
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Identifie les équipements qui <strong>restent trop longtemps</strong> en stock sans être utilisés</li>
+                                            <li>Permet de <strong>réduire les commandes</strong> pour ces équipements et libérer du capital</li>
+                                            <li>Évite l'<strong>immobilisation excessive</strong> d'argent dans des stocks qui ne bougent pas</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatKPIValue(dataKpiStock?.nombreArticlesSurstock)}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deuxième ligne de KPIs : Surstock, Coûts et Performance Logistique -->
+        <div class="kpi-cumulative-row">
+            <!-- Coût d'entreposage -->
+            <div class="kpi-main-card fcfa-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-money-bill"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Coût d'entreposage</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelCoutEntreposage.toggle($event)"
+                            [attr.aria-label]="'Aide sur le coût d\'entreposage'"
+                        ></button>
+                        <p-overlayPanel #helpPanelCoutEntreposage [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-money-bill"></i>
+                                        Coût d'entreposage
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI représente le <strong>coût total d'entreposage</strong> de votre stock. C'est l'argent que coûte le fait de garder vos équipements en stock (espace, assurance, etc.).
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            <strong>Coût d'entreposage = Valeur du stock × Taux d'entreposage</strong><br>
+                                            Le taux d'entreposage est généralement de <strong>5% par an</strong> (il peut varier selon le type d'équipement).
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si votre stock vaut 100 millions FCFA et que le taux est de 5%, le coût d'entreposage est de 5 millions FCFA par an. C'est comme payer un loyer pour stocker vos équipements.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Mesure le <strong>coût réel de possession</strong> de votre stock (pas seulement l'achat, mais aussi le stockage)</li>
+                                            <li>Permet de voir si vous payez trop cher pour stocker des équipements qui ne bougent pas</li>
+                                            <li>Un coût élevé peut indiquer un <strong>surstockage</strong> : vous payez pour stocker plus que nécessaire</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatFcfaAuto(dataKpiStock?.coutEntreposageTotal)}}</div>
+                </div>
+            </div>
+
+            <!-- Délai moyen d'approvisionnement -->
+            <div class="kpi-main-card subscribers-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-calendar-times"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Délai approvisionnement</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelDelaiApprovisionnement.toggle($event)"
+                            [attr.aria-label]="'Aide sur le délai d\'approvisionnement'"
+                        ></button>
+                        <p-overlayPanel #helpPanelDelaiApprovisionnement [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-calendar-times"></i>
+                                        Délai d'approvisionnement
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI mesure le <strong>temps moyen</strong> entre le moment où vous commandez un équipement et le moment où vous le recevez. Plus ce délai est court, mieux c'est !
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque commande livrée : <strong>Délai = Date de réception - Date de commande</strong> (en jours)<br>
+                                            Puis on fait la <strong>moyenne</strong> de tous ces délais.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous commandez le 1er janvier et recevez le 15 janvier, le délai est de 14 jours. Si vous avez 10 commandes avec des délais de 10, 15, 20, 12, 18 jours, la moyenne est de 15 jours.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Un délai faible = <strong>fournisseurs rapides</strong> : vous recevez rapidement vos équipements</li>
+                                            <li>Un délai élevé = <strong>problème</strong> : vous devez anticiper vos commandes plus longtemps à l'avance</li>
+                                            <li>Permet de choisir les <strong>meilleurs fournisseurs</strong> en termes de rapidité</li>
+                                            <li>Seules les commandes <strong>livrées</strong> sont prises en compte</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatJoursEnAnneeMoisJours(dataKpiStock?.delaiMoyenApprovisionnement)}}</div>
+                </div>
+            </div>
+
+            <!-- Volume de commandes traitées -->
+            <div class="kpi-main-card connections-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-shopping-cart"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Commandes traitées</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelCommandesTraitees.toggle($event)"
+                            [attr.aria-label]="'Aide sur les commandes traitées'"
+                        ></button>
+                        <p-overlayPanel #helpPanelCommandesTraitees [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-shopping-cart"></i>
+                                        Commandes traitées
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI compte le <strong>nombre total de commandes traitées</strong> (livrées, réceptionnées ou facturées) sur la période. C'est le nombre de commandes que vous avez finalement reçues.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            On compte toutes les commandes qui ont le statut : <strong>LIVREE</strong>, <strong>RECEPTIONNEE</strong> ou <strong>FACTUREE</strong><br>
+                                            Le comptage se fait selon la <strong>date de commande</strong> (pas la date de livraison).
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez passé 10 commandes en janvier et que 8 sont déjà livrées, le KPI affichera 8 commandes traitées.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Mesure le <strong>volume d'activité</strong> : combien de commandes vous gérez</li>
+                                            <li>Indique la <strong>performance de traitement</strong> : combien de commandes sont finalement arrivées</li>
+                                            <li>Un nombre élevé = <strong>activité importante</strong> : vous gérez beaucoup de commandes</li>
+                                            <li>Permet de suivre l'<strong>évolution de votre activité</strong> dans le temps</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatKPIValue(dataKpiStock?.volumeCommandesTraitees)}}</div>
+                </div>
+            </div>
+
+            <!-- Fiabilité fournisseurs -->
+            <div class="kpi-main-card kwh-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-check-circle"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Fiabilité fournisseurs</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelFiabiliteFournisseurs.toggle($event)"
+                            [attr.aria-label]="'Aide sur la fiabilité des fournisseurs'"
+                        ></button>
+                        <p-overlayPanel #helpPanelFiabiliteFournisseurs [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-check-circle"></i>
+                                        Fiabilité fournisseurs
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI mesure la <strong>fiabilité moyenne de vos fournisseurs</strong> basée sur leur note de qualité. Plus la note est élevée, plus vos fournisseurs sont fiables.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Chaque fournisseur a une <strong>note de qualité</strong> entre 0 et 5 étoiles<br>
+                                            Cette note est convertie en pourcentage : <strong>Note × 20</strong> (5 étoiles = 100%, 3 étoiles = 60%)<br>
+                                            On fait ensuite la <strong>moyenne</strong> de tous les fournisseurs actifs.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez 3 fournisseurs avec des notes de 5, 4 et 3 étoiles, les pourcentages sont 100%, 80% et 60%. La moyenne est de 80%, ce qui est excellent !
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Une fiabilité élevée (≥80%) = <strong>bons fournisseurs</strong> : vous pouvez leur faire confiance</li>
+                                            <li>Une fiabilité faible = <strong>problème</strong> : il faut peut-être changer de fournisseurs</li>
+                                            <li>Permet d'identifier les <strong>meilleurs partenaires</strong> pour vos commandes futures</li>
+                                            <li>Seuls les fournisseurs <strong>actifs</strong> ayant des commandes sont pris en compte</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatPercent(dataKpiStock?.fiabiliteMoyenneFournisseurs)}}</div>
+                </div>
+            </div>
+
+            <!-- Taux de conformité -->
+            <div class="kpi-main-card fcfa-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-shield"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label-wrapper">
+                        <div class="kpi-main-label">Conformité réception</div>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help-kpi"
+                            (click)="helpPanelConformiteReception.toggle($event)"
+                            [attr.aria-label]="'Aide sur la conformité réception'"
+                        ></button>
+                        <p-overlayPanel #helpPanelConformiteReception [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-shield"></i>
+                                        Conformité réception
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce KPI mesure le <strong>taux moyen de conformité</strong> des <strong>bons de livraison approuvés</strong>. Il indique si ce que vous recevez correspond bien à ce que vous avez commandé (bonne quantité, bon équipement, bon état).
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">⚠️ Attention : différence avec "Commandes traitées"</h5>
+                                        <p class="help-formula-text" style="background: #fff3cd; border-left-color: #ffc107;">
+                                            Une <strong>commande peut être traitée</strong> (statut LIVREE) sans qu'un <strong>bon de livraison</strong> ne soit créé ou approuvé.<br>
+                                            Le taux de conformité nécessite qu'un <strong>bon de livraison soit créé ET approuvé</strong> lors de la réception physique.
+                                        </p>
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque <strong>bon de livraison</strong> avec statut <strong>APPROUVE</strong> ou <strong>REFUSE</strong>, on récupère son <strong>taux de conformité</strong> (entre 0% et 100%)<br>
+                                            Le taux est calculé lors de la réception : <strong>Taux = (Quantité conforme / Quantité livrée) × 100</strong><br>
+                                            On fait ensuite la <strong>moyenne</strong> de tous ces taux pour la période sélectionnée.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous recevez 3 livraisons avec des taux de conformité de 100%, 95% et 90%, la moyenne est de 95%. C'est excellent ! Si vous receviez 50%, cela signifierait que la moitié de vos livraisons posent problème.
+                                        </p>
+                                        <h5 class="help-subtitle">Pourquoi 0.0% peut s'afficher même avec des commandes traitées ?</h5>
+                                        <ul class="help-list">
+                                            <li><strong>Aucun bon de livraison n'a été créé</strong> pour vos commandes traitées (le processus de réception n'a pas été complété)</li>
+                                            <li>Les bons de livraison existent mais sont encore en statut <strong>EN_ATTENTE</strong>, <strong>RECEPTIONNE</strong> ou <strong>EN_CONTROLE_QUALITE</strong> (non encore validés)</li>
+                                            <li>Les bons de livraison doivent être <strong>approuvés ou refusés</strong> pour être comptabilisés (simple réception ne suffit pas)</li>
+                                            <li>Les dates de livraison des bons ne correspondent pas à la période sélectionnée (année/mois)</li>
+                                            <li><strong>Action requise :</strong> Créer et approuver les bons de livraison pour vos commandes livrées</li>
+                                        </ul>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Un taux élevé (≥90%) = <strong>livraisons conformes</strong> : vous recevez bien ce que vous commandez</li>
+                                            <li>Un taux faible = <strong>problème</strong> : vous recevez souvent des équipements différents, en mauvais état ou en mauvaise quantité</li>
+                                            <li>Permet d'identifier les <strong>fournisseurs qui livrent correctement</strong> et ceux qui ont des problèmes</li>
+                                            <li>Seules les livraisons <strong>approuvées ou refusées</strong> sont prises en compte (les livraisons en attente ne sont pas comptées)</li>
+                                            <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="kpi-main-value">{{formatPercent(dataKpiStock?.tauxConformiteMoyen)}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques principaux -->
+    <div class="grid grid-cols-12 gap-2 charts-section">
+        <!-- Graphique 1 : Évolution de la valeur du stock -->
+        <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-wrapper">
+                    <h4 class="chart-title">
+                        Évolution de la valeur totale du stock
+                    </h4>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help"
+                            (click)="helpPanelEvolutionStock.toggle($event)"
+                            [attr.aria-label]="'Aide sur l\'évolution de la valeur totale du stock'"
+                        ></button>
+                        <p-overlayPanel #helpPanelEvolutionStock [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-chart-line"></i>
+                                        Évolution de la valeur totale du stock
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce graphique montre l'<strong>évolution de la valeur totale</strong> de votre stock au fil des mois. Il vous permet de voir si votre stock augmente ou diminue en valeur financière.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque mois, on calcule la <strong>valeur totale du stock</strong> en cumulant les mouvements d'entrée et de sortie :<br>
+                                            <strong>Stock fin de mois = Stock début + Entrées - Sorties</strong><br>
+                                            La valeur est calculée en <strong>millions de FCFA</strong> (Mds FCFA).
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez 1.0 Mds FCFA en janvier, que vous recevez 0.2 Mds FCFA de marchandises en février et que vous en sortez 0.1 Mds FCFA, votre stock en février sera de 1.1 Mds FCFA.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Suivre l'<strong>évolution de votre investissement</strong> en stock au fil du temps</li>
+                                            <li>Identifier les <strong>périodes de croissance ou de réduction</strong> du stock</li>
+                                            <li>Planifier les <strong>besoins de financement</strong> pour maintenir le stock</li>
+                                            <li>Détecter les <strong>anomalies</strong> (hausses ou baisses inattendues)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+
+                </div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+
+                <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+                    <div *ngIf="aucuneDonneeEvolutionStockDisponible; else chartTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartTemplate>
+                        <p-chart
+                            type="line"
+                            [data]="chartDonneesMensuellesEvolutionStockFcfa"
+                            [options]="chartOptionsDonneesMensuellesEvolutionStockFcfa"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique 2 : Évolution du taux de rotation  -->
+        <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-wrapper">
+                    <h4 class="chart-title">
+                        Évolution du Taux de rotation du stock
+                    </h4>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help"
+                            (click)="helpPanelTauxRotation.toggle($event)"
+                            [attr.aria-label]="'Aide sur l\'évolution du taux de rotation du stock'"
+                        ></button>
+                        <p-overlayPanel #helpPanelTauxRotation [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-chart-line"></i>
+                                        Évolution du Taux de rotation du stock
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce graphique montre l'<strong>évolution du taux de rotation</strong> de votre stock et de la <strong>valeur moyenne du stock</strong> au fil des mois. Le taux de rotation indique combien de fois votre stock est renouvelé dans une période.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            <strong>Taux de rotation = Sorties totales (valeur) / Stock moyen (valeur)</strong><br>
+                                            Le <strong>stock moyen</strong> est calculé comme la moyenne du stock début et fin de mois pour chaque période.<br>
+                                            Un taux élevé signifie que votre stock se renouvelle rapidement.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez un stock moyen de 0.8 Mds FCFA et que vous sortez 0.16 Mds FCFA dans le mois, votre taux de rotation est de 0.16 / 0.8 = 0.20 (20%). Cela signifie que 20% de votre stock moyen est sorti ce mois.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Un taux <strong>élevé</strong> = stock qui tourne bien, pas de surstockage</li>
+                                            <li>Un taux <strong>faible</strong> = stock qui stagne, risque de surstockage ou d'obsolescence</li>
+                                            <li>Suivre la <strong>valeur moyenne du stock</strong> pour optimiser les coûts d'entreposage</li>
+                                            <li>Identifier les <strong>périodes de forte activité</strong> (taux élevé) ou de faible activité (taux faible)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                </div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+
+                <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+                    <div *ngIf="aucuneDonneeTauxRotationDisponible; else chartTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartTemplate>
+                        <p-chart
+                            type="line"
+                            [data]="chartDonneesMensuellesTauxRotation"
+                            [options]="chartOptionsDonneesMensuellesTauxRotation"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique 3 : Camembert repartition du sotck  -->
+        <div  class="col-span-12 lg:col-span-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title-wrapper">
+                    <h4 class="chart-title">
+                            Répartition du stock par catégorie d'équipement
+                    </h4>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help"
+                            (click)="helpPanelRepartitionStock.toggle($event)"
+                            [attr.aria-label]="'Aide sur la répartition du stock par catégorie'"
+                        ></button>
+                        <p-overlayPanel #helpPanelRepartitionStock [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-chart-pie"></i>
+                                        Répartition du stock par catégorie d'équipement
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce graphique montre la <strong>répartition de votre stock</strong> entre les différentes catégories d'équipements. Vous pouvez visualiser cette répartition en <strong>valeur (FCFA)</strong> ou en <strong>quantité</strong> grâce au toggle.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque catégorie d'équipement, on calcule :<br>
+                                            - <strong>En valeur (FCFA)</strong> : Somme de la valeur de tous les équipements de la catégorie en stock<br>
+                                            - <strong>En quantité</strong> : Nombre total d'unités d'équipements de la catégorie en stock<br>
+                                            Le pourcentage représente la part de chaque catégorie dans le stock total.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous avez 868 M FCFA de transformateurs et 5 M FCFA de compteurs, les transformateurs représentent 99.3% de votre stock en valeur, tandis que les compteurs représentent 0.6%.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Identifier les <strong>catégories qui représentent le plus de valeur</strong> dans votre stock</li>
+                                            <li>Détecter les <strong>déséquilibres</strong> (une catégorie domine trop)</li>
+                                            <li>Planifier les <strong>achats</strong> en fonction de la répartition actuelle</li>
+                                            <li>Optimiser la <strong>gestion de l'espace</strong> d'entreposage par catégorie</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+
+                        <div class="chart-toggle">
+                            <span class="toggle-label">Fcfa</span>
+                            <p-toggleswitch
+                                [(ngModel)]="afficherQuantiteSotck"
+                                (onChange)="updateChartRepartitionStockParCategorie()"
+                            ></p-toggleswitch>
+                            <span class="toggle-label">quantité</span>
+                        </div>
+
+                </div>
+               <!-- <div class="chart-subtitle"></div> -->
+
+                <div *ngIf="!loading; else loadingTemplate" class="chart-container-donut">
+                    <div *ngIf="aucuneDonneeEnergieImporteeDisponible; else chartTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartTemplate>
+                        <p-chart
+                            type="doughnut"
+                            [data]="chartDonneesRepartitionStockCategorie"
+                            [options]="chartOptionsRepartitionStockCategorie"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section du taux de rotation par catégorie et Top 5 équipements -->
+    <div class="grid grid-cols-12 gap-2 charts-section">
+        <!-- Taux de rotation par catégorie -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="chart-card chart-card-bottom">
+                <div class="chart-header">
+                    <div class="chart-title-wrapper">
+                    <h4 class="chart-title">
+                        Taux de rotation du stock par catégorie
+                    </h4>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help"
+                            (click)="helpPanelTauxRotationCategorie.toggle($event)"
+                            [attr.aria-label]="'Aide sur le taux de rotation par catégorie'"
+                        ></button>
+                        <p-overlayPanel #helpPanelTauxRotationCategorie [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-chart-bar"></i>
+                                        Taux de rotation du stock par catégorie
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce graphique compare le <strong>taux de rotation</strong> entre les différentes catégories d'équipements. Il vous permet de voir quelles catégories sont les plus dynamiques (rotation rapide) ou les plus statiques (rotation lente).
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque catégorie :<br>
+                                            <strong>Taux de rotation = Sorties totales (valeur) / Stock moyen (valeur)</strong><br>
+                                            Le stock moyen est calculé comme la moyenne du stock début et fin de période pour la catégorie.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si une catégorie a un taux de 0.81, cela signifie que 81% de la valeur moyenne du stock de cette catégorie est sortie sur la période. Un taux proche de 1.0 indique une rotation très rapide, tandis qu'un taux proche de 0 indique un stock qui stagne.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Identifier les catégories avec une <strong>rotation rapide</strong> (bonne gestion) ou <strong>lente</strong> (risque de surstockage)</li>
+                                            <li>Prioriser les <strong>actions correctives</strong> sur les catégories à faible rotation</li>
+                                            <li>Optimiser les <strong>commandes</strong> : augmenter les commandes pour les catégories à forte rotation</li>
+                                            <li>Comparer la <strong>performance</strong> entre différentes catégories d'équipements</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                </div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+
+                <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+                    <div *ngIf="aucuneDonneeTauxRotationParCategorie; else chartTauxRotationTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartTauxRotationTemplate>
+                        <p-chart
+                            type="bar"
+                            [data]="chartDonneesTauxRotationParCategorie"
+                            [options]="chartOptionsTauxRotationParCategorie"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Entrées / Sorties par mois -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="chart-card chart-card-bottom">
+                <div class="chart-header">
+                    <div class="chart-title-wrapper">
+                    <h4 class="chart-title">
+                        Entrées / Sorties par mois
+                    </h4>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help"
+                            (click)="helpPanelEntreesSorties.toggle($event)"
+                            [attr.aria-label]="'Aide sur les entrées et sorties par mois'"
+                        ></button>
+                        <p-overlayPanel #helpPanelEntreesSorties [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-chart-bar"></i>
+                                        Entrées / Sorties par mois
+                                    </h4>
+                                    <p class="help-description">
+                                        Ce graphique montre les <strong>entrées</strong> (réceptions) et les <strong>sorties</strong> (consommations) de votre stock par mois, en valeur (M FCFA). Il vous permet de visualiser l'activité de votre entrepôt et d'identifier les périodes de forte activité.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            Pour chaque mois :<br>
+                                            - <strong>Entrées</strong> = Somme de la valeur de tous les mouvements de type "ENTREE"<br>
+                                            - <strong>Sorties</strong> = Somme de la valeur de tous les mouvements de type "SORTIE"<br>
+                                            Les valeurs sont exprimées en <strong>millions de FCFA (M FCFA)</strong>.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple :</strong> Si vous recevez 1050 M FCFA de marchandises en janvier et que vous en sortez 50 M FCFA, les barres vertes (entrées) seront très hautes et les barres rouges (sorties) seront plus petites. Cela indique une période de réapprovisionnement importante.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li>Visualiser les <strong>périodes de réception</strong> (barres vertes hautes) et de <strong>consommation</strong> (barres rouges)</li>
+                                            <li>Identifier les <strong>pics d'activité</strong> ou les périodes creuses</li>
+                                            <li>Détecter les <strong>déséquilibres</strong> : beaucoup d'entrées mais peu de sorties (surstockage) ou l'inverse (rupture possible)</li>
+                                            <li>Planifier les <strong>commandes</strong> en fonction des tendances historiques</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                </div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+
+                <div *ngIf="!loading; else loadingTemplate">
+                    <div *ngIf="aucuneDonneeEntreesSortiesDisponible; else chartEntreesSortiesTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartEntreesSortiesTemplate>
+                        <p-chart
+                            type="bar"
+                            [data]="chartDonneesEntreesSorties"
+                            [options]="chartOptionsEntreesSorties"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 5 des équipements -->
+        <div class="col-span-12 lg:col-span-4">
+            <div class="equipements-container">
+            <div class="equipements-header">
+                <div class="equipements-header-top-row">
+                    <div class="equipements-title-wrapper">
+                    <h3 class="equipements-title">
+                        <span *ngIf="!afficherEquipementsCritiques">Top 5 des équipements les plus utilisés</span>
+                        <span *ngIf="afficherEquipementsCritiques">Top 5 des équipements à stock critique</span>
+                    </h3>
+                        <button 
+                            pButton 
+                            type="button" 
+                            icon="pi pi-question-circle" 
+                            class="p-button-rounded p-button-text p-button-help"
+                            (click)="helpPanelEquipements.toggle($event)"
+                            [attr.aria-label]="'Aide sur les équipements les plus utilisés et critiques'"
+                        ></button>
+                        <p-overlayPanel #helpPanelEquipements [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                            <div class="help-content">
+                                <div class="help-section">
+                                    <h4 class="help-title">
+                                        <i class="pi pi-box"></i>
+                                        Top 5 des équipements les plus utilisés / critiques
+                                    </h4>
+                                    <p class="help-description">
+                                        Cette section affiche les <strong>5 équipements</strong> les plus importants selon deux modes : les <strong>plus utilisés</strong> (quantité sortie) ou les <strong>critiques</strong> (stock restant faible). Vous pouvez basculer entre les deux vues avec le toggle.
+                                    </p>
+                                    <div class="help-logic">
+                                        <h5 class="help-subtitle">Comment ça se calcule ?</h5>
+                                        <p class="help-formula-text">
+                                            <strong>Mode "Plus utilisés" :</strong> Les équipements sont triés par <strong>quantité totale sortie</strong> sur la période. Plus un équipement est sorti, plus il est utilisé.<br><br>
+                                            <strong>Mode "Critiques" :</strong> Les équipements sont ceux qui ont le <strong>stock restant le plus faible</strong> (quantité restante en stock). Ce sont les équipements qui risquent la rupture de stock.
+                                        </p>
+                                        <p class="help-formula-example">
+                                            <strong>Exemple "Plus utilisés" :</strong> Si un câble a été sorti 32 fois, il apparaîtra dans le top 5 car il est très utilisé pour vos projets.<br><br>
+                                            <strong>Exemple "Critiques" :</strong> Si un compteur n'a plus que 2 unités en stock alors que vous en sortez régulièrement 10 par mois, il est critique et apparaîtra dans le top 5.
+                                        </p>
+                                        <h5 class="help-subtitle">À quoi ça sert ?</h5>
+                                        <ul class="help-list">
+                                            <li><strong>Plus utilisés :</strong> Identifier les équipements essentiels pour vos opérations, à surveiller en priorité</li>
+                                            <li><strong>Critiques :</strong> Détecter les <strong>risques de rupture de stock</strong> et commander en urgence</li>
+                                            <li>Prioriser les <strong>commandes</strong> sur les équipements critiques</li>
+                                            <li>Optimiser la <strong>gestion des stocks</strong> en se concentrant sur les équipements stratégiques</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-overlayPanel>
+                    </div>
+                    <div class="equipements-switch">
+                        <span class="switch-label">Plus utilisés</span>
+                        <p-toggleswitch
+                            [(ngModel)]="afficherEquipementsCritiques"
+                        ></p-toggleswitch>
+                        <span class="switch-label">Critiques</span>
+                    </div>
+                </div>
+                <span class="equipements-subtitle">{{ anneeSelectionnee }}</span>
+            </div>
+
+            <div *ngIf="!loading; else loadingTemplate" class="equipements-content">
+                <!-- Plus utilisés -->
+                <ng-container *ngIf="!afficherEquipementsCritiques">
+                    <div *ngIf="aucuneDonneeEquipementPlusUtiliseDisponible" class="no-data-message-equipements">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <div *ngIf="!aucuneDonneeEquipementPlusUtiliseDisponible" class="equipements-grid">
+                        <div *ngFor="let equipement of (dataKpiStock?.top10EquipementPlusUtilises | slice:0:5)"
+                             class="equipement-box equipement-box-used">
+                            <i class="equipement-icon" [ngClass]="getEquipementIcon(equipement.nomEquipement)"></i>
+                            <div class="equipement-name">{{ equipement.nomEquipement }}</div>
+                            <div class="equipement-value">
+                                {{ formatKPIValue(equipement.quantiteConsomme) }}
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- Critiques -->
+                <ng-container *ngIf="afficherEquipementsCritiques">
+                    <div *ngIf="aucuneDonneeEquipementRuptureStockDisponible" class="no-data-message-equipements">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <div *ngIf="!aucuneDonneeEquipementRuptureStockDisponible" class="equipements-grid">
+                        <div *ngFor="let equipement of (dataKpiStock?.top10EquipementCritique | slice:0:5)"
+                             class="equipement-box equipement-box-critical">
+                            <i class="equipement-icon" [ngClass]="getEquipementIcon(equipement.nomEquipement)"></i>
+                            <div class="equipement-name">{{ equipement.nomEquipement }}</div>
+                            <div class="equipement-value">
+                                {{ formatKPIValue(equipement.quantiteRestante) }}
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <!-- Template de chargement -->
+    <ng-template #loadingTemplate>
+        <div class="loading-container">
+            <i class="pi pi-spin pi-spinner"></i>
+            <p>{{ loadingMessage }}</p>
+            <div class="progress-bar-container" *ngIf="loadingProgress > 0">
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+                </div>
+                <span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+            </div>
+        </div>
+    </ng-template>
+
+
+</div>

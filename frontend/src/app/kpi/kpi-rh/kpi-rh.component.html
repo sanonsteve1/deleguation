@@ -1,0 +1,91 @@
+<div class="dashboard-container">
+
+    <!-- 🔹 Filtres -->
+    <div class="filters-bar d-flex justify-content-end align-items-center mb-3 flex-wrap gap-3">
+        <div class="filter-item">
+            <label for="direction" class="filter-label">Direction</label>
+            <p-dropdown
+                id="direction"
+                [options]="directions"
+                [(ngModel)]="directionSelectionnee"
+                placeholder="Toutes les directions"
+                optionLabel="label"
+                optionValue="value"
+                (onChange)="chargerEffectifs()"
+                styleClass="w-full"
+                [showClear]="true">
+            </p-dropdown>
+        </div>
+
+        <div class="filter-item filter-action">
+            <label class="filter-label opacity-0">Actions</label>
+            <p-button
+                label="Réinitialiser"
+                icon="pi pi-refresh"
+                (onClick)="reinitialiserFiltre()"
+                styleClass="p-button-outlined w-full"
+            ></p-button>
+        </div>
+    </div>
+
+    <!-- 🔹 Grille des graphiques -->
+    <div class="grid grid-cols-12 gap-4">
+
+        <!-- Si aucune direction sélectionnée => afficher tous les graphiques globaux -->
+        <ng-container *ngIf="!directionSelectionnee; else filtreDirection">
+
+            <div class="col-span-12 md:col-span-4 lg:col-span-4" *ngIf="effectifCumul?.totalEffectifParDirection">
+                <div class="card chart-card">
+                    <h6>Effectif par direction</h6>
+                    <p-chart type="bar" [data]="chartDirection" [options]="chartOptionsNoLegend"></p-chart>
+                </div>
+            </div>
+
+            <div class="col-span-12 md:col-span-4 lg:col-span-4">
+                <div class="card chart-card">
+                    <h6>Répartition par tranches d'âge</h6>
+                    <p-chart type="bar" [data]="chartTrancheAgeDirection" [options]="chartOptions"></p-chart>
+                </div>
+            </div>
+
+            <div class="col-span-12 md:col-span-4 lg:col-span-4">
+                <div class="card chart-card">
+                    <h6>Répartition par catégories professionnelles</h6>
+                    <p-chart type="bar" [data]="chartCategorieDirection" [options]="chartOptions"></p-chart>
+                </div>
+            </div>
+
+        </ng-container>
+
+         <!-- Si une direction est sélectionnée => afficher seulement les graphiques filtrés -->
+         <ng-template #filtreDirection>
+             <div class="col-span-12 lg:col-span-4">
+                 <div class="card chart-card">
+                     <h6>Répartition par tranche d'âge</h6>
+                     <p-chart type="bar" [data]="chartTrancheAgeFiltre" [options]="chartOptionsNoLegend"></p-chart>
+                 </div>
+             </div>
+
+             <div class="col-span-12 lg:col-span-4">
+                 <div class="card chart-card">
+                     <h6>Répartition par catégorie professionnelle</h6>
+                     <p-chart type="bar" [data]="chartCategorieFiltre" [options]="chartOptionsNoLegend"></p-chart>
+                 </div>
+             </div>
+
+             <div class="col-span-12 lg:col-span-4">
+                 <div class="card chart-card pie-left-legend">
+                     <h6>Répartition par département</h6>
+                     <p-chart width="388px" type="pie" [data]="chartDepartementPie" [options]="chartOptionsPie"></p-chart>
+                 </div>
+             </div>
+         </ng-template>
+
+    </div>
+</div>
+
+<ng-template #loader>
+    <div class="flex justify-center items-center h-screen">
+        <p-progressSpinner></p-progressSpinner>
+    </div>
+</ng-template>

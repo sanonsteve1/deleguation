@@ -1,0 +1,375 @@
+<div class="kpi-commercial-container">
+
+	<!-- Section des filtres KPI Commercial -->
+	<div class="filters-row">
+
+		<!-- Filtre Année -->
+		<div class="filter-item">
+			<label for="annee" class="filter-label">Année</label>
+			<p-dropdown
+				id="annee"
+				[options]="annees"
+				[(ngModel)]="anneeSelectionnee"
+				placeholder="Année"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Mois -->
+		<div class="filter-item">
+			<label for="mois" class="filter-label">Facturation</label>
+			<p-dropdown
+				id="mois"
+				[options]="mois"
+				[(ngModel)]="moisSelectionne"
+				optionLabel="label"
+				optionValue="value"
+				placeholder="Toute l'année"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Filtre Niveau de Tension -->
+		<div class="filter-item">
+			<label for="niveauTension" class="filter-label">Tension</label>
+			<p-dropdown
+				id="niveauTension"
+				[options]="niveauxTension"
+				[(ngModel)]="niveauTensionSelectionne"
+				optionLabel="code"
+				optionValue="id"
+				placeholder="Tous"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Direction -->
+		<div class="filter-item">
+			<label for="direction" class="filter-label">Direction</label>
+			<p-dropdown
+				id="direction"
+				[options]="directions"
+				[(ngModel)]="directionSelectionnee"
+				optionLabel="designation"
+				optionValue="id"
+				placeholder="Tous"
+				(onChange)="chargerStatistiques()"
+				styleClass="w-full"
+				[showClear]="true"
+			></p-dropdown>
+		</div>
+
+		<!-- Bouton Réinitialiser -->
+		<div class="filter-item filter-action">
+			<label class="filter-label opacity-0">Actions</label>
+			<p-button
+				label="Réinitialiser"
+				icon="pi pi-refresh"
+				(onClick)="reinitialiserFiltres()"
+				styleClass="p-button-outlined w-full"
+			></p-button>
+		</div>
+
+	</div>
+
+	<!-- Spinner de chargement -->
+	<div *ngIf="loading" class="loading-overlay">
+		<div class="loading-content">
+			<p-progressSpinner
+				styleClass="custom-spinner"
+				strokeWidth="4"
+				animationDuration="1s">
+			</p-progressSpinner>
+			<div class="loading-text">{{ loadingMessage }}</div>
+		</div>
+	</div>
+
+	<!-- Conteneur des données avec opacité pendant le chargement -->
+	<div class="data-container" [class.loading-blur]="loading">
+
+	<!-- Section des KPIs principaux -->
+	<div class="kpi-main-section">
+
+		<!-- Ligne des KPI cumulés
+		<div class="kpi-row-label">KPI Cumulés</div>
+		-->
+		<div class="kpi-cumulative-row">
+			<!-- taux de recoouvrement global annuel -->
+			<div class="kpi-main-card taux-recouvrement-global-annuel">
+				<div class="kpi-main-icon">
+					<i class="pi pi-percentage"></i>
+				</div>
+				<div class="kpi-main-content">
+					<div class="kpi-main-label">Taux de recouvrement global </div>
+					<div class="kpi-main-value">{{donneesMensuelleAnneeCourante?.tauxRecouvrementCumule}}</div>
+                </div>
+            </div>
+
+			<!-- taux de recoouvrement global du mois -->
+			<div *ngIf="moisSelectionne" class="kpi-main-card taux-recouvrement-mois">
+				<div class="kpi-main-icon">
+					<i class="pi  pi-percentage"></i>
+				</div>
+				<div class="kpi-main-content">
+					<div class="kpi-main-label">Taux de recouvrement facturation</div>
+					<div class="kpi-main-value">{{donneesMensuelleAnneeCourante?.tauxRecouvrementMoisFacturation}}</div>
+				</div>
+			</div>
+
+			<!-- Nombre de facturation -->
+			<div class="kpi-main-card nombre-facturation-annee">
+                <div class="kpi-main-icon">
+					<i class="pi pi-users"></i>
+                </div>
+                <div class="kpi-content">
+                    <div class="kpi-main-label">Nombre total de facturation</div>
+                    <div class="kpi-main-value"> {{donneesMensuelleAnneeCourante?.nombreFacturation}}</div>
+                </div>
+            </div>
+
+
+		</div>
+
+		<!-- Ligne des KPI mensuels
+		<div *ngIf="moisSelectionne" class="kpi-row-label">KPI du Mois</div>
+		-->
+
+	</div>
+
+	<!-- KPIS      -->
+    <!--
+        <div>
+            <div class="kpi-row">
+
+                <div *ngIf="moisSelectionne" class="kpi-card conso-kwh-mois">
+                    <div class="kpi-content">
+                        <h3>Consommation KWh du mois</h3>
+                        <div class="kpi-value">{{donneesMensuelleAnneeCourante?.consommationKwhMois?.toLocaleString()}} Kwh</div>
+                    </div>
+                </div>
+
+
+                <div *ngIf="moisSelectionne" class="kpi-card conso-fcfa-mois">
+                    <div class="kpi-content">
+                        <h3>Consommation FCFA du mois</h3>
+                        <div class="kpi-value">{{donneesMensuelleAnneeCourante?.consommationFcfaMois?.toLocaleString()}} FCFA</div>
+                    </div>
+                </div>
+
+
+                <div *ngIf="moisSelectionne" class="kpi-card conso-kwh-cumule">
+                    <div class="kpi-content">
+                        <h3>Consommation KWh du cumulé</h3>
+                        <div class="kpi-value">{{donneesMensuelleAnneeCourante?.cumulConsommationKwh?.toLocaleString()}} Kwh</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kpi-row row-2">
+
+
+                <div *ngIf="moisSelectionne" class="kpi-card conso-fcfa-cumules">
+                    <div class="kpi-content">
+                        <h3>Consommation FCFA du cumulé</h3>
+                        <div class="kpi-value">{{donneesMensuelleAnneeCourante?.cumulConsommationFcfa?.toLocaleString()}} FCFA</div>
+                    </div>
+                </div>
+
+
+                <div *ngIf="moisSelectionne" class="kpi-card abonnes-mois">
+                    <div class="kpi-content">
+                        <h3>Nombre d'abonnés du mois </h3>
+                        <div class="kpi-value">{{donneesMensuelleAnneeCourante?.abonnesMois?.toLocaleString()}}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    -->
+
+	<!-- Cartes KPI (affichées si un mois est sélectionné) -->
+	<div *ngIf="moisSelectionne && !loading" class="grid grid-cols-12 gap-2 mb-2">
+
+		<!-- KPI Consommation kWh
+            <div class="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-4">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background-color: rgba(78, 205, 196, 0.1);">
+                        <i class="pi pi-bolt" style="color: #4ECDC4;"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">Conso kWh Mois</div>
+                        <div class="kpi-value">{{ consommationKwhMois | number: '1.0-0' : 'fr-FR' }}</div>
+                        <div class="kpi-sublabel">Cumul: {{ cumulConsommationKwh | number: '1.0-0' : 'fr-FR' }}</div>
+                    </div>
+                </div>
+            </div>
+		-->
+
+		<!-- KPI Consommation FCFA
+            <div class="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-4">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background-color: rgba(255, 107, 107, 0.1);">
+                        <i class="pi pi-money-bill" style="color: #FF6B6B;"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">Conso FCFA Mois</div>
+                        <div class="kpi-value">{{ consommationFcfaMois | number: '1.0-0' : 'fr-FR' }}</div>
+                        <div class="kpi-sublabel">Cumul: {{ cumulConsommationFcfa | number: '1.0-0' : 'fr-FR' }}</div>
+                    </div>
+                </div>
+            </div>
+		-->
+
+		<!-- KPI Nombre d'abonnés
+            <div class="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-4">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background-color: rgba(69, 183, 209, 0.1);">
+                        <i class="pi pi-users" style="color: #45B7D1;"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">Nombre d'abonnés du mois</div>
+                        <div class="kpi-value">{{ nombreAbonnesMois | number: '1.0-0' : 'fr-FR' }}</div>
+                        <div class="kpi-sublabel" [ngClass]="tauxCroissanceAbonnes >= 0 ? 'text-green-600' : 'text-red-600'">
+                            <i [class]="tauxCroissanceAbonnes >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                            {{ tauxCroissanceAbonnes | number: '1.1-1' : 'fr-FR' }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+		-->
+
+		<!-- KPI Branchements
+            <div class="col-span-6 xl:col-span-2 lg:col-span-3 md:col-span-4">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background-color: rgba(150, 206, 180, 0.1);">
+                        <i class="pi pi-link" style="color: #96CEB4;"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">Branchements</div>
+                        <div class="kpi-value">{{ nombreBranchementsMois | number: '1.0-0' : 'fr-FR' }}</div>
+                        <div class="kpi-sublabel" [ngClass]="tauxCroissanceBranchements >= 0 ? 'text-green-600' : 'text-red-600'">
+                            <i [class]="tauxCroissanceBranchements >= 0 ? 'pi pi-arrow-up' : 'pi pi-arrow-down'"></i>
+                            {{ tauxCroissanceBranchements | number: '1.1-1' : 'fr-FR' }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+		-->
+
+		<!-- KPI Chiffre d'affaires
+            <div class="col-span-6 xl:col-span-2 lg:col-span-6 md:col-span-4">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background-color: rgba(255, 234, 167, 0.1);">
+                        <i class="pi pi-chart-line" style="color: #FFEAA7;"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">CA Total (MT+BT)</div>
+                        <div class="kpi-value">{{ chiffreAffairesTotal | number: '1.0-0' : 'fr-FR' }}</div>
+                        <div class="kpi-sublabel">FCFA</div>
+                    </div>
+                </div>
+            </div>
+		-->
+
+		<!-- KPI Taux de rendement
+            <div class="col-span-6 xl:col-span-2 lg:col-span-6 md:col-span-4" *ngIf="tauxRendementMois !== null">
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="background-color: rgba(187, 143, 206, 0.1);">
+                        <i class="pi pi-percentage" style="color: #BB8FCE;"></i>
+                    </div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">Taux de rendement</div>
+                        <div class="kpi-value">{{ tauxRendementMois | number: '1.1-1' : 'fr-FR' }}%</div>
+                        <div class="kpi-sublabel">Du mois</div>
+                    </div>
+                </div>
+            </div>
+		-->
+
+	</div>
+
+	<!-- Graphiques principaux -->
+	<div class="grid grid-cols-12 gap-2 charts-section">
+
+		<!-- Graphique 1 : Évolution Taux de recouvrement -->
+		<div  class="col-span-12 lg:col-span-4">
+			<div class="chart-card">
+				<div class="chart-header">
+					<h4 class="chart-title">
+						Evolution taux de recouvrement
+					</h4>
+				</div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container">
+					<div *ngIf="aucuneDonneeDisponible; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="line"
+							[data]="chartDonneesMensuellesTauxRecouvrementGneneral"
+							[options]="chartOptionsDonneesMensuellesTauxRecouvremenGneneral"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+		<!-- Graphique 2 : Bar chat Taux de recouvrement -->
+		<div class="col-span-12 lg:col-span-4">
+			<div class="chart-card">
+				<div class="chart-header">
+					<h4 class="chart-title">Taux de recouvrement par direction</h4>
+				</div>
+				<div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+
+				<div *ngIf="!loading; else loadingTemplate" class="chart-container">
+					<div *ngIf="aucuneDonneeTauxRecouvrementParDirection; else chartTemplate" class="no-data-message">
+						<i class="pi pi-exclamation-triangle"></i>
+						<p>Aucune donnée disponible</p>
+					</div>
+					<ng-template #chartTemplate>
+						<p-chart
+							type="bar"
+							[data]="chartDonneesTauxRecouvrementParDirection"
+							[options]="chartOptionsTauxRecouvrementParDirection"
+						></p-chart>
+					</ng-template>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+	<!-- Graphiques secondaires : Branchements + Camemberts -->
+	<div class="grid grid-cols-12 gap-2 charts-section-secondary">
+
+
+	</div>
+
+
+	</div> <!-- Fin du conteneur data-container -->
+
+	<!-- Template de chargement -->
+	<ng-template #loadingTemplate>
+		<div class="loading-container">
+			<i class="pi pi-spin pi-spinner"></i>
+			<p>{{ loadingMessage }}</p>
+			<div class="progress-bar-container" *ngIf="loadingProgress > 0">
+				<div class="progress-bar">
+					<div class="progress-fill" [style.width.%]="loadingProgress"></div>
+				</div>
+				<span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+			</div>
+		</div>
+	</ng-template>
+
+</div>

@@ -1,0 +1,123 @@
+<div class="layout-topbar-start">
+    <a class="layout-topbar-logo gap-1" routerLink="/">
+        <div>
+            <div class="titre p-0 m-0">ABLink</div>
+        </div>
+    </a>
+    <a #menuButton class="layout-menu-button" (click)="onMenuButtonClick()">
+        <i class="pi pi-chevron-right"></i>
+    </a>
+
+    <!--	<button class="app-config-button app-config-mobile-button" (click)="toggleConfigSidebar()">-->
+    <!--		<i class="pi pi-cog"></i>-->
+    <!--	</button>-->
+
+    <!--	<a #mobileMenuButton class="layout-topbar-mobile-button" (click)="onTopbarMenuToggle()">-->
+    <!--		<i class="pi pi-ellipsis-v"></i>-->
+    <!--	</a>-->
+</div>
+
+<div class="layout-topbar-end">
+    <div class="layout-topbar-actions-start"></div>
+
+    <div class="layout-topbar-actions-end">
+        <div class="flex justify-between gap-2">
+            <div class="titre p-0 m-0">ABLink</div>
+        </div>
+
+        <ul class="layout-topbar-items">
+            <li>
+                <a (click)="toggleConfigSidebar()" class="cursor-pointer">
+                    <i class="pi pi-cog"></i>
+                </a>
+            </li>
+            <li>
+                <a appSafeStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
+                    <p-overlay-badge severity="warn">
+                        <i class="pi pi-bell !align-middle"></i>
+                    </p-overlay-badge>
+                </a>
+                <div class="hidden">
+                    <ul class="list-none p-0 m-0">
+                        <li class="px-4 py-1">
+                            <span>You have <b>4</b> new notifications</span>
+                        </li>
+                        <li class="p-4">
+                            <div class="flex items-center">
+                                <em class="fa fa-user"></em>
+                                <div class="flex flex-col ml-4 flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="font-bold">Jerome Bell</span>
+                                        <small>42 mins ago</small>
+                                    </div>
+                                    <span class="text-sm leading-normal">How to write content about your photographs?</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="p-4">
+                            <div class="flex items-center">
+                                <em class="fa fa-user"></em>
+                                <div class="flex flex-col ml-4 flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="fs-small font-bold">Cameron Williamson</span>
+                                        <small>48 mins ago</small>
+                                    </div>
+                                    <span class="text-sm leading-normal">Start a blog to reach your creative peak.</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="p-4">
+                            <div class="flex items-center">
+                                <em class="fa fa-user"></em>
+                                <div class="flex flex-col ml-4 flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="fs-small font-bold">Anna Miles</span>
+                                        <small>1 day ago</small>
+                                    </div>
+                                    <span class="text-sm leading-normal">Caring is the new marketing</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="p-4">
+                            <div class="flex items-center">
+                                <em class="fa fa-user"></em>
+                                <div class="flex flex-col ml-4 flex-1">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <span class="fs-small font-bold">Arlene Mccoy</span>
+                                        <small>4 day ago</small>
+                                    </div>
+                                    <span class="text-sm leading-normal">Starting your traveling blog with Vasco.</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li>
+                <a appSafeStyleClass="@next" enterFromClass="hidden" enterActiveClass="animate-scalein" leaveToClass="hidden" leaveActiveClass="animate-fadeout" [hideOnOutsideClick]="true">
+                    <i class="fa fa-th"></i>
+                </a>
+                <div class="hidden">
+                    <div class="flex flex-wrap">
+                        <div class="w-6/12 flex flex-col items-center p-4">
+                            <button pButton pRipple rounded class="mb-2" icon="fa fa-money"></button>
+                            <span>Caisse</span>
+                        </div>
+                        <div class="w-6/12 flex flex-col items-center p-4">
+                            <button pButton pRipple rounded class="mb-2" severity="success" icon="pi pi-credit-card"></button>
+                            <span>Visa</span>
+                        </div>
+                        <div class="w-6/12 flex flex-col items-center p-4">
+                            <button pButton pRipple rounded class="mb-2" severity="warn" icon="fa fa-paint-brush" (click)="toggleConfigSidebar()"></button>
+                            <span>Thème</span>
+                        </div>
+                        <div class="w-6/12 flex flex-col items-center p-4">
+                            <button pButton pRipple rounded class="mb-2" severity="help" icon="pi pi-user"></button>
+                            <span>Utilisateurs</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

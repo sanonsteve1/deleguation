@@ -1,0 +1,269 @@
+<div class="dashboard-container">
+
+
+    <!-- Spinner de chargement -->
+    <div *ngIf="loading" class="loading-overlay">
+        <div class="loading-content">
+            <p-progressSpinner
+                styleClass="custom-spinner"
+                strokeWidth="4"
+                animationDuration="1s">
+            </p-progressSpinner>
+            <div class="loading-text">{{ loadingMessage }}</div>
+        </div>
+    </div>
+
+        <div class="filters-row">
+            <div class="period-content">
+                <div class="period-text">Période {{ selectedYear }}</div>
+                <div class="year-selector">
+                    <label class="year-label">Année</label>
+                    <div class="year-input-container">
+                        <input
+                            type="text"
+                            class="year-input"
+                            [(ngModel)]="selectedYear"
+                            readonly
+                            (click)="toggleYearDropdown()"
+                        >
+                        <i class="pi pi-chevron-down year-chevron" (click)="toggleYearDropdown()"></i>
+                    </div>
+                    <div class="year-dropdown" *ngIf="showYearDropdown">
+                        <div
+                            class="year-option"
+                            *ngFor="let year of availableYears"
+                            (click)="selectYear(year)"
+                            [class.selected]="year === selectedYear"
+                        >
+                            {{ year }}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+	<!-- Métriques principales avec période et filtre année intégrés -->
+	<div class="metrics-overview">
+		<div class="metric-card">
+			<div class="metric-icon">
+				<i class="pi pi-dollar"></i>
+			</div>
+			<div class="metric-content">
+				<div class="metric-label">CA</div>
+                <div class="metric-value">{{formatFcfaAuto(statistiqueFinances.cumulAnnuelCa)}}</div>
+			</div>
+		</div>
+		<div class="metric-card">
+			<div class="metric-icon">
+				<i class="pi pi-users"></i>
+			</div>
+			<div class="metric-content">
+				<div class="metric-label">Abonnés</div>
+                <div class="metric-value">{{formatKPIValue(donneesMensuelleAnneeCouranteVentes?.cumulAbonnes)}}</div>
+			</div>
+		</div>
+		<div class="metric-card">
+			<div class="metric-icon">
+				<i class="pi pi-percentage"></i>
+			</div>
+			<div class="metric-content">
+				<div class="metric-label">Taux de recouvrement</div>
+                <div class="metric-value">{{formatTauxRecouvrement(tauxRecouvrementGlobal)}}</div>
+			</div>
+		</div>
+		<div class="metric-card">
+			<div class="metric-icon">
+				<i class="pi pi-bolt"></i>
+			</div>
+			<div class="metric-content">
+				<div class="metric-label">Saifi moyen</div>
+                <div class="metric-value">{{formatKPIValueMoyen(donneesMensuelleAnneeCouranteKpiTechnique?.cumulFrequenceIndiceInterruption)}}</div>
+			</div>
+		</div>
+        <div class="metric-card">
+            <div class="metric-icon">
+                <i class="pi pi-clock"></i>
+            </div>
+            <div class="metric-content">
+                <div class="metric-label">Saidi moyen</div>
+                <div class="metric-value">{{formatKPIValueMoyen(donneesMensuelleAnneeCouranteKpiTechnique?.cumulDureeIndiceInterruption)}}</div>
+            </div>
+        </div>
+		<div class="metric-card">
+			<div class="metric-icon">
+				<i class="pi pi-id-card"></i>
+			</div>
+			<div class="metric-content">
+				<div class="metric-label">RH</div>
+                <div class="metric-value">{{formatKPIValue(effectifCumul?.totalEffectifGeneral)}}</div>
+
+			</div>
+		</div>
+		<!-- Période et filtre année intégrés dans la dernière carte (à droite) -->
+	</div>
+
+	<!-- Grille des KPI -->
+	<div class="kpi-grid">
+		<!-- Première ligne -->
+		<div class="kpi-section">
+			<div class="kpi-header">
+				<h2 class="kpi-title">KPI COMMERCIAL</h2>
+				<a routerLink="/kpi/kpi-commercial" class="kpi-voir-plus">
+					Voir plus <i class="pi pi-arrow-right"></i>
+				</a>
+			</div>
+            <div class="chart-header">
+                <h4 class="chart-title">
+                    {{headerVentes}}
+                </h4>
+                <div class="chart-toggle">
+                    <span class="toggle-label">GWh</span>
+                    <p-toggleswitch
+                        [(ngModel)]="afficherMontant"
+                        (onChange)="updataChartRepartitionConsommationBTEtMTGroupe()"
+                    ></p-toggleswitch>
+                    <span class="toggle-label">FCFA</span>
+                </div>
+            </div>
+			<div class="kpi-chart">
+				<div *ngIf="commercialData.datasets.length === 0 || aucuneDonneeVenteDisponible" class="no-data-message">
+					<i class="pi pi-chart-line"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart *ngIf="!aucuneDonneeVenteDisponible" type="line" [data]="commercialData" [options]="chartOptionsCommercial" class="chart-container"></p-chart>
+			</div>
+		</div>
+
+		<div class="kpi-section">
+			<div class="kpi-header">
+				<h2 class="kpi-title">KPI RESSOURCE HUMAINE</h2>
+				<a routerLink="/kpi/kpi-rh" class="kpi-voir-plus">
+					Voir plus <i class="pi pi-arrow-right"></i>
+				</a>
+			</div>
+            <div class="chart-header">
+                <h4 class="chart-title">
+                    Effectif par direction
+                </h4>
+            </div>
+			<div class="kpi-chart">
+				<div *ngIf="rhData.datasets.length === 0" class="no-data-message">
+					<i class="pi pi-chart-bar"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart *ngIf="rhData.datasets.length > 0" type="bar" [data]="rhData" [options]="chartOptionsKpiRh" class="chart-container"></p-chart>
+			</div>
+		</div>
+
+		<div class="kpi-section">
+			<div class="kpi-header">
+				<h2 class="kpi-title">KPI FINANCE</h2>
+				<a routerLink="/kpi/kpi-finance" class="kpi-voir-plus">
+					Voir plus <i class="pi pi-arrow-right"></i>
+				</a>
+			</div>
+            <div class="chart-header">
+                <h4 class="chart-title">
+                    {{headerFinance}}
+                </h4>
+            </div>
+			<div class="kpi-chart">
+				<div *ngIf="financeData.datasets.length === 0" class="no-data-message">
+					<i class="pi pi-chart-pie"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart *ngIf="financeData.datasets.length > 0" type="line" [data]="financeData" [options]="chartOptionsFinance" class="chart-container" height="310px"></p-chart>
+			</div>
+		</div>
+
+		<!-- Deuxième ligne -->
+		<div class="kpi-section">
+			<div class="kpi-header">
+				<h2 class="kpi-title">KPI DSI</h2>
+				<a routerLink="/kpi/kpi-dsi" class="kpi-voir-plus">
+					Voir plus <i class="pi pi-arrow-right"></i>
+				</a>
+
+
+			</div>
+
+            <div class="chart-header">
+                <h4 class="chart-title" style="margin-bottom: 10px;margin-top: 10px;">
+                    Evolution taux de disponibilité des serveurs
+                </h4>
+<!--                <div class="chart-toggle" style="margin-bottom: 16px;">-->
+<!--                    <span class="toggle-label">GWh</span>-->
+<!--                    <p-toggleswitch-->
+<!--                        [(ngModel)]="afficherMontant"-->
+<!--                        (onChange)="updataChartRepartitionConsommationBTEtMTGroupe()"-->
+<!--                    ></p-toggleswitch>-->
+<!--                    <span class="toggle-label">FCFA</span>-->
+<!--                </div>-->
+            </div>
+
+
+			<div class="kpi-chart">
+
+				<div *ngIf="dsiData.datasets.length === 0" class="no-data-message">
+					<i class="pi pi-server"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart *ngIf="dsiData.datasets.length > 0" type="line" [data]="dsiData" height="180px"
+                         [options]="chartOptionsDsi" class="chart-container"></p-chart>
+			</div>
+		</div>
+
+		<div class="kpi-section">
+			<div class="kpi-header">
+				<h2 class="kpi-title">KPI STOCK</h2>
+				<a routerLink="/kpi/kpi-stock" class="kpi-voir-plus">
+					Voir plus <i class="pi pi-arrow-right"></i>
+				</a>
+			</div>
+            <div class="chart-header">
+                <h4 class="chart-title">
+                    Évolution de la valeur totale du stock
+                </h4>
+            </div>
+			<div class="kpi-chart">
+				<div *ngIf="stockData.datasets.length === 0" class="no-data-message">
+					<i class="pi pi-box"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart *ngIf="stockData.datasets.length > 0" type="line" [data]="stockData" [options]="chartOptionsStock" class="chart-container"></p-chart>
+			</div>
+		</div>
+
+		<div class="kpi-section">
+			<div class="kpi-header">
+				<h2 class="kpi-title">KPI TECHNIQUE</h2>
+				<a routerLink="/kpi/kpi-technique" class="kpi-voir-plus">
+					Voir plus <i class="pi pi-arrow-right"></i>
+				</a>
+			</div>
+            <div class="chart-header">
+                <h4 class="chart-title">
+                    Évolution {{headerMensuellesIndiceInterruption}}
+                </h4>
+                <div class="chart-toggle">
+                    <span class="toggle-label">Saifi</span>
+                    <p-toggleswitch
+                        [(ngModel)]="afficherIndiceDuree"
+                        (onChange)="updataChartIndiceInterruption()"
+                    ></p-toggleswitch>
+                    <span class="toggle-label">Saidi</span>
+                </div>
+            </div>
+
+			<div class="kpi-chart">
+				<div *ngIf="techniqueData.datasets.length === 0 || aucuneDonneeIndiceInterruptionDisponible" class="no-data-message">
+					<i class="pi pi-cog"></i>
+					<p>Aucune donnée disponible</p>
+				</div>
+				<p-chart *ngIf="!aucuneDonneeIndiceInterruptionDisponible" type="line" [data]="techniqueData" [options]="chartOptionsKpiTechnique" class="chart-container"></p-chart>
+			</div>
+		</div>
+	</div>
+</div>
+

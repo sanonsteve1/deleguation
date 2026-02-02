@@ -1,0 +1,319 @@
+<div class="kpi-commercial-container">
+
+    <!-- Section des filtres KPI Commercial -->
+    <div class="filters-row">
+
+        <!-- Filtre Année -->
+        <div class="filter-item">
+            <label for="annee" class="filter-label">Année</label>
+            <p-dropdown
+                id="annee"
+                [options]="annees"
+                [(ngModel)]="anneeSelectionnee"
+                placeholder="Année"
+                (onChange)="chargerStatistiques()"
+                styleClass="w-full"
+            ></p-dropdown>
+        </div>
+
+        <!-- Filtre Mois -->
+        <div class="filter-item">
+            <label for="mois" class="filter-label">Mois</label>
+            <p-dropdown
+                id="mois"
+                [options]="mois"
+                [(ngModel)]="moisSelectionne"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Toute l'année"
+                (onChange)="chargerStatistiques()"
+                styleClass="w-full"
+                [showClear]="true"
+            ></p-dropdown>
+        </div>
+
+        <!-- Filtre Niveau de Tension
+                <div class="filter-item">
+                    <label for="niveauTension" class="filter-label">Tension</label>
+                    <p-dropdown
+                        id="niveauTension"
+                        [options]="niveauxTension"
+                        [(ngModel)]="niveauTensionSelectionne"
+                        optionLabel="code"
+                        optionValue="id"
+                        placeholder="Tous"
+                        (onChange)="chargerStatistiques()"
+                        styleClass="w-full"
+                        [showClear]="true"
+                    ></p-dropdown>
+                </div>
+        -->
+
+
+        <!-- Bouton Réinitialiser -->
+        <div class="filter-item filter-action">
+            <label class="filter-label opacity-0">Actions</label>
+            <p-button
+                label="Réinitialiser"
+                icon="pi pi-refresh"
+                (onClick)="reinitialiserFiltres()"
+                styleClass="p-button-outlined w-full"
+            ></p-button>
+        </div>
+
+    </div>
+
+    <!-- Spinner de chargement -->
+    <div *ngIf="loading" class="loading-overlay">
+        <div class="loading-content">
+            <p-progressSpinner
+                styleClass="custom-spinner"
+                strokeWidth="4"
+                animationDuration="1s">
+            </p-progressSpinner>
+            <div class="loading-text">{{ loadingMessage }}</div>
+        </div>
+    </div>
+
+    <!-- Section des KPIs principaux -->
+    <div class="kpi-main-section">
+        <div class="kpi-main-grid">
+
+            <!--  Indice de fréquence moyenne Annuelle d'interruption du système -->
+            <div  class="kpi-main-card indice-fraquence-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">SAIFI Moyenne</div>
+                    <div class="kpi-main-value">{{formatKPIValueMoyen(donneesMensuelleAnneeCourante?.cumulFrequenceIndiceInterruption)}}</div>
+                </div>
+            </div>
+
+            <!--  Indice de fréquence moyenne  d'interruption du système du mois -->
+
+            <div *ngIf="moisSelectionne" class="kpi-main-card indice-frequence-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">SAIFI du mois</div>
+                    <div class="kpi-main-value">{{formatKPIValue(donneesMensuelleAnneeCourante?.frequenceIndiceInterruptionMois)}}</div>
+                </div>
+            </div>
+
+            <!--  Indice de durée moyenne Annuelle d'interruption du système -->
+            <div  class="kpi-main-card indice-duree-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-clock"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">SAIDI Moyenne en heure</div>
+                    <div class="kpi-main-value">{{formatKPIValueMoyen(donneesMensuelleAnneeCourante?.cumulDureeIndiceInterruption)}}</div>
+                </div>
+            </div>
+
+            <!--  Indice de durée Annuelle d'interruption du système du mois -->
+            <div  *ngIf="moisSelectionne" class="kpi-main-card indice-duree-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-clock"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">SAIDI du mois en heure</div>
+                    <div class="kpi-main-value">{{formatKPIValue(donneesMensuelleAnneeCourante?.dureeIndiceInterruptionMois)}}</div>
+                </div>
+            </div>
+
+            <!--  Cumul Energie non distribuée en Fcfa -->
+            <div  class="kpi-main-card fcfa-energie-non-distribuee-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-money-bill"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">énergie non distribuée en Mds fcfa</div>
+                    <div class="kpi-main-value">{{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.cumulMontantEnergieNonDistribueeFcfa)}}</div>
+                </div>
+            </div>
+
+            <!--  Energie non distribuée en Fcfa au mois -->
+            <div  *ngIf="moisSelectionne" class="kpi-main-card fcfa-enrgie-non-distribuee-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-money-bill"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">énergie non distribuée du mois en Mds fcfa</div>
+                    <div class="kpi-main-value">{{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.montantEnergieNonDistribueeFcfaMois)}}</div>
+                </div>
+            </div>
+
+
+            <!--  Cumul Energie non distribuée en kWh -->
+            <div  class="kpi-main-card kwh-energie-non-distribuee-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">énergie non distribuée en gWh</div>
+                    <div class="kpi-main-value">{{formatKWhToGWh(donneesMensuelleAnneeCourante?.cumulQuantiteEnergieNonDistribueeKwh)}}</div>
+                </div>
+            </div>
+
+
+            <!--  Energie non distribuée en kWh au mois-->
+            <div *ngIf="moisSelectionne" class="kpi-main-card kwh-energie-distribuee-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">Energie non distribuée du mois en gwh</div>
+                    <div class="kpi-main-value">{{formatKWhToGWh(donneesMensuelleAnneeCourante?.quantiteEnergieNonDistribueeKwhMois)}}</div>
+                </div>
+            </div>
+
+            <!--  Cumul Energie importée en kWh -->
+            <div  class="kpi-main-card kwh-energie-importee-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">énergie importée en gWh</div>
+                    <div class="kpi-main-value">{{formatKWhToGWh(donneesMensuelleAnneeCourante?.cumulImportationEnergieKwh)}}</div>
+                </div>
+            </div>
+
+            <!--  Energie importée en kWh du mois -->
+            <div  *ngIf="moisSelectionne" class="kpi-main-card kwh-energie-importee-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-bolt"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">Energie importée du mois en gWh</div>
+                    <div class="kpi-main-value">{{formatKWhToGWh(donneesMensuelleAnneeCourante?.importationEnergieKwhMois)}}</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Graphiques principaux -->
+    <div class="grid grid-cols-12 gap-2 charts-section">
+        <!-- Graphique 1 : Évolution Indice Durée moyenne d'interruption / Indice de la frequence moyenne d'interruption  -->
+        <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h4 class="chart-title">
+                        Évolution {{headerMensuellesIndiceInterruption}}
+                    </h4>
+                    <div class="chart-toggle">
+                        <span class="toggle-label">Saifi</span>
+                        <p-toggleswitch
+                            [(ngModel)]="afficherIndiceDuree"
+                            (onChange)="updataChartIndiceInterruption()"
+                        ></p-toggleswitch>
+                        <span class="toggle-label">Saidi</span>
+                    </div>
+                </div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }} vs {{ anneeSelectionnee - 1 }}</div>
+
+                <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+                    <div *ngIf="aucuneDonneeIndiceInterruptionDisponible; else chartTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartTemplate>
+                        <p-chart
+                            type="line"
+                            [data]="chartDonneesMensuellesIndiceInterruption"
+                            [options]="chartOptionsDonneesMensuellesIndiceInterruption"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique 2 : Évolution Energie non distribuée  -->
+        <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h4 class="chart-title">
+                        Évolution de l'énergie non-distribuée
+                    </h4>
+                    <div class="chart-toggle">
+                        <span class="toggle-label">FCFA</span>
+                        <p-toggleswitch
+                            [(ngModel)]="afficherEnergieNonDistribueeKwh"
+                            (onChange)="updataChartEnergieNonDistribuee()"
+                        ></p-toggleswitch>
+                        <span class="toggle-label">GWh</span>
+                    </div>
+                </div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }} vs {{ anneeSelectionnee - 1 }}</div>
+
+                <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+                    <div *ngIf="aucuneDonneeEnergieNonDistribueeDisponible; else chartTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartTemplate>
+                        <p-chart
+                            type="line"
+                            [data]="chartDonneesMensuellesEnergieNonDistribuee"
+                            [options]="chartOptionsDonneesMensuellesEnergieNonDistribuee"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphique 2 : Évolution Energie importée  -->
+        <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h4 class="chart-title">
+                        Évolution de l'énergie importée GWh
+                    </h4>
+                    <!--
+                        <div class="chart-toggle">
+                            <span class="toggle-label">Fcfa</span>
+                            <p-toggleswitch
+                                [(ngModel)]="afficherEnergieNonDistribueeKwh"
+                                (onChange)="updataChartEnergieNonDistribuee()"
+                            ></p-toggleswitch>
+                            <span class="toggle-label">kWh</span>
+                        </div>
+                      -->
+                </div>
+                <div class="chart-subtitle">{{ anneeSelectionnee }} vs {{ anneeSelectionnee - 1 }}</div>
+
+                <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+                    <div *ngIf="aucuneDonneeEnergieImporteeDisponible; else chartTemplate" class="no-data-message">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        <p>Aucune donnée disponible</p>
+                    </div>
+                    <ng-template #chartTemplate>
+                        <p-chart
+                            type="line"
+                            [data]="chartDonneesMensuellesEnergieImportee"
+                            [options]="chartOptionsDonneesMensuellesEnergieImportee"
+                        ></p-chart>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Template de chargement -->
+    <ng-template #loadingTemplate>
+        <div class="loading-container">
+            <i class="pi pi-spin pi-spinner"></i>
+            <p>{{ loadingMessage }}</p>
+            <div class="progress-bar-container" *ngIf="loadingProgress > 0">
+                <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+                </div>
+                <span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+            </div>
+        </div>
+    </ng-template>
+</div>

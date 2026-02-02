@@ -1,0 +1,645 @@
+.kpi-stock-subview {
+  padding: 12px;
+
+  @media (max-width: 768px) {
+    padding: 8px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px;
+  }
+}
+
+// Copie du style des filtres de kpi-stock
+.filters-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  align-items: end;
+  flex-wrap: nowrap;
+
+  @media (max-width: 1200px) {
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 768px) {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+
+  &:nth-child(1),
+  &:nth-child(2) {
+    flex: 0 0 120px;
+
+    @media (max-width: 1200px) {
+      flex: 0 0 100px;
+    }
+
+    @media (max-width: 768px) {
+      flex: 0 0 calc(50% - 0.2rem);
+    }
+  }
+
+  &.filter-action {
+    flex: 0 0 100px;
+
+    @media (max-width: 1200px) {
+      flex: 0 0 90px;
+    }
+
+    @media (max-width: 768px) {
+      flex: 0 0 100%;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.1rem;
+
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+  }
+}
+
+:host ::ng-deep {
+  .p-dropdown {
+    width: 100%;
+    font-size: 0.8rem;
+
+    .p-dropdown-label {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .p-dropdown-trigger {
+      width: 2rem;
+    }
+  }
+
+  .filters-row {
+    .p-dropdown {
+      .p-dropdown-label {
+        padding: 0.35rem 0.4rem;
+        font-size: 0.75rem;
+      }
+
+      .p-dropdown-trigger {
+        width: 1.8rem;
+      }
+    }
+
+    .p-button {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.6rem;
+
+      .p-button-icon {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  // Styles pour les graphiques Chart.js
+  .chart-container,
+  .chart-container-donut {
+    p-chart {
+      display: block;
+      height: 100% !important;
+      width: 100% !important;
+
+      canvas {
+        height: 100% !important;
+        width: 100% !important;
+        max-height: none !important;
+        max-width: none !important;
+      }
+    }
+  }
+}
+
+// Overlay de chargement
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--surface-card);
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 2rem;
+    gap: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 1.5rem;
+    gap: 0.75rem;
+    margin: 0 1rem;
+  }
+}
+
+.loading-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+  }
+}
+
+// Conteneur des données
+.data-container {
+  transition: opacity 0.3s ease;
+
+  &.loading-blur {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+}
+
+::ng-deep .custom-spinner {
+  .p-progress-spinner-circle {
+    stroke: var(--primary-color) !important;
+    animation: custom-progress-spinner-dash 1.5s ease-in-out infinite !important;
+  }
+}
+
+@keyframes custom-progress-spinner-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
+// Sections de graphiques
+.charts-section {
+  margin-bottom: 0.5rem;
+}
+
+// Cartes de graphiques - Même taille que tableau de bord
+.chart-card {
+  background: var(--surface-card);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  height: 280px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  @media (max-width: 1200px) {
+    padding: 0.6rem;
+    height: 260px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.6rem;
+    height: 240px;
+  }
+}
+
+.chart-card-bottom {
+  height: 280px;
+
+  @media (max-width: 1200px) {
+    height: 260px;
+  }
+
+  @media (max-width: 768px) {
+    height: 240px;
+  }
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--primary-color);
+  flex-shrink: 0;
+
+  @media (max-width: 1200px) {
+    margin-bottom: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+
+  @media (max-width: 768px) {
+    margin-bottom: 0.25rem;
+    padding-bottom: 0.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
+
+.chart-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0;
+  text-align: left;
+  color: #000;
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 0.2rem;
+  text-align: left;
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.chart-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    gap: 0.3rem;
+  }
+
+  @media (max-width: 480px) {
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+.toggle-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-color-secondary);
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    font-size: 0.6rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.55rem;
+  }
+}
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+
+  p-chart {
+    flex: 1;
+    display: flex;
+    width: 100%;
+    height: 100% !important;
+  }
+
+  :host ::ng-deep {
+    p-chart {
+      display: flex;
+      height: 100% !important;
+      width: 100% !important;
+
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        aspect-ratio: auto !important;
+        object-fit: contain;
+      }
+    }
+  }
+}
+
+.chart-container-donut {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 0;
+  padding-top: 0.5rem;
+
+  :host ::ng-deep {
+    p-chart {
+      display: flex;
+      height: 100% !important;
+      width: 100% !important;
+      justify-content: center;
+      align-items: flex-start;
+      position: relative;
+
+      canvas {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        aspect-ratio: 1 !important;
+        object-fit: contain;
+      }
+    }
+  }
+}
+
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-color-secondary);
+
+  i {
+    font-size: 2rem;
+    color: var(--orange-500);
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--primary-color);
+
+  i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+  }
+}
+
+.progress-bar-container {
+  width: 100%;
+  max-width: 200px;
+  margin-top: 0.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(var(--primary-color-rgb), 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+// ============================================
+// Styles pour le bouton d'aide et le popover
+// ============================================
+
+:host ::ng-deep {
+  .p-button-help {
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    color: var(--text-color-secondary);
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--primary-color);
+      background-color: rgba(var(--primary-color-rgb), 0.1);
+      transform: scale(1.1);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2);
+    }
+
+    .p-button-icon {
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      width: 1.5rem;
+      height: 1.5rem;
+
+      .p-button-icon {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .help-panel {
+    max-width: 380px;
+    width: 90vw;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    padding: 0;
+
+    .p-overlaypanel-content {
+      padding: 0;
+    }
+
+    @media (max-width: 480px) {
+      max-width: calc(100vw - 2rem);
+      width: calc(100vw - 2rem);
+    }
+  }
+}
+
+.help-content {
+  padding: 1.25rem;
+  color: var(--text-color);
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+}
+
+.help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.help-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0 0 0.5rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--primary-color);
+
+  i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+.help-description {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0;
+  padding: 0.75rem;
+  background: rgba(var(--primary-color-rgb), 0.05);
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-color);
+
+  strong {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+}
+
+.help-logic {
+  margin-top: 0.25rem;
+}
+
+.help-subtitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
+}
+
+.help-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  li {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-color-secondary);
+    position: relative;
+    padding-left: 1.25rem;
+
+    &::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    strong {
+      color: var(--text-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.8rem;
+      padding-left: 1rem;
+    }
+  }
+}
+

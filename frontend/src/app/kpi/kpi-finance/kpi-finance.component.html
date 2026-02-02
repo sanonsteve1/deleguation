@@ -1,0 +1,188 @@
+<div class="kpi-commercial-container">
+
+    <div class="filters-row">
+
+        <div class="filter-item">
+            <label for="annee" class="filter-label">Année</label>
+            <p-dropdown
+                id="annee"
+                [options]="annees"
+                [(ngModel)]="anneeSelectionnee"
+                placeholder="Année"
+                (onChange)="chargerStatistiques()"
+                styleClass="w-full"
+            ></p-dropdown>
+        </div>
+        <div class="filter-item">
+            <label for="mois" class="filter-label">Mois</label>
+            <p-dropdown
+                id="mois"
+                [options]="mois"
+                [(ngModel)]="moisSelectionne"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Toute l'année"
+                (onChange)="chargerStatistiques()"
+                styleClass="w-full"
+                [showClear]="true"
+            ></p-dropdown>
+        </div>
+        <div class="filter-item filter-action">
+            <label class="filter-label opacity-0">Actions</label>
+            <p-button
+                icon="pi pi-refresh"
+                (onClick)="reinitialiserFiltres()"
+                styleClass="p-button-outlined w-full"
+            ></p-button>
+        </div>
+    </div>
+    <div class="kpi-main-section">
+        <div class="kpi-cumulative-row">
+            <div class="kpi-main-card kwh-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-dollar"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">CA Annuel</div>
+                    <div class="kpi-main-value">
+                        {{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.cumulAnnuelCa)}}
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-main-card subscribers-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-dollar"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">CAPEX Annuel</div>
+                    <div class="kpi-main-value">
+                        {{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.cumulAnnuelCapex)}}
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-main-card recovery-rate-cumul">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-dollar"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">OPEX Annuel</div>
+                    <div class="kpi-main-value">
+                        {{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.cumulAnnuelOpex)}}
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-main-card fcfa-cumulative">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-percentage"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">Ratio Annuel OPEX/CA</div>
+                    <div class="kpi-main-value">
+                        {{formatRatio(donneesMensuelleAnneeCourante?.cumulAnnuelRatio)}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="moisSelectionne" class="kpi-monthly-row">
+            <div class="kpi-main-card kwh-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-dollar"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">CA du Mois</div>
+                    <div class="kpi-main-value">
+                        {{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.cumulMensuelCa)}} Mds
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-main-card fcfa-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-dollar"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">CAPEX du Mois</div>
+                    <div class="kpi-main-value">
+                        {{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.cumulMensuelCapex)}}
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-main-card subscribers-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-dollar"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">OPEX du Mois</div>
+                    <div class="kpi-main-value">
+                        {{formatFcfaToMilliards(donneesMensuelleAnneeCourante?.cumulMensuelOpex)}}
+                    </div>
+                </div>
+            </div>
+            <div class="kpi-main-card connections-month">
+                <div class="kpi-main-icon">
+                    <i class="pi pi-percentage"></i>
+                </div>
+                <div class="kpi-main-content">
+                    <div class="kpi-main-label">Ratio du Mois OPEX/CA</div>
+                    <div class="kpi-main-value">
+                        {{formatRatio(donneesMensuelleAnneeCourante?.cumulMensuelRatio)}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!moisSelectionne" class="grid grid-cols-12 gap-2 charts-section">
+            <div class="col-span-12 lg:col-span-4">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4 class="chart-title">{{ headerFinance }}</h4>
+                    </div>
+                    <div class="kpi-chart">
+                        <div *ngIf="aucuneDonneeBranchementsDisponible; else chartTemplateCA" class="no-data-message">
+                            <i class="pi pi-exclamation-triangle"></i>
+                            <p>Aucune donnée disponible</p>
+                        </div>
+
+                        <ng-template #chartTemplateCA>
+                            <p-chart
+                                type="line"
+                                height="310px"
+                                [data]="chartData"
+                                [options]="chartOptions">
+                            </p-chart>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-12 lg:col-span-4">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h4 class="chart-title">{{ headerCaOpex }}</h4>
+                    </div>
+                    <div class="kpi-chart">
+                        <div *ngIf="aucuneDonneeBranchementsDisponible; else chartTemplateRatio"
+                             class="no-data-message">
+                            <i class="pi pi-exclamation-triangle"></i>
+                            <p>Aucune donnée disponible</p>
+                        </div>
+
+                        <ng-template #chartTemplateRatio>
+                            <p-chart
+                                type="line"
+                                height="310px"
+                                [data]="chartDataRatio"
+                                [options]="chartOptionsRatio">
+                            </p-chart>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #loadingTemplate>
+        <div class="loading-container">
+            <p-progressSpinner strokeWidth="4"></p-progressSpinner>
+            <p>{{ loadingMessage }}</p>
+        </div>
+    </ng-template>
+</div>

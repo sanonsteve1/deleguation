@@ -1,0 +1,296 @@
+<div class="kpi-stock-subview">
+  <div class="filters-row">
+    <div class="filter-item">
+      <label for="annee" class="filter-label">Année</label>
+      <p-dropdown
+        id="annee"
+        [options]="annees"
+        [(ngModel)]="anneeSelectionnee"
+        placeholder="Année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item">
+      <label for="mois" class="filter-label">Mois</label>
+      <p-dropdown
+        id="mois"
+        [options]="mois"
+        [(ngModel)]="moisSelectionne"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Toute l'année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+        [showClear]="true"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item filter-action">
+      <label class="filter-label opacity-0">Actions</label>
+      <p-button
+        label="Réinitialiser"
+        icon="pi pi-refresh"
+        (onClick)="reinitialiserFiltres()"
+        styleClass="p-button-outlined w-full"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Spinner de chargement -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-content">
+      <p-progressSpinner
+        styleClass="custom-spinner"
+        strokeWidth="4"
+        animationDuration="1s">
+      </p-progressSpinner>
+      <div class="loading-text">{{ loadingMessage }}</div>
+    </div>
+  </div>
+
+  <!-- Conteneur des données -->
+  <div class="data-container" [class.loading-blur]="loading">
+    <!-- Section des KPIs -->
+    <div class="kpi-main-section">
+      <div class="kpi-cumulative-row">
+        <!-- KPI 1 : Coût d'entreposage -->
+        <div class="kpi-main-card fcfa-month">
+          <div class="kpi-main-icon">
+            <i class="pi pi-dollar"></i>
+          </div>
+          <div class="kpi-main-content">
+            <div class="kpi-main-label-wrapper">
+              <div class="kpi-main-label">Coût d'entreposage</div>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help-kpi"
+                (click)="helpPanelCoutEntreposage.toggle($event)"
+                [attr.aria-label]="'Aide sur le coût d\'entreposage'"
+              ></button>
+              <p-overlayPanel #helpPanelCoutEntreposage [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-dollar"></i>
+                      Coût d'entreposage
+                    </h4>
+                    <p class="help-description">
+                      Ce KPI représente le <strong>coût total d'entreposage</strong> du stock sur la période sélectionnée.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Le coût est calculé comme la <strong>somme</strong> de tous les coûts d'entreposage des équipements en stock</li>
+                        <li>Le coût d'entreposage = <strong>valeur du stock × taux d'entreposage</strong> (par défaut 5% par an)</li>
+                        <li>Le taux peut varier selon la <strong>catégorie d'équipement</strong> (défini dans les paramètres)</li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Ce KPI mesure le <strong>coût de possession du stock</strong> et permet d'optimiser la gestion des stocks</li>
+                        <li>Un coût élevé peut indiquer un <strong>surstockage</strong> ou des équipements de <strong>haute valeur</strong></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="kpi-main-value">{{ formatFCFA(dataKpiStock?.coutEntreposageTotal) }}</div>
+          </div>
+        </div>
+
+        <!-- KPI 2 : Valeur immobilisée -->
+        <div class="kpi-main-card subscribers-cumul">
+          <div class="kpi-main-icon">
+            <i class="pi pi-money-bill"></i>
+          </div>
+          <div class="kpi-main-content">
+            <div class="kpi-main-label-wrapper">
+              <div class="kpi-main-label">Valeur immobilisée</div>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help-kpi"
+                (click)="helpPanelValeurImmobilisee.toggle($event)"
+                [attr.aria-label]="'Aide sur la valeur immobilisée'"
+              ></button>
+              <p-overlayPanel #helpPanelValeurImmobilisee [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-money-bill"></i>
+                      Valeur immobilisée
+                    </h4>
+                    <p class="help-description">
+                      Ce KPI représente la <strong>valeur totale du capital immobilisé</strong> dans le stock.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Si un mois est sélectionné : utilise la <strong>valeur moyenne du stock du mois</strong> ou la <strong>valeur totale du stock du mois</strong></li>
+                        <li>Si aucun mois n'est sélectionné : utilise la <strong>valeur moyenne du stock de l'année</strong> ou la <strong>valeur totale du stock de l'année</strong></li>
+                        <li>La valeur est calculée en cumulant les <strong>entrées</strong> et <strong>sorties</strong> depuis le début de l'année</li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Ce KPI mesure le <strong>capital immobilisé</strong> dans les stocks, impactant la <strong>trésorerie</strong></li>
+                        <li>Une valeur élevée indique un <strong>stock important</strong> qui peut réduire la <strong>liquidité</strong> de l'entreprise</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="kpi-main-value">{{ formatFCFA(getValeurImmobilisee()) }}</div>
+          </div>
+        </div>
+
+        <!-- KPI 3 : Ratio stock/consommation -->
+        <div class="kpi-main-card fcfa-month">
+          <div class="kpi-main-icon">
+            <i class="pi pi-chart-bar"></i>
+          </div>
+          <div class="kpi-main-content">
+            <div class="kpi-main-label-wrapper">
+              <div class="kpi-main-label">Ratio stock/consommation</div>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help-kpi"
+                (click)="helpPanelRatioStockConsommation.toggle($event)"
+                [attr.aria-label]="'Aide sur le ratio stock/consommation'"
+              ></button>
+              <p-overlayPanel #helpPanelRatioStockConsommation [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-chart-bar"></i>
+                      Ratio stock/consommation
+                    </h4>
+                    <p class="help-description">
+                      Ce KPI mesure le <strong>ratio entre la valeur du stock maximum</strong> et la <strong>valeur totale des sorties</strong> sur la période.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Le ratio est calculé comme : <strong>Stock maximum (fin de mois) / Sorties totales</strong></li>
+                        <li>Le stock maximum correspond au <strong>stock fin de mois le plus élevé</strong> sur la période</li>
+                        <li>Les sorties totales correspondent à la <strong>somme de toutes les sorties</strong> (valeur en FCFA) sur la période</li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Un ratio élevé indique un <strong>stock important</strong> par rapport à la consommation</li>
+                        <li>Un ratio faible indique une <strong>rotation rapide</strong> du stock ou un <strong>stock optimisé</strong></li>
+                        <li>Permet d'évaluer l'<strong>efficacité de la gestion des stocks</strong> et d'identifier les opportunités d'optimisation</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="kpi-main-value">{{ formatRatio(dataKpiStock?.ratioStockConsommation) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section des graphiques -->
+    <div class="grid grid-cols-12 gap-2 charts-section">
+      <!-- Graphique 1 : Évolution de la valeur totale du stock - MASQUÉ -->
+      <!-- <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-6">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h4 class="chart-title">Évolution de la valeur totale du stock</h4>
+          </div>
+          <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+          <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+            <div *ngIf="aucuneDonneeEvolutionStockDisponible; else chartEvolutionStockTemplate" class="no-data-message">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <ng-template #chartEvolutionStockTemplate>
+              <p-chart
+                type="line"
+                [data]="chartDonneesEvolutionStock"
+                [options]="chartOptionsEvolutionStock"
+              ></p-chart>
+            </ng-template>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Graphique 2 : Évolution de la valeur moyenne du stock -->
+      <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-6">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-wrapper">
+              <h4 class="chart-title">Évolution de la valeur moyenne du stock</h4>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help"
+                (click)="helpPanelEvolutionMoyen.toggle($event)"
+                [attr.aria-label]="'Aide sur l\'évolution de la valeur moyenne du stock'"
+              ></button>
+              <p-overlayPanel #helpPanelEvolutionMoyen [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-chart-line"></i>
+                      Évolution de la valeur moyenne du stock
+                    </h4>
+                    <p class="help-description">
+                      Ce graphique présente l'<strong>évolution mensuelle de la valeur moyenne du stock</strong> sur l'année sélectionnée, calculée comme la moyenne de (stock début + stock fin) / 2 pour chaque mois.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>La valeur moyenne du stock est calculée comme : <strong>(stock début de mois + stock fin de mois) / 2</strong></li>
+                        <li>Le stock est calculé en cumulant les <strong>entrées</strong> et <strong>sorties</strong> de l'entrepôt (valeur en FCFA)</li>
+                        <li>Le calcul se fait <strong>mensuellement</strong> pour suivre l'évolution dans le temps</li>
+                        <li>Une valeur moyenne élevée indique un <strong>stock important</strong> en valeur (FCFA) sur la période</li>
+                        <li>Une valeur moyenne faible indique un <strong>stock réduit</strong> ou une <strong>rotation rapide</strong> du stock</li>
+                        <li>Le graphique est affiché uniquement lorsque <strong>aucun mois spécifique</strong> n'est sélectionné</li>
+                        <li>Permet d'analyser les <strong>tendances d'évolution du stock</strong> et d'identifier les périodes de <strong>variations significatives</strong> de la valeur du stock</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+          </div>
+          <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+          <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+            <div *ngIf="aucuneDonneeEvolutionStockMoyenDisponible; else chartEvolutionStockMoyenTemplate" class="no-data-message">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <ng-template #chartEvolutionStockMoyenTemplate>
+              <p-chart
+                type="line"
+                [data]="chartDonneesEvolutionStockMoyen"
+                [options]="chartOptionsEvolutionStockMoyen"
+              ></p-chart>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template de chargement -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>{{ loadingMessage }}</p>
+      <div class="progress-bar-container" *ngIf="loadingProgress > 0">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+        </div>
+        <span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+

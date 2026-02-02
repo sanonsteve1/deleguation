@@ -1,0 +1,162 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h1 class="text-3xl font-bold text-gray-800">Gestion des Personnes Ressources</h1>
+        <p-button label="Nouvelle Personne Ressource" icon="pi pi-plus" severity="success" (onClick)="openNew()"> </p-button>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="mb-4">
+        <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input pInputText type="text" [(ngModel)]="searchTerm" placeholder="Rechercher une personne ressource..." class="w-full" />
+        </p-iconfield>
+    </div>
+
+    <!-- Table des personnes ressources -->
+    <p-table
+        [value]="personnesRessource"
+        [globalFilterFields]="['code', 'nom', 'prenoms', 'fonction', 'specialite']"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} personnes ressources"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [rowHover]="true"
+        dataKey="id"
+        styleClass="p-datatable-sm"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="code" style="width: 100px">Code <p-sortIcon field="code" /></th>
+                <th pSortableColumn="nom">Nom <p-sortIcon field="nom" /></th>
+                <th pSortableColumn="prenoms">Prénoms <p-sortIcon field="prenoms" /></th>
+                <th pSortableColumn="fonction" style="width: 140px">Fonction <p-sortIcon field="fonction" /></th>
+                <th pSortableColumn="specialite" style="width: 140px">Spécialité <p-sortIcon field="specialite" /></th>
+                <th pSortableColumn="telephone" style="width: 150px">Téléphone <p-sortIcon field="telephone" /></th>
+                <th pSortableColumn="email" style="width: 180px">Email <p-sortIcon field="email" /></th>
+                <th pSortableColumn="statut" style="width: 120px">Statut <p-sortIcon field="statut" /></th>
+                <th pSortableColumn="nombreProjets" style="width: 120px">Projets <p-sortIcon field="nombreProjets" /></th>
+                <th pSortableColumn="experience" style="width: 120px">Expérience <p-sortIcon field="experience" /></th>
+                <th style="width: 150px">Actions</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-personneRessource>
+            <tr>
+                <td>
+                    <span class="font-semibold text-blue-600">{{ personneRessource.code }}</span>
+                </td>
+                <td>
+                    <div class="font-semibold text-gray-800">{{ personneRessource.nom }}</div>
+                </td>
+                <td>
+                    <div class="font-semibold text-gray-800">{{ personneRessource.prenoms }}</div>
+                </td>
+                <td>
+                    <span class="text-gray-600">{{ personneRessource.fonction }}</span>
+                </td>
+                <td>
+                    <span class="text-gray-600">{{ personneRessource.specialite }}</span>
+                </td>
+                <td>
+                    <span class="text-gray-600">{{ personneRessource.telephone }}</span>
+                </td>
+                <td>
+                    <span class="text-blue-600">{{ personneRessource.email }}</span>
+                </td>
+                <td>
+                    <p-tag [value]="getStatut(personneRessource.statut)" [severity]="getSeverity(personneRessource.statut)"> </p-tag>
+                </td>
+                <td>
+                    <span class="font-semibold text-blue-600"> {{ personneRessource.nombreProjets }} </span>
+                </td>
+                <td>
+                    <span class="font-semibold text-green-600"> {{ personneRessource.experience }} ans </span>
+                </td>
+                <td>
+                    <div class="flex gap-2">
+                        <p-button icon="pi pi-pencil" severity="info" size="small" rounded outlined pTooltip="Modifier" (onClick)="editPersonneRessource(personneRessource)"> </p-button>
+                        <p-button icon="pi pi-trash" severity="danger" size="small" rounded outlined pTooltip="Supprimer" (onClick)="deletePersonneRessource(personneRessource)"> </p-button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="11" class="text-center py-8">
+                    <div class="text-gray-500">
+                        <i class="pi pi-inbox text-4xl mb-4 block"></i>
+                        <p>Aucune personne ressource trouvée</p>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Dialog pour créer/modifier une personne ressource -->
+<p-dialog [(visible)]="personneRessourceDialog" [style]="{width: '60rem'}" [header]="personneRessource.id ? 'Modifier la Personne Ressource' : 'Nouvelle Personne Ressource'" [modal]="true" [draggable]="false" [resizable]="false">
+    <div class="grid grid-cols-2 gap-4">
+        <div class="field">
+            <label for="nom" class="font-semibold block mb-2">Nom *</label>
+            <input id="nom" pInputText [(ngModel)]="personneRessource.nom" required autofocus class="w-full" />
+            <small *ngIf="submitted && !personneRessource.nom" class="p-error block mt-1"> Le nom est requis. </small>
+        </div>
+
+        <div class="field">
+            <label for="prenoms" class="font-semibold block mb-2">Prénoms *</label>
+            <input id="prenoms" pInputText [(ngModel)]="personneRessource.prenoms" required class="w-full" />
+            <small *ngIf="submitted && !personneRessource.prenoms" class="p-error block mt-1"> Les prénoms sont requis. </small>
+        </div>
+
+        <div class="field">
+            <label for="fonction" class="font-semibold block mb-2">Fonction</label>
+            <p-dropdown id="fonction" [options]="fonctions" [(ngModel)]="personneRessource.fonction" placeholder="Sélectionner une fonction" class="w-full"> </p-dropdown>
+        </div>
+
+        <div class="field">
+            <label for="specialite" class="font-semibold block mb-2">Spécialité</label>
+            <p-dropdown id="specialite" [options]="specialites" [(ngModel)]="personneRessource.specialite" placeholder="Sélectionner une spécialité" class="w-full"> </p-dropdown>
+        </div>
+
+        <div class="field">
+            <label for="telephone" class="font-semibold block mb-2">Téléphone</label>
+            <input id="telephone" pInputText [(ngModel)]="personneRessource.telephone" class="w-full" />
+        </div>
+
+        <div class="field">
+            <label for="email" class="font-semibold block mb-2">Email</label>
+            <input id="email" pInputText type="email" [(ngModel)]="personneRessource.email" class="w-full" />
+        </div>
+
+        <div class="field">
+            <label for="statut" class="font-semibold block mb-2">Statut</label>
+            <select id="statut" [(ngModel)]="personneRessource.statut" class="w-full p-3 border border-gray-300 rounded-lg">
+                <option value="ACTIF">Actif</option>
+                <option value="INACTIF">Inactif</option>
+                <option value="EN_ATTENTE">En attente</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="experience" class="font-semibold block mb-2">Expérience (années)</label>
+            <input id="experience" pInputText type="number" [(ngModel)]="personneRessource.experience" class="w-full" />
+        </div>
+
+        <div class="field">
+            <label for="nombreProjets" class="font-semibold block mb-2">Nombre de Projets</label>
+            <input id="nombreProjets" pInputText type="number" [(ngModel)]="personneRessource.nombreProjets" class="w-full" />
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="Annuler" icon="pi pi-times" (onClick)="hideDialog()" class="p-button-text"> </p-button>
+        <p-button label="Enregistrer" icon="pi pi-check" (onClick)="savePersonneRessource()" class="p-button-success"> </p-button>
+    </ng-template>
+</p-dialog>
+
+<!-- Composants de confirmation et notification -->
+<p-confirmDialog />
+<p-toast />

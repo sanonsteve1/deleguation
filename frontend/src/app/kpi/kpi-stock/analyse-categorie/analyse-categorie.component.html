@@ -1,0 +1,220 @@
+<div class="kpi-stock-subview">
+  <div class="filters-row">
+    <div class="filter-item">
+      <label for="annee" class="filter-label">Année</label>
+      <p-dropdown
+        id="annee"
+        [options]="annees"
+        [(ngModel)]="anneeSelectionnee"
+        placeholder="Année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item">
+      <label for="mois" class="filter-label">Mois</label>
+      <p-dropdown
+        id="mois"
+        [options]="mois"
+        [(ngModel)]="moisSelectionne"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Toute l'année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+        [showClear]="true"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item filter-action">
+      <label class="filter-label opacity-0">Actions</label>
+      <p-button
+        label="Réinitialiser"
+        icon="pi pi-refresh"
+        (onClick)="reinitialiserFiltres()"
+        styleClass="p-button-outlined w-full"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Spinner de chargement -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-content">
+      <p-progressSpinner
+        styleClass="custom-spinner"
+        strokeWidth="4"
+        animationDuration="1s">
+      </p-progressSpinner>
+      <div class="loading-text">{{ loadingMessage }}</div>
+    </div>
+  </div>
+
+  <!-- Conteneur des données -->
+  <div class="data-container" [class.loading-blur]="loading">
+    <!-- Graphiques -->
+    <div class="grid grid-cols-12 gap-2 charts-section">
+      <!-- Graphique 1 : Répartition par type -->
+      <div class="col-span-12 lg:col-span-4">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h4 class="chart-title">Répartition par type</h4>
+            <div class="chart-toggle">
+              <span class="toggle-label">Fcfa</span>
+              <p-toggleswitch
+                [(ngModel)]="afficherQuantiteStock"
+                (onChange)="updateChartRepartitionType()"
+              ></p-toggleswitch>
+              <span class="toggle-label">Quantité</span>
+            </div>
+          </div>
+          <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+          <div *ngIf="!loading; else loadingTemplate" class="chart-container-donut">
+            <div *ngIf="aucuneDonneeRepartitionTypeDisponible; else chartRepartitionTemplate" class="no-data-message">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <ng-template #chartRepartitionTemplate>
+              <p-chart
+                type="doughnut"
+                [data]="chartDonneesRepartitionType"
+                [options]="chartOptionsRepartitionType"
+              ></p-chart>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphique 2 : Taux d'utilisation -->
+      <div class="col-span-12 lg:col-span-4">
+        <div class="chart-card chart-card-bottom">
+          <div class="chart-header">
+            <div class="chart-title-wrapper">
+              <h4 class="chart-title">Taux d'utilisation par catégorie</h4>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help"
+                (click)="helpPanelTauxUtilisation.toggle($event)"
+                [attr.aria-label]="'Aide sur le taux d\'utilisation'"
+              ></button>
+              <p-overlayPanel #helpPanelTauxUtilisation [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-chart-bar"></i>
+                      Taux de rotation par catégorie
+                    </h4>
+                    <p class="help-description">
+                      Ce graphique présente le <strong>taux de rotation du stock</strong> pour chaque catégorie d'équipement sur la période sélectionnée.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Le taux de rotation est calculé comme : <strong>Sorties totales (valeur) / Stock moyen (valeur)</strong></li>
+                        <li>Le calcul se fait par <strong>catégorie d'équipement</strong> (transformateurs, compteurs, câbles, etc.)</li>
+                        <li>Le stock moyen est la moyenne mensuelle de <strong>(stock début + stock fin) / 2</strong></li>
+                        <li>Un taux de rotation élevé indique une <strong>rotation rapide</strong> du stock (bonne gestion)</li>
+                        <li>Un taux de rotation faible indique une <strong>rotation lente</strong> ou un <strong>surstockage</strong></li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Permet d'identifier les catégories nécessitant une <strong>optimisation du stock</strong> ou un <strong>réapprovisionnement</strong></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+          </div>
+          <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+          <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+            <div *ngIf="aucuneDonneeTauxUtilisationDisponible" class="no-data-message">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <div *ngIf="!aucuneDonneeTauxUtilisationDisponible && chartDonneesTauxUtilisation">
+              <p-chart
+                type="bar"
+                [data]="chartDonneesTauxUtilisation"
+                [options]="chartOptionsTauxUtilisation"
+              ></p-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphique 3 : Vieillissement des stocks - MASQUÉ -->
+      <!-- <div class="col-span-12 lg:col-span-4">
+        <div class="chart-card chart-card-bottom">
+          <div class="chart-header">
+            <div class="chart-title-wrapper">
+              <h4 class="chart-title">Vieillissement des stocks</h4>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help"
+                (click)="helpPanelVieillissement.toggle($event)"
+                [attr.aria-label]="'Aide sur le vieillissement des stocks'"
+              ></button>
+              <p-overlayPanel #helpPanelVieillissement [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-clock"></i>
+                      Vieillissement des stocks
+                    </h4>
+                    <p class="help-description">
+                      Ce graphique analyse le <strong>vieillissement du stock</strong> par catégorie, c'est-à-dire la durée moyenne pendant laquelle les équipements restent en stock avant d'être utilisés.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Le vieillissement est calculé en fonction de la <strong>durée de séjour</strong> des équipements en entrepôt</li>
+                        <li>Le calcul se fait par <strong>catégorie d'équipement</strong> pour identifier les tendances</li>
+                        <li>Un vieillissement élevé indique des équipements qui <strong>restent longtemps en stock</strong> sans être utilisés</li>
+                        <li>Cela peut révéler des problèmes de <strong>surstockage</strong>, de <strong>rotation lente</strong> ou d'équipements <strong>obsolètes</strong></li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Permet d'identifier les catégories nécessitant une <strong>optimisation de la gestion des stocks</strong> ou une <strong>révision des prévisions</strong></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+          </div>
+          <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+          <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+            <div *ngIf="aucuneDonneeVieillissementDisponible" class="no-data-message">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <div *ngIf="!aucuneDonneeVieillissementDisponible && chartDonneesVieillissement">
+              <p-chart
+                type="bar"
+                [data]="chartDonneesVieillissement"
+                [options]="chartOptionsVieillissement"
+              ></p-chart>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- Template de chargement -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>{{ loadingMessage }}</p>
+      <div class="progress-bar-container" *ngIf="loadingProgress > 0">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+        </div>
+        <span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+

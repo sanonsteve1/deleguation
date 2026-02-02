@@ -1,0 +1,276 @@
+<div class="kpi-stock-subview">
+  <div class="filters-row">
+    <div class="filter-item">
+      <label for="annee" class="filter-label">Année</label>
+      <p-dropdown
+        id="annee"
+        [options]="annees"
+        [(ngModel)]="anneeSelectionnee"
+        placeholder="Année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item">
+      <label for="mois" class="filter-label">Mois</label>
+      <p-dropdown
+        id="mois"
+        [options]="mois"
+        [(ngModel)]="moisSelectionne"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Toute l'année"
+        (onChange)="chargerStatistiques()"
+        styleClass="w-full"
+        [showClear]="true"
+      ></p-dropdown>
+    </div>
+
+    <div class="filter-item filter-action">
+      <label class="filter-label opacity-0">Actions</label>
+      <p-button
+        label="Réinitialiser"
+        icon="pi pi-refresh"
+        (onClick)="reinitialiserFiltres()"
+        styleClass="p-button-outlined w-full"
+      ></p-button>
+    </div>
+  </div>
+
+  <!-- Spinner de chargement -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-content">
+      <p-progressSpinner
+        styleClass="custom-spinner"
+        strokeWidth="4"
+        animationDuration="1s">
+      </p-progressSpinner>
+      <div class="loading-text">{{ loadingMessage }}</div>
+    </div>
+  </div>
+
+  <!-- Conteneur des données -->
+  <div class="data-container" [class.loading-blur]="loading">
+    <!-- Section des KPIs -->
+    <div class="kpi-main-section">
+      <div class="kpi-cumulative-row">
+        <!-- KPI 1 : Fiabilité des fournisseurs -->
+        <div class="kpi-main-card fcfa-month">
+          <div class="kpi-main-icon">
+            <i class="pi pi-shield"></i>
+          </div>
+          <div class="kpi-main-content">
+            <div class="kpi-main-label-wrapper">
+            <div class="kpi-main-label">Fiabilité des fournisseurs</div>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help-kpi"
+                (click)="helpPanelFiabiliteFournisseurs.toggle($event)"
+                [attr.aria-label]="'Aide sur la fiabilité des fournisseurs'"
+              ></button>
+              <p-overlayPanel #helpPanelFiabiliteFournisseurs [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-shield"></i>
+                      Fiabilité des fournisseurs
+                    </h4>
+                    <p class="help-description">
+                      Ce KPI mesure la <strong>fiabilité moyenne des fournisseurs</strong> basée sur leur note de qualité.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Le calcul est basé sur la <strong>moyenne</strong> de la note de qualité des fournisseurs actifs</li>
+                        <li>La note de qualité (0-5) est convertie en pourcentage : <strong>note × 20</strong></li>
+                        <li>Seuls les fournisseurs <strong>ACTIFS</strong> ayant des commandes sur la période sont pris en compte</li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Une fiabilité élevée (≥80%) indique des fournisseurs <strong>fiables</strong> et de <strong>bonne qualité</strong></li>
+                        <li>Une fiabilité faible peut indiquer des <strong>problèmes de qualité</strong> ou des <strong>fournisseurs peu fiables</strong></li>
+                        <li>Permet d'identifier les <strong>fournisseurs performants</strong> et d'améliorer la <strong>sélection des partenaires</strong></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="kpi-main-value">{{ formatPourcentage(dataKpiStock?.fiabiliteMoyenneFournisseurs) }}</div>
+          </div>
+        </div>
+
+        <!-- KPI 2 : Temps de livraison moyen -->
+        <div class="kpi-main-card subscribers-cumul">
+          <div class="kpi-main-icon">
+            <i class="pi pi-clock"></i>
+          </div>
+          <div class="kpi-main-content">
+            <div class="kpi-main-label-wrapper">
+            <div class="kpi-main-label">Temps de livraison moyen</div>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help-kpi"
+                (click)="helpPanelDelaiLivraison.toggle($event)"
+                [attr.aria-label]="'Aide sur le temps de livraison moyen'"
+              ></button>
+              <p-overlayPanel #helpPanelDelaiLivraison [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-clock"></i>
+                      Temps de livraison moyen
+                    </h4>
+                    <p class="help-description">
+                      Ce KPI mesure le <strong>délai moyen</strong> entre la date de commande et la date de réception effective des équipements.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Le délai est calculé comme la <strong>moyenne</strong> de (date réception effective - date commande) en jours</li>
+                        <li>Seules les commandes avec statut <strong>LIVREE</strong> ou <strong>RECEPTIONNEE</strong> sont prises en compte</li>
+                        <li>Les commandes sans date de réception effective sont exclues du calcul</li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Un délai faible indique une <strong>livraison rapide</strong> et une bonne <strong>performance logistique</strong></li>
+                        <li>Un délai élevé peut indiquer des <strong>problèmes de livraison</strong> ou des <strong>retards fournisseurs</strong></li>
+                        <li>Permet d'évaluer la <strong>performance des fournisseurs</strong> et d'optimiser les <strong>processus d'approvisionnement</strong></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="kpi-main-value">{{ formatJours(dataKpiStock?.delaiMoyenApprovisionnement) }}</div>
+          </div>
+        </div>
+
+        <!-- KPI 3 : Taux de conformité réception -->
+        <div class="kpi-main-card fcfa-month">
+          <div class="kpi-main-icon">
+            <i class="pi pi-check-circle"></i>
+          </div>
+          <div class="kpi-main-content">
+            <div class="kpi-main-label-wrapper">
+            <div class="kpi-main-label">Taux de conformité réception</div>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help-kpi"
+                (click)="helpPanelTauxConformite.toggle($event)"
+                [attr.aria-label]="'Aide sur le taux de conformité réception'"
+              ></button>
+              <p-overlayPanel #helpPanelTauxConformite [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-check-circle"></i>
+                      Taux de conformité réception
+                    </h4>
+                    <p class="help-description">
+                      Ce KPI mesure le <strong>taux moyen de conformité</strong> des réceptions de livraisons sur la période sélectionnée.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>Le taux est calculé comme la <strong>moyenne</strong> des taux de conformité des bons de livraison</li>
+                        <li>Seuls les bons de livraison avec statut <strong>APPROUVE</strong> ou <strong>REFUSE</strong> sont pris en compte</li>
+                        <li>Le calcul se fait sur la base de la <strong>date de livraison</strong></li>
+                        <li>Les données sont filtrées selon <strong>l'année et le mois</strong> sélectionnés</li>
+                        <li>Un taux élevé (≥90%) indique des livraisons <strong>conformes</strong> aux commandes</li>
+                        <li>Un taux faible peut indiquer des <strong>problèmes de qualité</strong>, des <strong>écarts de quantité</strong> ou des <strong>non-conformités</strong></li>
+                        <li>Permet d'évaluer la <strong>qualité des livraisons</strong> et d'identifier les <strong>fournisseurs nécessitant une amélioration</strong></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+            <div class="kpi-main-value">{{ formatPourcentage(dataKpiStock?.tauxConformiteMoyen) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section des graphiques -->
+    <div class="grid grid-cols-12 gap-2 charts-section">
+      <!-- Graphique 1 : Évolution du niveau de stock -->
+      <div *ngIf="!moisSelectionne" class="col-span-12 lg:col-span-6">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-wrapper">
+              <h4 class="chart-title">Évolution de la valeur totale du stock</h4>
+              <button 
+                pButton 
+                type="button" 
+                icon="pi pi-question-circle" 
+                class="p-button-rounded p-button-text p-button-help"
+                (click)="helpPanelEvolutionStock.toggle($event)"
+                [attr.aria-label]="'Aide sur l\'évolution de la valeur totale du stock'"
+              ></button>
+              <p-overlayPanel #helpPanelEvolutionStock [dismissable]="true" [showCloseIcon]="true" styleClass="help-panel">
+                <div class="help-content">
+                  <div class="help-section">
+                    <h4 class="help-title">
+                      <i class="pi pi-chart-line"></i>
+                      Évolution de la valeur totale du stock
+                    </h4>
+                    <p class="help-description">
+                      Ce graphique présente l'<strong>évolution mensuelle de la valeur totale du stock</strong> (en FCFA) sur l'année sélectionnée, calculée comme le stock cumulé à la fin de chaque mois.
+                    </p>
+                    <div class="help-logic">
+                      <h5 class="help-subtitle">Logique métier :</h5>
+                      <ul class="help-list">
+                        <li>La valeur totale du stock correspond au <strong>stock fin de mois cumulé</strong> (valeur en FCFA)</li>
+                        <li>Le stock est calculé en cumulant les <strong>entrées</strong> et <strong>sorties</strong> depuis le début de l'année : <strong>Stock = Entrées - Sorties</strong></li>
+                        <li>Le calcul se fait <strong>mensuellement</strong> pour chaque mois de l'année</li>
+                        <li>Une valeur élevée indique un <strong>stock important</strong> en valeur (FCFA) à la fin du mois</li>
+                        <li>Une valeur faible indique un <strong>stock réduit</strong> ou une <strong>consommation importante</strong> par rapport aux entrées</li>
+                        <li>Le graphique est affiché uniquement lorsque <strong>aucun mois spécifique</strong> n'est sélectionné</li>
+                        <li>Permet d'analyser les <strong>tendances d'évolution du stock</strong> et d'identifier les périodes de <strong>variations significatives</strong> de la valeur du stock</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </p-overlayPanel>
+            </div>
+          </div>
+          <div class="chart-subtitle">{{ anneeSelectionnee }}</div>
+          <div *ngIf="!loading; else loadingTemplate" class="chart-container">
+            <div *ngIf="aucuneDonneeEvolutionStockDisponible; else chartEvolutionStockTemplate" class="no-data-message">
+              <i class="pi pi-exclamation-triangle"></i>
+              <p>Aucune donnée disponible</p>
+            </div>
+            <ng-template #chartEvolutionStockTemplate>
+              <p-chart
+                type="line"
+                [data]="chartDonneesEvolutionStock"
+                [options]="chartOptionsEvolutionStock"
+              ></p-chart>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Template de chargement -->
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>{{ loadingMessage }}</p>
+      <div class="progress-bar-container" *ngIf="loadingProgress > 0">
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="loadingProgress"></div>
+        </div>
+        <span class="progress-text">{{ loadingProgress | number:'1.0-0' }}%</span>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
+

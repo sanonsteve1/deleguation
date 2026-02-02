@@ -1,0 +1,98 @@
+p-radio-button,
+p-radiobutton,
+p-radioButton {
+    display: inline-flex;
+}
+
+p-tree {
+    .p-tree-node-checkbox {
+        display: block;
+    }
+}
+
+p-treetable {
+    .p-treetable-node-checkbox {
+        display: block;
+    }
+}
+
+.p-tag-icon {
+    line-height: 1.2;
+}
+
+.p-checkbox {
+    display: block !important;
+}
+
+// Corrections pour les problèmes de titre et logo dans différents modes de menu
+
+// Mode slim - garder le titre visible
+.layout-slim .layout-topbar .layout-topbar-start .layout-topbar-logo span {
+    display: block !important;
+    font-family: "Bauhaus 93", serif !important;
+    font-weight: normal !important;
+    font-size: 1.2rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 3rem;
+}
+
+// Mode slim-plus - garder le titre visible
+.layout-slim-plus .layout-topbar .layout-topbar-start .layout-topbar-logo span {
+    display: block !important;
+    font-family: "Bauhaus 93", serif !important;
+    font-weight: normal !important;
+    font-size: 1rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 5rem;
+}
+
+// Mode reveal - corriger le titre
+.layout-reveal .layout-topbar .layout-topbar-start .layout-topbar-logo span {
+    display: block !important;
+    font-family: "Bauhaus 93", serif !important;
+    font-weight: normal !important;
+    font-size: 35px !important;
+    content: "SBEE projet" !important;
+}
+
+// Mode drawer - corriger le titre
+.layout-drawer .layout-topbar .layout-topbar-start .layout-topbar-logo span {
+    display: block !important;
+    font-family: "Bauhaus 93", serif !important;
+    font-weight: normal !important;
+    font-size: 35px !important;
+    content: "SBEE projet" !important;
+}
+
+// S'assurer que la sidebar de configuration est toujours visible
+.layout-config-sidebar {
+    z-index: 99999 !important;
+}
+
+.layout-config-sidebar .p-drawer-content {
+    z-index: 99999 !important;
+}
+
+.layout-config-sidebar .p-drawer-mask {
+    z-index: 99998 !important;
+}
+
+// Corriger les z-index des boutons de configuration
+.app-config-button {
+    z-index: 99999 !important;
+}
+
+.layout-config-button {
+    z-index: 99999 !important;
+}
+
+// S'assurer que les popups de la carte sont toujours au-dessus
+.leaflet-popup,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+    z-index: 99999 !important;
+}

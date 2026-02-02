@@ -1,0 +1,12 @@
+<div class="accueil-container">
+    <div class="welcome-card">
+        <h1 class="welcome-title">Bienvenue sur ABLink</h1>
+        <p class="welcome-message" *ngIf="utilisateur">
+            Bonjour <strong>{{ utilisateur.prenoms }} {{ utilisateur.nom }}</strong> !
+        </p>
+        <p class="welcome-description">
+            Vous êtes maintenant connecté à l'application ABLink.
+        </p>
+    </div>
+</div>
+

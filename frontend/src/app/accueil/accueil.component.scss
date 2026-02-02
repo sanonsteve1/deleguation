@@ -1,0 +1,37 @@
+.accueil-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+    padding: 2rem;
+}
+
+.welcome-card {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.welcome-message {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.welcome-description {
+    font-size: 1rem;
+    color: #888;
+    line-height: 1.6;
+}
+
