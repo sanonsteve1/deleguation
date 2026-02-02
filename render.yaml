@@ -1,10 +1,11 @@
 services:
   - type: web
     name: fieldtrack-backend
+    env: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     region: frankfurt
     plan: free
-    buildCommand: cd backend && chmod +x gradlew && ./gradlew clean build -x test
-    startCommand: cd backend && java -jar build/libs/fieldtrack.jar --server.port=$PORT
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: prod
