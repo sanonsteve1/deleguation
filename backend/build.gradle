@@ -230,3 +230,8 @@ bootJar {
 	archiveFileName = 'fieldtrack.jar'
 	enabled = true
 }
+
+// S'assurer que bootJar est exécuté même si bootWar l'est aussi
+tasks.named('build') {
+	dependsOn bootJar
+}

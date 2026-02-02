@@ -23,9 +23,9 @@ FROM eclipse-temurin:17-jre-alpine
 
 WORKDIR /app
 
-# Copier le JAR/WAR depuis l'étape de build
-# Essayer d'abord le JAR, puis le WAR
-COPY --from=build /app/build/libs/fieldtrack.jar* app.jar
+# Copier le WAR depuis l'étape de build (le build génère fieldtrack.war)
+# Spring Boot peut exécuter un WAR avec java -jar
+COPY --from=build /app/build/libs/fieldtrack.war app.jar
 
 # Exposer le port (Render définira le port via $PORT)
 EXPOSE 10000
